@@ -63,7 +63,9 @@ leer_cuerpo_rmd <- function(path) {
 }
 
 etiqueta_quarto <- function(x) {
-  gsub("[^a-zA-Z0-9._-]", "-", x)
+  x <- gsub("[^a-zA-Z0-9._-]", "-", x)
+  # Quarto exige label como string; los numéricos puros rompen la validación YAML
+  if (grepl("^[0-9]+$", x)) paste0("chunk-", x) else x
 }
 
 parsear_opciones_chunk <- function(inner) {
@@ -104,8 +106,8 @@ normalizar_chunks <- function(txt) {
   i <- 1
   while (i <= length(txt)) {
     line <- txt[i]
-    if (grepl("^```\\{r", line)) {
-      inner <- sub("^```\\{r\\s*", "", sub("\\}\\s*$", "", line))
+    if (grepl("^```\\s*\\{r", line)) {
+      inner <- sub("^```\\s*\\{r\\s*", "", sub("\\}\\s*$", "", line))
       flags <- parsear_opciones_chunk(inner)
       bloque <- c("```{r}", flags)
       # Código con error de sintaxis a propósito (no se puede ejecutar)
@@ -113,11 +115,23 @@ normalizar_chunks <- function(txt) {
       while (j <= length(txt) && !grepl("^```\\s*$", txt[j])) j <- j + 1
       if (j <= length(txt)) {
         cuerpo <- paste(txt[seq(i + 1, j - 1)], collapse = "\n")
-        if (grepl("=\\s*[A-Za-z]+\\s+[A-Za-z]+\\s*$", cuerpo, perl = TRUE) &&
-            !grepl("#| eval: false", paste(flags, collapse = "\n"), fixed = TRUE)) {
+        sin_eval <- grepl("#| eval: false", paste(bloque, collapse = "\n"), fixed = TRUE)
+        if (!sin_eval && grepl("=\\s*[A-Za-z]+\\s+[A-Za-z]+\\s*$", cuerpo, perl = TRUE)) {
+          bloque <- c("```{r}", "#| eval: false", flags)
+          sin_eval <- TRUE
+        }
+        # load() de archivos que el alumno genera en clase, no están en input/
+        if (!sin_eval && grepl("\\bload\\s*\\(\\s*['\"](?!input/)", cuerpo, perl = TRUE)) {
+          bloque <- c("```{r}", "#| eval: false", flags)
+        }
+        if (!sin_eval && grepl("\\bsave\\.image\\s*\\(", cuerpo)) {
+          bloque <- c("```{r}", "#| eval: false", flags)
+        }
+        if (!sin_eval && grepl("\\bsetwd\\s*\\(", cuerpo)) {
           bloque <- c("```{r}", "#| eval: false", flags)
         }
       }
+      bloque <- unique(bloque)
       res <- c(res, bloque)
     } else {
       res <- c(res, line)
@@ -129,6 +143,15 @@ normalizar_chunks <- function(txt) {
 
 arreglar_rutas <- function(txt) {
   gsub("\\./input/", "input/", txt, fixed = FALSE)
+}
+
+arreglar_separadores <- function(txt) {
+  # En Quarto, una línea solo con --- en el cuerpo rompe el parser YAML
+  gsub("^---$", "***", txt, perl = TRUE)
+}
+
+prefijar_labels_chunks <- function(txt, prefijo = "sol-") {
+  gsub("^#\\| label: ([^\\s]+)", paste0("#| label: ", prefijo, "\\1"), txt, perl = TRUE)
 }
 
 yaml_quarto <- function(title, tipo = c("sesion", "ejercicio")) {
@@ -154,6 +177,9 @@ yaml_quarto <- function(title, tipo = c("sesion", "ejercicio")) {
     "```{r}",
     "#| include: false",
     "knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)",
+    "if (!file.exists(\"input\") && file.exists(\"../input\")) {",
+    "  knitr::opts_knit$set(root.dir = normalizePath(\"..\"))",
+    "}",
     "```",
     ""
   )
@@ -206,6 +232,7 @@ convertir_sesion <- function(info) {
   body <- leer_cuerpo_rmd(src)
   body <- normalizar_chunks(body)
   body <- arreglar_rutas(body)
+  body <- arreglar_separadores(body)
   out <- c(yaml_quarto(info$title, "sesion"), body)
   writeLines(out, file.path(destino_lecciones, info$out), useBytes = TRUE)
   message("Sesión -> ", info$out)
@@ -224,10 +251,13 @@ convertir_ejercicio <- function(n) {
   sol <- if (!is.null(csol)) extraer_solucion(ssol, csol) else NULL
   body <- normalizar_chunks(ssol)
   body <- arreglar_rutas(body)
+  body <- arreglar_separadores(body)
   out <- c(yaml_quarto(sprintf("Ejercicio %d", n), "ejercicio"), body)
   if (!is.null(sol) && length(sol)) {
     sol <- normalizar_chunks(sol)
     sol <- arreglar_rutas(sol)
+    sol <- arreglar_separadores(sol)
+    sol <- prefijar_labels_chunks(sol)
     out <- c(
       out,
       "",

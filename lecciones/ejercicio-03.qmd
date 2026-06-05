@@ -12,6 +12,9 @@ code-tools: true
 ```{r}
 #| include: false
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+if (!file.exists("input") && file.exists("../input")) {
+  knitr::opts_knit$set(root.dir = normalizePath(".."))
+}
 ```
 
 
@@ -64,7 +67,7 @@ iii) escribir una función que lo haga para cualquier tarea (ver [guía](https:/
 Desplegá esta sección cuando quieras comparar con un conjunto de soluciones posibles.
 
 ```{r}
-#| label: 1
+#| label: chunk-1
 #| eval: false
 # 1) 
 
@@ -73,7 +76,7 @@ setwd("C:/Users/Camila/Dropbox/09 R/curso R psico")
 ```
 
 ```{r}
-#| label: 2
+#| label: chunk-2
 # 2) 
 datosCrudos = read.table("input/datos045177.csv",
                          header = T,
@@ -83,7 +86,7 @@ datosCrudos = read.table("input/datos045177.csv",
 ```
 
 ```{r}
-#| label: 3
+#| label: chunk-3
 # 3)
 media = mean(datosCrudos$RT, na.rm = T)
 desv = sd(datosCrudos$RT, na.rm = T)
@@ -100,7 +103,7 @@ datosCrudos2 = datosCrudos[!temp,]
 ```
 
 ```{r}
-#| label: 4
+#| label: chunk-4
 # 4)
 
 # i) 
@@ -133,7 +136,9 @@ mediasTareas = function(x) {
 
 ```
 
-``` {r 5, eval=T}
+```{r}
+#| label: chunk-5
+#| eval: false
 
 # 5) #creo a mano la carpeta output primero
 save.image("./output/Medias045177.RData")

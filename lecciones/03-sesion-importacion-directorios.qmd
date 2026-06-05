@@ -10,6 +10,9 @@ lang: es
 ```{r}
 #| include: false
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+if (!file.exists("input") && file.exists("../input")) {
+  knitr::opts_knit$set(root.dir = normalizePath(".."))
+}
 ```
 
 
@@ -130,6 +133,7 @@ Para **cargar** las variables guardadas en el archivo con extensión .RData usam
 
 ```{r}
 #| label: load
+#| eval: false
 
 load('lasalidademisdatos.RData')
 

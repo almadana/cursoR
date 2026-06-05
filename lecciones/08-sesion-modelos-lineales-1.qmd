@@ -10,6 +10,9 @@ lang: es
 ```{r}
 #| include: false
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+if (!file.exists("input") && file.exists("../input")) {
+  knitr::opts_knit$set(root.dir = normalizePath(".."))
+}
 ```
 
 
@@ -171,7 +174,7 @@ summary(modelo1)
 #| echo: false
 #load('output/')
 load('input/datosLimpios.RData')
-load('./output/parts3.RData')
+load('input/parts3.RData')
 ```
 
 ```{r}
@@ -271,7 +274,7 @@ datosLimpios %>% group_by(Sex) %>% summarize(media=mean(NPI16TOTAL,na.rm=T),erro
 3.655-2.915
 ```
 
----
+***
 ## Corroborando: 
 ```{r}
 t.test(datosLimpios[datosLimpios$Sex=="M","NPI16TOTAL"],datosLimpios[datosLimpios$Sex=="F","NPI16TOTAL"])

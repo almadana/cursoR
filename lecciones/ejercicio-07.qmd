@@ -12,6 +12,9 @@ code-tools: true
 ```{r}
 #| include: false
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+if (!file.exists("input") && file.exists("../input")) {
+  knitr::opts_knit$set(root.dir = normalizePath(".."))
+}
 ```
 
 
@@ -90,7 +93,7 @@ Supongamos que quiero hacer el clásico gráficos de barras de medias (y desvío
 Desplegá esta sección cuando quieras comparar con un conjunto de soluciones posibles.
 
 ```{r}
-#| label: setup
+#| label: sol-setup
 #| include: false
 knitr::opts_chunk$set(echo = TRUE)
 ```
@@ -115,7 +118,7 @@ load("input/datosLimpios.RData")
 1)  Graficar, usando `geom_point()` la escala de narcisismo (NPI16TOTAL) contra la de dominancia social (SDTOTAL) (y vs. x).
 
 ```{r}
-#| label: e1
+#| label: sol-e1
 #| eval: false
 
 p1 = datosLimpios %>% 
@@ -129,7 +132,7 @@ p1 + geom_point()
 2)  Hacer la misma gráfica, sólo que esta vez pintar los puntos según Sexo.
 
 ```{r}
-#| label: e2
+#| label: sol-e2
 #| eval: false
 
 p1 + geom_point(aes(col=Sex)) #el col=Sex puede ir en el aes() de la capa base.
@@ -139,7 +142,7 @@ p1 + geom_point(aes(col=Sex)) #el col=Sex puede ir en el aes() de la capa base.
 3)  Otra vez la misma gráfica, pero además del color según el sexo, quiero que el tamaño del punto refleje la edad (Age). *Tip*: Usar el argumento `alpha=0.3` al llamar a `geom_point()` para que quede más lindo.
 
 ```{r}
-#| label: e3
+#| label: sol-e3
 #| eval: false
 
 p1 + geom_point(aes(col = Sex, size = Age),
@@ -150,7 +153,7 @@ p1 + geom_point(aes(col = Sex, size = Age),
 4)  Graficar tamaño de la firma (Sign.Area) *versus* dominancia social (SDTOTAL), usando puntitos.
 
 ```{r}
-#| label: e4
+#| label: sol-e4
 #| eval: false
 
 p2 = datosLimpios %>% 
@@ -163,7 +166,7 @@ p2 + geom_point()
 5)  Repetir la gráfica, pero esta vez que el color refleje el grado de narcisismo.
 
 ```{r}
-#| label: e5
+#| label: sol-e5
 #| eval: false
 
 p2 + geom_point(aes(col=NPI16TOTAL)) 
@@ -172,7 +175,7 @@ p2 + geom_point(aes(col=NPI16TOTAL))
 6)  A esta última gráfica, agrandarle el tamaño del punto, digamos a 2.
 
 ```{r}
-#| label: e6
+#| label: sol-e6
 #| eval: false
 
 p2 + geom_point(aes(col=NPI16TOTAL),
@@ -182,7 +185,7 @@ p2 + geom_point(aes(col=NPI16TOTAL),
 7)  Mejor a esta gráfica le ponemos que el tamaño refleje el narcisismo, y el color el sexo... *Tip*: poner `alpha=0.5`
 
 ```{r}
-#| label: e7
+#| label: sol-e7
 #| eval: false
 
 p2 + geom_point(aes(col=Sex,size=NPI16TOTAL),
@@ -192,7 +195,7 @@ p2 + geom_point(aes(col=Sex,size=NPI16TOTAL),
 8)  Realizar un histograma de la variable tamaño de firma.
 
 ```{r}
-#| label: e8
+#| label: sol-e8
 #| eval: false
 
 datosLimpios %>% 
@@ -210,7 +213,7 @@ Supongamos que quiero hacer el clásico gráficos de barras de medias (y desvío
 1)  Generar una columna llamada *id* en el data frame, cuyo valor corresponda al número de fila del data frame. *Tip*: la expresión 1:n genera todos los números enteros consecutivos del 1 al n.
 
 ```{r}
-#| label: d1
+#| label: sol-d1
 #| eval: false
 
 datosLimpios = datosLimpios %>% 
@@ -221,7 +224,7 @@ datosLimpios = datosLimpios %>%
 2)  Fundir todas las variables numéricas del data frame, llamándole "medida" y "valor" a las columnas de variable y valor. Guardar el data frame fundido en *datosLong* .
 
 ```{r}
-#| label: d2
+#| label: sol-d2
 #| eval: false
 
 datosLong =  datosLimpios %>% 
@@ -234,7 +237,7 @@ datosLong =  datosLimpios %>%
 3)  Calcular media y desvío estándar para todas las variables numéricas del data frame fundido. Claro que usando `summarise`. ¿Van cachando por qué conviene fundir el data frame? Guardar los cálculos en una variable llamada **paPlotear**.
 
 ```{r}
-#| label: d3
+#| label: sol-d3
 #| eval: false
 
 paPlotear = datosLong %>% 
@@ -247,7 +250,7 @@ paPlotear = datosLong %>%
 4)  Realizar un gráfico de barras con las medias de cada variable.
 
 ```{r}
-#| label: d4
+#| label: sol-d4
 #| eval: false
 
 p4 = paPlotear %>% 
@@ -259,7 +262,7 @@ p4 + geom_bar(stat="identity")
 5)  Calcular media y desvío estándar para todas las variables numéricas del data frame fundido, para cada sexo. Guardar los cálculos en una variable llamda **paPlotear2**.
 
 ```{r}
-#| label: d5
+#| label: sol-d5
 #| eval: false
 
 paPlotear2 = datosLong %>% 
@@ -272,7 +275,7 @@ paPlotear2 = datosLong %>%
 6)  Realizar un gráfico de barras con las medias de cada variable, donde cada color corresponda a cada sexo. Que las barras no queden acumuladas.
 
 ```{r}
-#| label: d6
+#| label: sol-d6
 #| eval: false
 
 p6 = paPlotear2 %>% 
@@ -285,7 +288,7 @@ p6 + geom_bar(stat="identity",position="dodge")
 7)  **Avanzado**: Colocarle a la gráfica anterior, unos bigotes que correspondan al desvío estándar (media menos y media más desvío), agregando la capa `geom_errorbar()`. *Tip*: usar `position=position_dodge(0.9)` también en esta capa. *Tip de belleza*: pasar `width=0.2` como argumento en esta capa para que luzca más bonito.
 
 ```{r}
-#| label: d
+#| label: sol-d
 #| eval: false
 
 p6 + geom_bar(stat="identity",position="dodge") +

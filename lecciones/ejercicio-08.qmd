@@ -12,6 +12,9 @@ code-tools: true
 ```{r}
 #| include: false
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+if (!file.exists("input") && file.exists("../input")) {
+  knitr::opts_knit$set(root.dir = normalizePath(".."))
+}
 ```
 
 

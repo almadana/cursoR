@@ -1,6 +1,7 @@
 project:
   type: website
   output-dir: docs
+  execute-dir: project   # input/ está en la raíz, no en lecciones/
   preview:
     port: 4242
     browser: false
@@ -109,6 +110,5 @@ format:
 
 execute:
   freeze: auto
-  dir: project
 
 lang: es

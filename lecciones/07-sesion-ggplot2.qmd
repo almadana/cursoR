@@ -10,6 +10,9 @@ lang: es
 ```{r}
 #| include: false
 knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+if (!file.exists("input") && file.exists("../input")) {
+  knitr::opts_knit$set(root.dir = normalizePath(".."))
+}
 ```
 
 
@@ -46,7 +49,7 @@ Veamos algunos ejemplos, a partir de los datos que usamos en las sesiones anteri
 #| label: instalaci-n
 #| echo: false
 library(tidyverse)
-load(file = "input/ejercicio6.Rdata")
+load(file = "input/ejercicio6.RData")
 
 ```
 
