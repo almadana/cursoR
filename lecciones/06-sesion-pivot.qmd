@@ -85,6 +85,7 @@ La función se llama `pivot_longer()`, y admite varios argumentos. Pasemos nuest
 
 ```{r}
 #| label: tolong1
+#| error: true
 #| warning: false
 
 pivot_longer(stroopdf)

@@ -28,11 +28,13 @@ El paquete `emmmeans` (antes conocido como) `lsmeans` permite, entre otras cosas
 ```{r}
 #| warning: false
 #| echo: false
+#| message: false
 load("input/ejercicio6.RData")
 ```
 
 ```{r}
 #| warning: false
+#| message: false
 library(tidyverse)
 str(parts3)
 ```
@@ -40,6 +42,7 @@ str(parts3)
 En sesiones pasadas vimos cómo usando paquetes como `dplyr` podíamos obtener los promedios para los valores de enojo según, sexo, tipo de oferta, o un para la combinación de los niveles de ambas. Algo así como:
 
 ```{r}
+#| message: false
 mediasEnojo=parts3 %>% group_by(sexo,tipo_oferta) %>% 
   summarize(mediaEnojo = mean(enojo,na.rm=T))
 mediasEnojo

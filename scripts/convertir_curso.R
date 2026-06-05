@@ -62,6 +62,43 @@ leer_cuerpo_rmd <- function(path) {
   txt[-seq_len(fin)]
 }
 
+etiqueta_quarto <- function(x) {
+  gsub("[^a-zA-Z0-9._-]", "-", x)
+}
+
+parsear_opciones_chunk <- function(inner) {
+  partes <- if (nzchar(inner)) trimws(strsplit(inner, ",", fixed = TRUE)[[1]]) else character()
+  label <- NULL
+  flags <- character()
+  for (o in partes) {
+    if (!nzchar(o)) next
+    if (grepl("=", o, fixed = TRUE)) {
+      if (grepl("^echo\\s*=\\s*F", o, ignore.case = TRUE)) {
+        flags <- c(flags, "#| echo: false")
+      } else if (grepl("^include\\s*=\\s*F", o, ignore.case = TRUE)) {
+        flags <- c(flags, "#| include: false")
+      } else if (grepl("^eval\\s*=\\s*F", o, ignore.case = TRUE)) {
+        flags <- c(flags, "#| eval: false")
+      } else if (grepl("^warning\\s*=\\s*F", o, ignore.case = TRUE)) {
+        flags <- c(flags, "#| warning: false")
+      } else if (grepl("^message\\s*=\\s*F", o, ignore.case = TRUE)) {
+        flags <- c(flags, "#| message: false")
+      } else if (grepl("^error\\s*=\\s*T", o, ignore.case = TRUE)) {
+        flags <- c(flags, "#| error: true")
+      }
+    } else {
+      label <- if (is.null(label)) o else paste(label, o)
+    }
+  }
+  if (!is.null(label) && nzchar(label)) {
+    flags <- c(paste0("#| label: ", etiqueta_quarto(label)), flags)
+    if (grepl("error", label, ignore.case = TRUE)) {
+      flags <- c("#| eval: false", flags)
+    }
+  }
+  flags
+}
+
 normalizar_chunks <- function(txt) {
   res <- character()
   i <- 1
@@ -69,23 +106,19 @@ normalizar_chunks <- function(txt) {
     line <- txt[i]
     if (grepl("^```\\{r", line)) {
       inner <- sub("^```\\{r\\s*", "", sub("\\}\\s*$", "", line))
-      opts <- if (nzchar(inner)) strsplit(inner, ",", fixed = TRUE)[[1]] else character()
-      flags <- character()
-      for (o in opts) {
-        o <- trimws(o)
-        if (grepl("^echo\\s*=\\s*F", o, ignore.case = TRUE)) {
-          flags <- c(flags, "#| echo: false")
-        } else if (grepl("^include\\s*=\\s*F", o, ignore.case = TRUE)) {
-          flags <- c(flags, "#| include: false")
-        } else if (grepl("^eval\\s*=\\s*F", o, ignore.case = TRUE)) {
-          flags <- c(flags, "#| eval: false")
-        } else if (grepl("^warning\\s*=\\s*F", o, ignore.case = TRUE)) {
-          flags <- c(flags, "#| warning: false")
-        } else if (grepl("^[a-zA-Z][a-zA-Z0-9._-]*$", o)) {
-          flags <- c(flags, paste0("#| label: ", o))
+      flags <- parsear_opciones_chunk(inner)
+      bloque <- c("```{r}", flags)
+      # Código con error de sintaxis a propósito (no se puede ejecutar)
+      j <- i + 1
+      while (j <= length(txt) && !grepl("^```\\s*$", txt[j])) j <- j + 1
+      if (j <= length(txt)) {
+        cuerpo <- paste(txt[seq(i + 1, j - 1)], collapse = "\n")
+        if (grepl("=\\s*[A-Za-z]+\\s+[A-Za-z]+\\s*$", cuerpo, perl = TRUE) &&
+            !grepl("#| eval: false", paste(flags, collapse = "\n"), fixed = TRUE)) {
+          bloque <- c("```{r}", "#| eval: false", flags)
         }
       }
-      res <- c(res, "```{r}", flags)
+      res <- c(res, bloque)
     } else {
       res <- c(res, line)
     }

@@ -4,6 +4,10 @@ project:
   preview:
     port: 4242
     browser: false
+  # Solo el material del curso (no entregas de alumnos ni otros .qmd sueltos)
+  render:
+    - index.qmd
+    - lecciones/*.qmd
 
 website:
   title: "Curso de R"

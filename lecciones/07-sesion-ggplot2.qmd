@@ -43,6 +43,7 @@ En general, para usar ggplot cómodamente necesito que el dataframe que almacena
 Veamos algunos ejemplos, a partir de los datos que usamos en las sesiones anteriores. Empecemos con los datos de participantes del ultimátum game del ejercicio 6, al data frame en formato largo le habíamos llamado *parts3*, ¿Qué distribución tienen las respuestas de enojo? Puedo usar `geom_histogram()` para graficar distribuciones discretas:
 
 ```{r}
+#| label: instalaci-n
 #| echo: false
 library(tidyverse)
 load(file = "input/ejercicio6.Rdata")
@@ -50,6 +51,7 @@ load(file = "input/ejercicio6.Rdata")
 ```
 
 ```{r}
+#| label: ggplot-hist
 
 # 1. creo una capa con el data frame e indico la variables que quiero usar
 migrafico = ggplot(data = parts3, mapping = aes(x = enojo))
@@ -62,6 +64,7 @@ migrafico + geom_histogram()
 Bien, grafica, pero me da un mensaje y un warning. Veamos. El mensaje dice: *`stat_bin()` usa bins = 30, elegir mejores valores con el argumento binwidth*. Binwidth indica el ancho de cada barra y bins el número de barras, tengo 30 barras para valores entre 0 y 8, es demasiado para este histograma. Mejor usamos barras de ancho 1? Y ya que estoy le cambio el color del relleno (fill) y del borde (colour) para que sea vea mejor:
 
 ```{r}
+#| label: ggplot-hist2
 #| warning: false
 
 migrafico + geom_histogram(binwidth = 1, fill="blue",colour="white")
@@ -71,7 +74,9 @@ migrafico + geom_histogram(binwidth = 1, fill="blue",colour="white")
 Ok, luce bien, fácil, primero indico datos y variables, después le doy forma y un poco de color. Naturalmente, quiero ver cómo cambia el enojo en función del tipo de oferta, ¿cierto? Las ofertas injustas, ¿producen más enojo que las ofertas justas? Para eso necesito un gráfico de barras, con una barra para cada tipo de oferta (esto es el eje x) y que la altura de la barra corresponda al promedio de enojo para ese tipo de oferta (esto es el eje y).
 
 ```{r}
+#| label: ggplot-bar1
 #| warning: false
+#| error: true
 
 # calculo las medias por condición
 
@@ -104,6 +109,7 @@ migrafico3 + geom_bar(stat="summary",fun="mean")
 Como siempre, no está de más consultar la ayuda:
 
 ```{r}
+#| label: ggplot-help
 #| eval: false
 
 help(geom_bar)
@@ -113,7 +119,9 @@ help(geom_bar)
 Y si quiero agregar una variable más? Por ejemplo, el nivel de enojo para cada tipo de oferta y para cada sexo:
 
 ```{r}
+#| label: ggplot-bar3
 #| warning: false
+#| error: true
 
 # agrego la variable sexo en la estética, quiero que use el relleno para distinguir sexos
 migrafico4 = ggplot(data = parts3,

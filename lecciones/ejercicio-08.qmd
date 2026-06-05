@@ -86,6 +86,7 @@ Desplegá esta sección cuando quieras comparar con un conjunto de soluciones po
 
 ```{r}
 #| label: plot
+#| message: false
 
 library(tidyverse)
 load("input/datosLimpios.RData")
@@ -101,6 +102,7 @@ load("input/datosLimpios.RData")
 
 ```{r}
 #| label: plot1
+#| message: false
 #| warning: false
 
 datosLimpios %>% 
@@ -186,6 +188,7 @@ Ya que estamos, probar este código para ver los datos en diagrama de cajas en l
 
 ```{r}
 #| echo: false
+#| message: false
 
 datosLimpios %>% 
   ggplot(aes(x = Sex, y = NPI16TOTAL, fill = Sex)) +

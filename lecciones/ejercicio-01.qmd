@@ -92,6 +92,7 @@ Desplegá esta sección cuando quieras comparar con un conjunto de soluciones po
 1)  
 
 ```{r}
+#| label: 1
 #El número de participantes es el número de filas
 
 nrow(datosLimpios)
@@ -101,6 +102,7 @@ nrow(datosLimpios)
 2)  
 
 ```{r}
+#| label: 2
 
 summary(datosLimpios)
 
@@ -109,6 +111,7 @@ summary(datosLimpios)
 3)  
 
 ```{r}
+#| label: 3
 
 # calculo los límites de outliers
 mediaName = mean(datosLimpios$Name.Area) #la media
@@ -134,6 +137,7 @@ nrow(datosLimpios) # Eran 330, ahora son 323, eliminé 7 sujetos
 4)  
 
 ```{r}
+#| label: 4
 
 # separar el dataframe para hombres y mujeres 
 men = datosLimpios[datosLimpios$Sex=="M",]
@@ -153,6 +157,7 @@ women$ratioWomen=women$Sign.Area/women$Name.Area
 5)  
 
 ```{r}
+#| label: 5
 
 cor(men$ratioMen,men$NPI16TOTAL)
 

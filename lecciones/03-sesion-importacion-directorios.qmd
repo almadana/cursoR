@@ -112,6 +112,7 @@ save.image('./output/lasalidademisdatos.RData')
 A menudo quiero guardar solo *algunas variables* del entorno de trabajo. Para eso uso la función *save* (en lugar de *save.image*). En este caso tengo que especificar el nombre de archivo y las variables a guardar, por ejemplo:
 
 ```{r}
+#| label: rdata-save
 #| eval: false
 
 # guardo solo la variable "datos"
@@ -175,6 +176,7 @@ RAN = read.csv('./cuadernillos/cuadernillosran.csv', encoding='UTF-8')
 un ejemplo más (porque es muy importante comentar!!):
 
 ```{r}
+#| label: comments-3
 #| eval: false
 
 # si respondieron con el oído derecho asigno 1,

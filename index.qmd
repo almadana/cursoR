@@ -29,12 +29,12 @@ Para compilar el sitio en tu máquina:
 2. [Quarto](https://quarto.org/docs/get-started/) ≥ 1.4.
 
 ```bash
-cd ruta/al/proyecto/2025
+cd ruta/al/repo
 quarto render
 quarto preview   # vista previa con recarga
 ```
 
-Los datos están en `input/` (enlazado al material original en `clases/curso2.0/input`).
+Los datos están en `input/`.
 
 ## Publicar en GitHub Pages
 
@@ -42,9 +42,6 @@ Tras `quarto render`, la carpeta `docs/` contiene el sitio estático. En el repo
 
 Ajustá `site-url` en `_quarto.yml` a la URL real del sitio (p. ej. `https://usuario.github.io/cursoR/`).
 
-## Regenerar desde R Markdown
-
-Si editás los `.Rmd` originales en `clases/curso2.0/`:
 
 ```r
 source("scripts/convertir_curso.R")

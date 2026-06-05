@@ -82,6 +82,7 @@ Desplegá esta sección cuando quieras comparar con un conjunto de soluciones po
 
 ```{r}
 #| label: e1.1
+#| message: false
 
 library(tidyverse)
 library(lme4)
