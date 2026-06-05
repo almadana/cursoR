@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Camila Zugarramurdi">
+<meta name="author" content="Álvaro Cabana">
+
+<title>Ejercicio 5 – Curso de R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-7f257b5e78b96e17e6422cbf4f6352ae.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Curso de R</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-lecciones" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Lecciones</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-lecciones">    
+        <li>
+    <a class="dropdown-item" href="../lecciones/01-sesion-variables-indexacion.html">
+ <span class="dropdown-text">1 · Variables e indexación</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/02-sesion-funciones.html">
+ <span class="dropdown-text">2 · Funciones</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/03-sesion-importacion-directorios.html">
+ <span class="dropdown-text">3 · Importación y directorios</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/04-sesion-dplyr.html">
+ <span class="dropdown-text">4 · dplyr</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/05-sesion-tidyselect.html">
+ <span class="dropdown-text">5 · tidyselect</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/06-sesion-pivot.html">
+ <span class="dropdown-text">6 · pivot</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/07-sesion-ggplot2.html">
+ <span class="dropdown-text">7 · ggplot2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/08-sesion-modelos-lineales-1.html">
+ <span class="dropdown-text">8 · Modelos lineales I</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/09-sesion-medias-marginales.html">
+ <span class="dropdown-text">9 · Medias marginales</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-ejercicios" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Ejercicios</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-ejercicios">    
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-01.html">
+ <span class="dropdown-text">Ejercicio 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-02.html">
+ <span class="dropdown-text">Ejercicio 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-03.html">
+ <span class="dropdown-text">Ejercicio 3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-04.html">
+ <span class="dropdown-text">Ejercicio 4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-05.html">
+ <span class="dropdown-text">Ejercicio 5</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-06.html">
+ <span class="dropdown-text">Ejercicio 6</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-07.html">
+ <span class="dropdown-text">Ejercicio 7</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-08.html">
+ <span class="dropdown-text">Ejercicio 8</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-09.html">
+ <span class="dropdown-text">Ejercicio 9</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-10.html">
+ <span class="dropdown-text">Ejercicio 10</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/almadana/cursoR"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lecciones/ejercicio-01.html">Ejercicios</a></li><li class="breadcrumb-item"><a href="../lecciones/ejercicio-05.html">Ejercicio 5</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Material</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Curso de programación y estadística en R</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Sesiones</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/01-sesion-variables-indexacion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 1: variables e indexación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/02-sesion-funciones.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 2: funciones</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/03-sesion-importacion-directorios.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 3: importación y directorios</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/04-sesion-dplyr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 4: dplyr</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/05-sesion-tidyselect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 5: tidyselect</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/06-sesion-pivot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 6: pivot</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/07-sesion-ggplot2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 7: ggplot2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/08-sesion-modelos-lineales-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 8: modelos lineales I</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/09-sesion-medias-marginales.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 9: medias marginales y contrastes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Ejercicios</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 4</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-05.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Ejercicio 5</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 6</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 7</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 8</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 9</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 10</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#ejercicio-5-tidyselect-y-across" id="toc-ejercicio-5-tidyselect-y-across" class="nav-link active" data-scroll-target="#ejercicio-5-tidyselect-y-across">Ejercicio 5: (Tidy)select y across</a>
+  <ul class="collapse">
+  <li><a href="#empezamos" id="toc-empezamos" class="nav-link" data-scroll-target="#empezamos">Empezamos</a></li>
+  <li><a href="#calentando-motores" id="toc-calentando-motores" class="nav-link" data-scroll-target="#calentando-motores">Calentando motores</a></li>
+  <li><a href="#encuentre-el-error" id="toc-encuentre-el-error" class="nav-link" data-scroll-target="#encuentre-el-error">Encuentre el error</a></li>
+  <li><a href="#usando-across" id="toc-usando-across" class="nav-link" data-scroll-target="#usando-across">Usando <code>across</code></a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/almadana/cursoR/edit/main/lecciones/ejercicio-05.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li><li><a href="https://github.com/almadana/cursoR/issues/new" class="toc-action"><i class="bi empty"></i>Informar de un problema</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lecciones/ejercicio-01.html">Ejercicios</a></li><li class="breadcrumb-item"><a href="../lecciones/ejercicio-05.html">Ejercicio 5</a></li></ol></nav>
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Ejercicio 5</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Código</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autores/as</div>
+    <div class="quarto-title-meta-contents">
+             <p>Camila Zugarramurdi </p>
+             <p>Álvaro Cabana </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Fecha de publicación</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">31 de diciembre de 2021</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="ejercicio-5-tidyselect-y-across" class="level1">
+<h1>Ejercicio 5: (Tidy)select y across</h1>
+<p>El <strong>objetivo</strong> del ejercicio 5 familiarizarse con los verbos de <code>tidy</code>, las estrategias <code>tidyselect</code>, y profundizar en el uso de <code>summarise</code> y <code>mutate</code>, aplicándolos en varias columnas a la vez con <code>across</code>.</p>
+<p>Vamos a trabajar con un nuevo conjunto de datos. Se trata de una composición proveniente de la plataforma de datos de escuelas públicas <code>GURÍ</code>, que detalla la trayectoria de 5000 niños y niñas entre los años 2013 y 2018. La base está anonimizada, desde luego. Les compartimos esta muestra para su uso exclusivo en este curso.</p>
+<section id="empezamos" class="level2">
+<h2 class="anchored" data-anchor-id="empezamos">Empezamos</h2>
+<p>Primero debemos <a href="https://www.dropbox.com/s/99axoeg4l1x37an/notas5000.RData?dl=0">descargar la base de datos haciendo click aquí</a> o descargando el archivo <code>notas5000.RData</code> disponible en EVA.</p>
+<p>Recomiendo guardarlo en una carpeta ‘input/’. Como es un archivo de datos de <code>R</code>, podemos cargarlo con <code>load</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># primero lo primero</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"input/notas5000.RData"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(notas)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   5000 obs. of  113 variables:
+ $ Alumno               : int  143275 347173 24220 408327 509019 122288 555842 102176 141319 512390 ...
+ $ edadEnMeses          : num  131 170 188 108 78 128 68 124 203 76 ...
+ $ perfchnac            : Factor w/ 7692 levels "0001-01-01","1948-01-12",..: 4384 3207 2669 5102 6189 4467 6546 4590 2202 6236 ...
+ $ sexo                 : Factor w/ 2 levels "m","f": 2 1 1 1 1 2 2 1 1 2 ...
+ $ esRep                : logi  FALSE FALSE FALSE FALSE FALSE FALSE ...
+ $ Área_2013            : chr  "EDUCACIÓN INICIAL" "COMÚN" "COMÚN" "COMÚN" ...
+ $ docente_2013         : chr  "8208" "571230" "25012" "25305" ...
+ $ edad0_nivel_2013     : chr  "11" "2" "20" "0" ...
+ $ edadDoc_2013         : num  45 23 38 42 NA 43 NA 41 51 NA ...
+ $ edad_fechaNacDoc_2013: chr  "50" "28" "43" "47" ...
+ $ escuela_2013         : chr  "247" "1" "263" "26" ...
+ $ faltas_2013          : chr  "15" "15" "19" "10" ...
+ $ fechaNacDoc_2013     : chr  "1967-05-03" "1989-07-14" "1975-02-20" "1970-05-21" ...
+ $ grupo_2013           : chr  "247.8208" "1.571230" "263.25012" "26.25305" ...
+ $ IdDoc_2013           : chr  "8208" "571230" "25012" "25305" ...
+ $ Jurisdicción_2013    : chr  "MONTEVIDEO - CENTRO" "RÍO NEGRO" "MONTEVIDEO - CENTRO" "COLONIA" ...
+ $ nivel_2013           : chr  "NI5" "4" "4" "NI4" ...
+ $ nivel_n_2013         : num  0 4 4 -1 NA 0 NA 0 6 NA ...
+ $ nota_2013            : chr  NA "7" "6" NA ...
+ $ nsc_2013             : chr  "QUINTIL 2" "QUINTIL 5" "QUINTIL 2" "QUINTIL 5" ...
+ $ Resultado_2013       : chr  "PRO" "PRO" "PRO" "PRO" ...
+ $ Sub.área_2013        : chr  "JARDÍN COMÚN" "COMÚN" "APRENDER" "COMÚN" ...
+ $ Zona_2013            : chr  "URBANA" "URBANA" "URBANA" "URBANA" ...
+ $ Área_2014            : chr  "COMÚN" "COMÚN" "COMÚN" "COMÚN" ...
+ $ docente_2014         : chr  "549748" "28553" "25012" "29054" ...
+ $ edad0_nivel_2014     : chr  "11" "2" "20" "0" ...
+ $ edadDoc_2014         : num  26 48 39 38 NA 34 NA 55 NA NA ...
+ $ edad_fechaNacDoc_2014: chr  "30" "52" "43" "42" ...
+ $ escuela_2014         : chr  "230" "1" "263" "26" ...
+ $ faltas_2014          : chr  "14" "17" "19" "11" ...
+ $ fechaNacDoc_2014     : chr  "1987-10-24" "1965-12-23" "1975-02-20" "1975-08-21" ...
+ $ grupo_2014           : chr  "230.549748" "1.28553" "263.25012" "26.29054" ...
+ $ IdDoc_2014           : chr  "549748" "28553" "25012" "29054" ...
+ $ Jurisdicción_2014    : chr  "MONTEVIDEO - ESTE" "RÍO NEGRO" "MONTEVIDEO - CENTRO" "COLONIA" ...
+ $ nivel_2014           : chr  "1" "5" "5" "NI5" ...
+ $ nivel_n_2014         : num  1 5 5 0 NA 1 NA 1 NA NA ...
+ $ nota_2014            : chr  "10" "7" "6" NA ...
+ $ nsc_2014             : chr  "QUINTIL 1" "QUINTIL 5" "QUINTIL 2" "QUINTIL 5" ...
+ $ Resultado_2014       : chr  "PRO" "PRO" "PRO" "PRO" ...
+ $ Sub.área_2014        : chr  "APRENDER" "COMÚN" "APRENDER" "COMÚN" ...
+ $ Zona_2014            : chr  "URBANA" "URBANA" "URBANA" "URBANA" ...
+ $ Área_2015            : chr  "COMÚN" "COMÚN" "COMÚN" "COMÚN" ...
+ $ docente_2015         : chr  "549748" "16335" "548159" "26924" ...
+ $ edad0_nivel_2015     : chr  "11" "2" "20" "0" ...
+ $ edadDoc_2015         : num  27 35 36 59 31 40 NA 39 NA 30 ...
+ $ edad_fechaNacDoc_2015: chr  "30" "38" "39" "62" ...
+ $ escuela_2015         : chr  "230" "1" "263" "26" ...
+ $ faltas_2015          : chr  "17" "27" "29" "6" ...
+ $ fechaNacDoc_2015     : chr  "1987-10-24" "1980-02-27" "1978-06-23" "1955-07-19" ...
+ $ grupo_2015           : chr  "230.549748" "1.16335" "263.548159" "26.26924" ...
+ $ IdDoc_2015           : chr  "549748" "16335" "548159" "26924" ...
+ $ Jurisdicción_2015    : chr  "MONTEVIDEO - ESTE" "RÍO NEGRO" "MONTEVIDEO - CENTRO" "COLONIA" ...
+ $ nivel_2015           : chr  "2" "6" "6" "1" ...
+ $ nivel_n_2015         : num  2 6 6 1 -2 2 NA 2 NA -2 ...
+ $ nota_2015            : chr  "9" "9" "7" "8" ...
+ $ nsc_2015             : chr  "QUINTIL 1" "QUINTIL 5" "QUINTIL 2" "QUINTIL 5" ...
+ $ Resultado_2015       : chr  "PRO" "PRO" "PRO" "PRO" ...
+ $ Sub.área_2015        : chr  "APRENDER" "COMÚN" "APRENDER" "COMÚN" ...
+ $ Zona_2015            : chr  "URBANA" "URBANA" "URBANA" "URBANA" ...
+ $ Área_2016            : chr  "COMÚN" NA NA "COMÚN" ...
+ $ docente_2016         : chr  "15017" NA NA "652085" ...
+ $ edad0_nivel_2016     : chr  "11" NA NA "0" ...
+ $ edadDoc_2016         : num  58 NA NA 28 48 46 NA 41 NA 29 ...
+ $ edad_fechaNacDoc_2016: chr  "60" NA NA "30" ...
+ $ escuela_2016         : chr  "230" NA NA "26" ...
+ $ faltas_2016          : chr  "24" NA NA "6" ...
+ $ fechaNacDoc_2016     : chr  "1957-12-02" NA NA "1987-12-11" ...
+ $ grupo_2016           : chr  "230.15017" NA NA "26.652085" ...
+ $ IdDoc_2016           : chr  "15017" NA NA "652085" ...
+ $ Jurisdicción_2016    : chr  "MONTEVIDEO - ESTE" NA NA "COLONIA" ...
+ $ nivel_2016           : chr  "3" NA NA "2" ...
+ $ nivel_n_2016         : num  3 NA NA 2 -1 3 NA 3 NA -1 ...
+ $ nota_2016            : chr  "8" NA NA "9" ...
+ $ nsc_2016             : chr  "QUINTIL 1" NA NA "QUINTIL 5" ...
+ $ Resultado_2016       : chr  "PRO" NA NA "PRO" ...
+ $ Sub.área_2016        : chr  "APRENDER" NA NA "COMÚN" ...
+ $ Zona_2016            : chr  "URBANA" NA NA "URBANA" ...
+ $ Área_2017            : chr  "COMÚN" NA NA "COMÚN" ...
+ $ docente_2017         : chr  "15017" NA NA "1087907" ...
+ $ edad0_nivel_2017     : chr  "11" NA NA "0" ...
+ $ edadDoc_2017         : num  59 NA NA 26 34 53 NA 38 NA 37 ...
+ $ edad_fechaNacDoc_2017: chr  "60" NA NA "27" ...
+ $ escuela_2017         : chr  "230" NA NA "26" ...
+ $ faltas_2017          : chr  "24" NA NA "7" ...
+ $ fechaNacDoc_2017     : chr  "1957-12-02" NA NA "1990-07-15" ...
+ $ grupo_2017           : chr  "230.15017" NA NA "26.1087907" ...
+ $ IdDoc_2017           : chr  "15017" NA NA "1087907" ...
+ $ Jurisdicción_2017    : chr  "MONTEVIDEO - ESTE" NA NA "COLONIA" ...
+ $ nivel_2017           : chr  "4" NA NA "3" ...
+ $ nivel_n_2017         : num  4 NA NA 3 0 4 NA 4 NA 0 ...
+ $ nota_2017            : chr  "8" NA NA "9" ...
+ $ nsc_2017             : chr  "QUINTIL 1" NA NA "QUINTIL 5" ...
+ $ Resultado_2017       : chr  "PRO" NA NA "PRO" ...
+ $ Sub.área_2017        : chr  "APRENDER" NA NA "COMÚN" ...
+ $ Zona_2017            : chr  "URBANA" NA NA "URBANA" ...
+ $ Área_2018            : chr  "COMÚN" NA NA "COMÚN" ...
+ $ docente_2018         : chr  "NA" NA NA "NA" ...
+ $ edad0_nivel_2018     : chr  "11" NA NA "0" ...
+ $ edadDoc_2018         : num  NA NA NA NA NA NA NA NA NA NA ...
+  [list output truncated]</code></pre>
+</div>
+</div>
+<p>Oh… 113 variables, 5000 filas…</p>
+</section>
+<section id="calentando-motores" class="level2">
+<h2 class="anchored" data-anchor-id="calentando-motores">Calentando motores</h2>
+<ol type="1">
+<li><p>Seleccionar todas las columnas correspondientes al año 2018.</p></li>
+<li><p>Seleccionar las columnas que corresponden a la nota del estudiante, en cada año.</p></li>
+<li><p>Seleccionar todas las columnas que contengan “nivel” en su nombre.</p></li>
+<li><p><em>Avanzado</em>: Seleccionar todas las columnas de nivel (<code>nivel_2016</code>,<code>nivel_2017</code>,<code>nivel_2018</code>), entre 2016 y 2018.</p></li>
+</ol>
+</section>
+<section id="encuentre-el-error" class="level2">
+<h2 class="anchored" data-anchor-id="encuentre-el-error">Encuentre el error</h2>
+<p>Las siguientes líneas de código dan error, o no hacen lo que se supone que tienen que hacer. Copialas, pegalas, ejecutalas, y corregilas.</p>
+<ol type="1">
+<li><p><code>datos %&gt;% select(datos$sujeto)</code> #suponemos que los datos están en el data frame llamado “datos”</p></li>
+<li><p><code>notas %&gt;% select(starts_with(Zona))</code> #notas es el dataframe que usamos en los puntos anteriores, y se pretende elegir las columnas de Zona.</p></li>
+<li><p><code>notas=notas %&gt;% mutate(across(starts_with("edad0_nivel_")),as.numeric)</code></p></li>
+<li><p>Ésta tiene un error y una omisión importante. Busca calcular la media y el desvío para las columnas de edad del docente y del “nivel_n”. Detectar el error y la omisión, y corregirlos.</p></li>
+</ol>
+<p><code>notas %&gt;% summarize(across(starts_with(c("edadDoc_","nivel_n")),media=mean,desv=sd))</code></p>
+</section>
+<section id="usando-across" class="level2">
+<h2 class="anchored" data-anchor-id="usando-across">Usando <code>across</code></h2>
+<p>Vamos a usar <code>across</code> para sumarizar o mutar muchas columnas a la vez, usando <code>tidyselect</code>.</p>
+<p>1a) Convertir las columnas “nota” y “faltas”, de todos los años, a valor numérico, usando la función <code>as.numeric()</code>. Sobreescribir los nombres de columnas (no darles un “nombre” diferente, vamos a sustituir los valores originales por números).</p>
+<p>1b) Funcionó? No te olvides asignar la salida del pipe al dataframe “notas”, así lo “actualizamos”. (Esto es: <code>notas =  notas %&gt;% ...</code> Pero sólo hazlo cuando estés segura de que esté funcionando bien!)</p>
+<ol start="2" type="1">
+<li><p>Calcular el promedio de notas, para todos los años. (No te olvides del <code>na.rm</code> !)</p></li>
+<li><p>Calcular el promedio de notas, para todos los años, según sexo.</p></li>
+<li><p>Calcular el promedio de faltas, para todos los años, según sexo.</p></li>
+<li><p>Hacer 3) y 4) de una sola vez :P . Observar, si no lo hiciste, que 1) también se puede hacer de una sola vez.</p></li>
+</ol>
+<hr>
+<hr>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Soluciones
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Desplegá esta sección cuando quieras comparar con un conjunto de soluciones posibles.</p>
+<p><code>notas %&gt;% select(ends_with("2018"))</code></p>
+<p><em>También se puede usar <code>contains()</code></em></p>
+<p><code>notas %&gt;% select(contains("2018"))</code></p>
+<ol start="2" type="1">
+<li>Seleccionar las columnas que corresponden a la nota del estudiante, en cada año.</li>
+</ol>
+<p><code>notas %&gt;% select(starts_with("nota_"))</code></p>
+<p><em>También se puede usar <code>contains()</code></em></p>
+<p><code>notas %&gt;% select(contains("nota_"))</code></p>
+<ol start="3" type="1">
+<li>Seleccionar todas las columnas que contengan “nivel” en su nombre.</li>
+</ol>
+<p><code>notas %&gt;% select(contains("nivel"))</code></p>
+<ol start="4" type="1">
+<li><em>Avanzado</em>: Seleccionar todas las columnas de nivel (<code>nivel_2016</code>,<code>nivel_2017</code>,<code>nivel_2018</code>), entre 2016 y 2018.</li>
+</ol>
+<p><code>notas %&gt;% select(num_range(prefix="nivel_",range=2016:2018))</code></p>
+<section id="encuentre-el-error-1" class="level2">
+<h2 class="anchored" data-anchor-id="encuentre-el-error-1">Encuentre el error</h2>
+<p>Las siguientes líneas de código dan error, o no hacen lo que se supone que tienen que hacer. Copialas, pegalas, ejecutalas, y corregilas.</p>
+<ol type="1">
+<li><p><code>datos %&gt;% select(datos$sujeto)</code> #suponemos que los datos están en el data frame llamado “datos” <em>Para elegir la columna <code>sujeto</code>, hay que dejarle afuera del argumento la parte de <code>datos$</code>. La forma correcta sería</em> <code>datos %&gt;% select(sujeto)</code></p></li>
+<li><p><code>notas %&gt;% select(starts_with(Zona))</code> #notas es el dataframe que usamos en los puntos anteriores, y se pretende elegir las columnas de Zona. <em>Si la intención es elegir las columnas de Zona, y no hay una columna que se llame <code>Zona</code>, hay que usar comillas. Sería:</em> <code>notas %&gt;% select(starts_with("Zona"))</code></p></li>
+<li><p><code>notas=notas %&gt;% mutate(across(starts_with("edad0_nivel_")),as.numeric)</code> <em>Ésta es sutil, pero puede pasar a menudo. La función de transformación, en este caso <code>as.numeric</code>, es un argumento para <code>across</code>, y por tanto debe ir adentro del paréntesis que se abre en esa función. Acá está dentro de los paréntesis de <code>mutate</code>, como si fuera un argumento esta última. Pifiarle a dónde va el argumento, y donde va el paréntesis es uno de los errores más comunes! Sería:</em><br>
+<code>notas=notas %&gt;% mutate(across(starts_with("edad0_nivel_"),as.numeric))</code></p></li>
+<li><p>Ésta tiene un error y una omisión importante. Busca calcular la media y el desvío para las columnas de edad del docente y del “nivel_n”. Detectar el error y la omisión, y corregirlos.</p></li>
+</ol>
+<p><code>notas %&gt;% summarize(across(starts_with(c("edadDoc_","nivel_n")),media=mean,desv=sd))</code></p>
+<p><em>El error es que están mal expresadas las columnas de media y desvío. Hay que ponerlas en una lista (usando <code>combine</code> o <code>list</code>)</em></p>
+<p><code>notas %&gt;% summarize(across(starts_with(c("edadDoc_","nivel_n")),c(media=mean,desv=sd)))</code></p>
+<p><em>La omisión importante queda evidente ahora. Hay que agregar el argumento <code>na.rm=T</code>:</em></p>
+<p><code>notas %&gt;% summarize(across(starts_with(c("edadDoc_","nivel_n")),list(media=mean,desv=sd),na.rm=T))</code></p>
+</section>
+<section id="usando-across-1" class="level2">
+<h2 class="anchored" data-anchor-id="usando-across-1">Usando <code>across</code></h2>
+<p>Vamos a usar <code>across</code> para sumarizar o mutar muchas columnas a la vez, usando <code>tidyselect</code>.</p>
+<p>1a) Convertir las columnas “nota” y “faltas”, de todos los años, a valor numérico, usando la función <code>as.numeric()</code>. Sobreescribir los nombres de columnas (no darles un “nombre” diferente, vamos a sustituir los valores originales por números).</p>
+<p>1b) Funcionó? No te olvides asignar la salida del pipe al dataframe “notas”, así lo “actualizamos”. (Esto es: <code>notas =  notas %&gt;% ...</code> Pero sólo hazlo cuando estés segura de que esté funcionando bien!)</p>
+<p><code>notas=notas %&gt;% mutate(across(starts_with(c("nota_","faltas_")),as.numeric))</code></p>
+<ol start="2" type="1">
+<li>Calcular el promedio de notas, para todos los años. (No te olvides del <code>na.rm</code> !)</li>
+</ol>
+<p><code>notas %&gt;% summarize(across(starts_with("nota_"),mean,na.rm=T))</code></p>
+<ol start="3" type="1">
+<li>Calcular el promedio de notas, para todos los años, según sexo.</li>
+</ol>
+<p><code>notas %&gt;%</code> <code>group_by(sexo) %&gt;%</code> <code>summarize(across(starts_with("nota_"),mean,na.rm=T))</code></p>
+<ol start="4" type="1">
+<li>Calcular el promedio de faltas, para todos los años, según sexo.</li>
+</ol>
+<p><code>notas %&gt;%</code> <code>group_by(sexo) %&gt;%</code> <code>summarize(across(starts_with("faltas_"),mean,na.rm=T))</code></p>
+<ol start="5" type="1">
+<li>Hacer 3) y 4) de una sola vez :P . Observar, si no lo hiciste, que 1) también se puede hacer de una sola vez.</li>
+</ol>
+<p><code>notas %&gt;%</code> <code>group_by(sexo) %&gt;%</code> <code>summarize(across(starts_with(c("faltas_","nota_")),mean,na.rm=T))</code></p>
+<hr>
+</section>
+</div>
+</div>
+</div>
+
+
+<!-- -->
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/almadana\.github\.io\/cursoR\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Ejecutar el código</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Ejercicio 5"</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">  - Camila Zugarramurdi</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">  - Álvaro Cabana</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2022"</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="an">lang:</span><span class="co"> es</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="an">code-fold:</span><span class="co"> false</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="an">code-tools:</span><span class="co"> true</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">echo =</span> <span class="cn">TRUE</span>, <span class="at">message =</span> <span class="cn">FALSE</span>, <span class="at">warning =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(<span class="st">"input"</span>) <span class="sc">&amp;&amp;</span> <span class="fu">file.exists</span>(<span class="st">"../input"</span>)) {</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span>opts_knit<span class="sc">$</span><span class="fu">set</span>(<span class="at">root.dir =</span> <span class="fu">normalizePath</span>(<span class="st">".."</span>))</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">echo =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="fu"># Ejercicio 5: (Tidy)select y across</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>El **objetivo** del ejercicio 5 familiarizarse con los verbos de <span class="in">`tidy`</span>, las estrategias <span class="in">`tidyselect`</span>, y profundizar en el uso de  <span class="in">`summarise`</span> y  <span class="in">`mutate`</span>, aplicándolos en varias columnas a la vez con <span class="in">`across`</span>.</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>Vamos a trabajar con un nuevo conjunto de datos. Se trata de una composición proveniente de la plataforma de datos de escuelas públicas <span class="in">`GURÍ`</span>, que detalla la trayectoria de 5000 niños y niñas entre los años 2013 y 2018. La base está anonimizada, desde luego. Les compartimos esta muestra para su uso exclusivo en este curso.</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="fu">## Empezamos</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>Primero debemos <span class="co">[</span><span class="ot">descargar la base de datos haciendo click aquí</span><span class="co">](https://www.dropbox.com/s/99axoeg4l1x37an/notas5000.RData?dl=0)</span> o descargando el archivo <span class="in">`notas5000.RData`</span> disponible en EVA.</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>Recomiendo guardarlo en una carpeta 'input/'. Como es un archivo de datos de <span class="in">`R`</span>, podemos cargarlo con <span class="in">`load`</span>:</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># primero lo primero</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"input/notas5000.RData"</span>)</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(notas)</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>Oh... 113 variables, 5000 filas...</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="fu">## Calentando motores</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>1) Seleccionar todas las columnas correspondientes al año 2018.</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>2) Seleccionar las columnas que corresponden a la nota del estudiante, en cada año.</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>3) Seleccionar todas las columnas que contengan "nivel" en su nombre.</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>4) _Avanzado_: Seleccionar todas las columnas de nivel (<span class="in">`nivel_2016`</span>,<span class="in">`nivel_2017`</span>,<span class="in">`nivel_2018`</span>), entre 2016 y 2018.</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="fu">## Encuentre el error</span></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a>Las siguientes líneas de código dan error, o no hacen lo que se supone que tienen que hacer. Copialas, pegalas, ejecutalas, y corregilas.</span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>1) <span class="in">`datos %&gt;% select(datos$sujeto)`</span> #suponemos que los datos están en el data frame llamado "datos"</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>2) <span class="in">`notas %&gt;% select(starts_with(Zona))`</span>  #notas es el dataframe que usamos en los puntos anteriores, y se pretende elegir las columnas de Zona.</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>3) <span class="in">`notas=notas %&gt;% mutate(across(starts_with("edad0_nivel_")),as.numeric)`</span> </span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>4) Ésta tiene un error y una omisión importante. Busca calcular la media y el desvío para las columnas de edad del docente y del "nivel_n". Detectar el error y la omisión, y corregirlos.</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="in">`notas %&gt;% summarize(across(starts_with(c("edadDoc_","nivel_n")),media=mean,desv=sd))`</span></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="fu">## Usando `across`</span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>Vamos a usar <span class="in">`across`</span> para sumarizar o mutar muchas columnas a la vez, usando <span class="in">`tidyselect`</span>.</span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a>1a) Convertir las columnas "nota" y "faltas", de todos los años, a valor numérico, usando la función <span class="in">`as.numeric()`</span>. Sobreescribir los nombres de columnas (no darles un "nombre" diferente, vamos a sustituir los valores originales por números). </span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>1b) Funcionó? No te olvides asignar la salida del pipe al dataframe "notas", así lo "actualizamos". (Esto es: <span class="in">`notas =  notas %&gt;% ...`</span> Pero sólo hazlo cuando estés segura de que esté funcionando bien!)</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a>2) Calcular el promedio de notas, para todos los años. (No te olvides del <span class="in">`na.rm`</span> !)</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>3) Calcular el promedio de notas, para todos los años, según sexo.</span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a>4) Calcular el promedio de faltas, para todos los años, según sexo.</span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a>5) Hacer 3) y 4) de una sola vez :P . Observar, si no lo hiciste, que 1) también se puede hacer de una sola vez.</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a>***</span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip .callout-solution collapse="true"}</span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a><span class="fu">## Soluciones</span></span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a>Desplegá esta sección cuando quieras comparar con un conjunto de soluciones posibles.</span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a><span class="in">`notas %&gt;% select(ends_with("2018"))`</span></span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a>_También se puede usar `contains()`_</span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a><span class="in">`notas %&gt;% select(contains("2018"))`</span></span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a>2) Seleccionar las columnas que corresponden a la nota del estudiante, en cada año.</span>
+<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a><span class="in">`notas %&gt;% select(starts_with("nota_"))`</span></span>
+<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a>_También se puede usar `contains()`_</span>
+<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a><span class="in">`notas %&gt;% select(contains("nota_"))`</span></span>
+<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a>3) Seleccionar todas las columnas que contengan "nivel" en su nombre.</span>
+<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a><span class="in">`notas %&gt;% select(contains("nivel"))`</span></span>
+<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a>4) _Avanzado_: Seleccionar todas las columnas de nivel (<span class="in">`nivel_2016`</span>,<span class="in">`nivel_2017`</span>,<span class="in">`nivel_2018`</span>), entre 2016 y 2018.</span>
+<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a><span class="in">`notas %&gt;% select(num_range(prefix="nivel_",range=2016:2018))`</span></span>
+<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a><span class="fu">## Encuentre el error</span></span>
+<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a>Las siguientes líneas de código dan error, o no hacen lo que se supone que tienen que hacer. Copialas, pegalas, ejecutalas, y corregilas.</span>
+<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a>1) <span class="in">`datos %&gt;% select(datos$sujeto)`</span> #suponemos que los datos están en el data frame llamado "datos"</span>
+<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a>_Para elegir la columna `sujeto`, hay que dejarle afuera del argumento la parte de `datos$`. La forma correcta sería_  <span class="in">`datos %&gt;% select(sujeto)`</span></span>
+<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a>2) <span class="in">`notas %&gt;% select(starts_with(Zona))`</span>  #notas es el dataframe que usamos en los puntos anteriores, y se pretende elegir las columnas de Zona.</span>
+<span id="cb3-137"><a href="#cb3-137" aria-hidden="true" tabindex="-1"></a>_Si la intención es elegir las columnas de Zona, y no hay una columna que se llame `Zona`, hay que usar comillas. Sería:_ <span class="in">`notas %&gt;% select(starts_with("Zona"))`</span></span>
+<span id="cb3-138"><a href="#cb3-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-139"><a href="#cb3-139" aria-hidden="true" tabindex="-1"></a>3) <span class="in">`notas=notas %&gt;% mutate(across(starts_with("edad0_nivel_")),as.numeric)`</span> </span>
+<span id="cb3-140"><a href="#cb3-140" aria-hidden="true" tabindex="-1"></a>_Ésta es sutil, pero puede pasar a menudo. La función de transformación, en este caso `as.numeric`, es un argumento para `across`, y por tanto debe ir adentro del paréntesis que se abre en esa función. Acá está dentro de los paréntesis de `mutate`, como si fuera un argumento esta última. Pifiarle a dónde va el argumento, y donde va el paréntesis es uno de los errores más comunes! Sería:_  </span>
+<span id="cb3-141"><a href="#cb3-141" aria-hidden="true" tabindex="-1"></a><span class="in">`notas=notas %&gt;% mutate(across(starts_with("edad0_nivel_"),as.numeric))`</span></span>
+<span id="cb3-142"><a href="#cb3-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-143"><a href="#cb3-143" aria-hidden="true" tabindex="-1"></a>4) Ésta tiene un error y una omisión importante. Busca calcular la media y el desvío para las columnas de edad del docente y del "nivel_n". Detectar el error y la omisión, y corregirlos.</span>
+<span id="cb3-144"><a href="#cb3-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-145"><a href="#cb3-145" aria-hidden="true" tabindex="-1"></a><span class="in">`notas %&gt;% summarize(across(starts_with(c("edadDoc_","nivel_n")),media=mean,desv=sd))`</span></span>
+<span id="cb3-146"><a href="#cb3-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-147"><a href="#cb3-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-148"><a href="#cb3-148" aria-hidden="true" tabindex="-1"></a>_El error es que están mal expresadas las columnas de media y desvío. Hay que ponerlas en una lista (usando `combine` o `list`)_</span>
+<span id="cb3-149"><a href="#cb3-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-150"><a href="#cb3-150" aria-hidden="true" tabindex="-1"></a><span class="in">`notas %&gt;% summarize(across(starts_with(c("edadDoc_","nivel_n")),c(media=mean,desv=sd)))`</span></span>
+<span id="cb3-151"><a href="#cb3-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a>_La omisión importante queda evidente ahora. Hay que agregar el argumento `na.rm=T`:_</span>
+<span id="cb3-153"><a href="#cb3-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a><span class="in">`notas %&gt;% summarize(across(starts_with(c("edadDoc_","nivel_n")),list(media=mean,desv=sd),na.rm=T))`</span></span>
+<span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-156"><a href="#cb3-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-157"><a href="#cb3-157" aria-hidden="true" tabindex="-1"></a><span class="fu">## Usando `across`</span></span>
+<span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a>Vamos a usar <span class="in">`across`</span> para sumarizar o mutar muchas columnas a la vez, usando <span class="in">`tidyselect`</span>.</span>
+<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a>1a) Convertir las columnas "nota" y "faltas", de todos los años, a valor numérico, usando la función <span class="in">`as.numeric()`</span>. Sobreescribir los nombres de columnas (no darles un "nombre" diferente, vamos a sustituir los valores originales por números). </span>
+<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a>1b) Funcionó? No te olvides asignar la salida del pipe al dataframe "notas", así lo "actualizamos". (Esto es: <span class="in">`notas =  notas %&gt;% ...`</span> Pero sólo hazlo cuando estés segura de que esté funcionando bien!)</span>
+<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a><span class="in">`notas=notas %&gt;% mutate(across(starts_with(c("nota_","faltas_")),as.numeric))`</span></span>
+<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a>2) Calcular el promedio de notas, para todos los años. (No te olvides del <span class="in">`na.rm`</span> !)</span>
+<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a><span class="in">`notas %&gt;% summarize(across(starts_with("nota_"),mean,na.rm=T))`</span></span>
+<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a>3) Calcular el promedio de notas, para todos los años, según sexo.</span>
+<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a><span class="in">`notas %&gt;% `</span></span>
+<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a><span class="in">`  group_by(sexo) %&gt;% `</span></span>
+<span id="cb3-175"><a href="#cb3-175" aria-hidden="true" tabindex="-1"></a><span class="in">`summarize(across(starts_with("nota_"),mean,na.rm=T))`</span></span>
+<span id="cb3-176"><a href="#cb3-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-177"><a href="#cb3-177" aria-hidden="true" tabindex="-1"></a>4) Calcular el promedio de faltas, para todos los años, según sexo.</span>
+<span id="cb3-178"><a href="#cb3-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-179"><a href="#cb3-179" aria-hidden="true" tabindex="-1"></a><span class="in">`notas %&gt;% `</span></span>
+<span id="cb3-180"><a href="#cb3-180" aria-hidden="true" tabindex="-1"></a><span class="in">`  group_by(sexo) %&gt;% `</span></span>
+<span id="cb3-181"><a href="#cb3-181" aria-hidden="true" tabindex="-1"></a><span class="in">`summarize(across(starts_with("faltas_"),mean,na.rm=T))`</span></span>
+<span id="cb3-182"><a href="#cb3-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-183"><a href="#cb3-183" aria-hidden="true" tabindex="-1"></a>5) Hacer 3) y 4) de una sola vez :P . Observar, si no lo hiciste, que 1) también se puede hacer de una sola vez.</span>
+<span id="cb3-184"><a href="#cb3-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-185"><a href="#cb3-185" aria-hidden="true" tabindex="-1"></a><span class="in">`notas %&gt;% `</span></span>
+<span id="cb3-186"><a href="#cb3-186" aria-hidden="true" tabindex="-1"></a><span class="in">`  group_by(sexo) %&gt;% `</span></span>
+<span id="cb3-187"><a href="#cb3-187" aria-hidden="true" tabindex="-1"></a><span class="in">`summarize(across(starts_with(c("faltas_","nota_")),mean,na.rm=T))`</span></span>
+<span id="cb3-188"><a href="#cb3-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-189"><a href="#cb3-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-190"><a href="#cb3-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-191"><a href="#cb3-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-192"><a href="#cb3-192" aria-hidden="true" tabindex="-1"></a>***</span>
+<span id="cb3-193"><a href="#cb3-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-194"><a href="#cb3-194" aria-hidden="true" tabindex="-1"></a>:::</span>
+</code><button title="Copiar al portapapeles" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/almadana/cursoR/edit/main/lecciones/ejercicio-05.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li><li><a href="https://github.com/almadana/cursoR/issues/new" class="toc-action"><i class="bi empty"></i>Informar de un problema</a></li></ul></div></div></div></footer><script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

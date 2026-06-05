@@ -1,0 +1,4507 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Camila Zugarramurdi">
+<meta name="author" content="Álvaro Cabana">
+
+<title>Sesión 5: tidyselect – Curso de R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-7f257b5e78b96e17e6422cbf4f6352ae.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Curso de R</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-lecciones" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Lecciones</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-lecciones">    
+        <li>
+    <a class="dropdown-item" href="../lecciones/01-sesion-variables-indexacion.html">
+ <span class="dropdown-text">1 · Variables e indexación</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/02-sesion-funciones.html">
+ <span class="dropdown-text">2 · Funciones</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/03-sesion-importacion-directorios.html">
+ <span class="dropdown-text">3 · Importación y directorios</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/04-sesion-dplyr.html">
+ <span class="dropdown-text">4 · dplyr</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/05-sesion-tidyselect.html">
+ <span class="dropdown-text">5 · tidyselect</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/06-sesion-pivot.html">
+ <span class="dropdown-text">6 · pivot</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/07-sesion-ggplot2.html">
+ <span class="dropdown-text">7 · ggplot2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/08-sesion-modelos-lineales-1.html">
+ <span class="dropdown-text">8 · Modelos lineales I</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/09-sesion-medias-marginales.html">
+ <span class="dropdown-text">9 · Medias marginales</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-ejercicios" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Ejercicios</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-ejercicios">    
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-01.html">
+ <span class="dropdown-text">Ejercicio 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-02.html">
+ <span class="dropdown-text">Ejercicio 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-03.html">
+ <span class="dropdown-text">Ejercicio 3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-04.html">
+ <span class="dropdown-text">Ejercicio 4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-05.html">
+ <span class="dropdown-text">Ejercicio 5</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-06.html">
+ <span class="dropdown-text">Ejercicio 6</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-07.html">
+ <span class="dropdown-text">Ejercicio 7</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-08.html">
+ <span class="dropdown-text">Ejercicio 8</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-09.html">
+ <span class="dropdown-text">Ejercicio 9</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-10.html">
+ <span class="dropdown-text">Ejercicio 10</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/almadana/cursoR"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lecciones/01-sesion-variables-indexacion.html">Sesiones</a></li><li class="breadcrumb-item"><a href="../lecciones/05-sesion-tidyselect.html">Sesión 5: tidyselect</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Material</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Curso de programación y estadística en R</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Sesiones</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/01-sesion-variables-indexacion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 1: variables e indexación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/02-sesion-funciones.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 2: funciones</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/03-sesion-importacion-directorios.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 3: importación y directorios</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/04-sesion-dplyr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 4: dplyr</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/05-sesion-tidyselect.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Sesión 5: tidyselect</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/06-sesion-pivot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 6: pivot</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/07-sesion-ggplot2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 7: ggplot2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/08-sesion-modelos-lineales-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 8: modelos lineales I</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/09-sesion-medias-marginales.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 9: medias marginales y contrastes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Ejercicios</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 4</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 5</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 6</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 7</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 8</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 9</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 10</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#elige-tus-columnas" id="toc-elige-tus-columnas" class="nav-link active" data-scroll-target="#elige-tus-columnas">Elige tu(s) columna(s)</a>
+  <ul class="collapse">
+  <li><a href="#elegir-por-nombre-o-número-de-columna-business-as-usual" id="toc-elegir-por-nombre-o-número-de-columna-business-as-usual" class="nav-link" data-scroll-target="#elegir-por-nombre-o-número-de-columna-business-as-usual">Elegir por nombre o número de columna, <em>business as usual</em></a></li>
+  <li><a href="#el-paquete-tidyselect" id="toc-el-paquete-tidyselect" class="nav-link" data-scroll-target="#el-paquete-tidyselect">El paquete <code>tidyselect</code></a></li>
+  </ul></li>
+  <li><a href="#across-the-tidyverse" id="toc-across-the-tidyverse" class="nav-link" data-scroll-target="#across-the-tidyverse">Across the <code>tidyverse</code></a>
+  <ul class="collapse">
+  <li><a href="#varias-funciones-a-la-vez" id="toc-varias-funciones-a-la-vez" class="nav-link" data-scroll-target="#varias-funciones-a-la-vez">Varias funciones a la vez</a></li>
+  <li><a href="#mutatis-mutandi" id="toc-mutatis-mutandi" class="nav-link" data-scroll-target="#mutatis-mutandi">Mutatis mutandi</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/almadana/cursoR/edit/main/lecciones/05-sesion-tidyselect.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li><li><a href="https://github.com/almadana/cursoR/issues/new" class="toc-action"><i class="bi empty"></i>Informar de un problema</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lecciones/01-sesion-variables-indexacion.html">Sesiones</a></li><li class="breadcrumb-item"><a href="../lecciones/05-sesion-tidyselect.html">Sesión 5: tidyselect</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Sesión 5: tidyselect</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autores/as</div>
+    <div class="quarto-title-meta-contents">
+             <p>Camila Zugarramurdi </p>
+             <p>Álvaro Cabana </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Fecha de publicación</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">31 de diciembre de 2021</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="elige-tus-columnas" class="level1">
+<h1>Elige tu(s) columna(s)</h1>
+<p>En la sesión pasada vimos cómo usar <code>filter</code> para elegir o filtrar filas. Ahora veremos cómo usar <code>select</code> para elegir columnas. Si bien ya sabemos cómo elegir columnas (de un dataframe, con el símbolo de <code>$</code>, o con el uso del paréntesis recto: <code>miDataFrame[filas,columnas]</code>), <code>select</code> nos hace la sintaxis más fácil y más legible, pero además nos permite combinarla con otras funciones que veremos más adelante, lo que nos da mucha más potencia.</p>
+<section id="elegir-por-nombre-o-número-de-columna-business-as-usual" class="level2">
+<h2 class="anchored" data-anchor-id="elegir-por-nombre-o-número-de-columna-business-as-usual">Elegir por nombre o número de columna, <em>business as usual</em></h2>
+<p>La funcionalidad básica de <code>select</code> nos permite elegir una o más columnas por nombre, o por número. Usemos el conocido dataframe de <code>datosLimpios</code>. Ah, me olvidaba, también vamos a usar <code>tidyverse</code>!! (a partir de ahora casi que <strong>siempre</strong> vamos a usarlo).</p>
+<p>Mmm, quiero elegir sólo la columna de edad:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(datosLimpios,Age)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Age
+1    26
+2    22
+3    35
+4    24
+5    25
+6    21
+7    23
+8    22
+9    22
+10   20
+11   23
+12   22
+13   22
+14   38
+15   25
+16   21
+17   20
+18   26
+19   35
+20   21
+21   35
+22   25
+23   25
+24   20
+25   25
+26   19
+27   19
+28   21
+29   25
+30   22
+31   22
+32   23
+33   18
+34   24
+35   34
+36   25
+37   20
+38   24
+39   35
+40   23
+41   20
+42   20
+43   24
+44   25
+45   32
+46   36
+47   30
+48   45
+49   22
+50   21
+51   24
+52   22
+53   25
+54   20
+55   51
+56   21
+57   35
+58   23
+59   38
+60   20
+61   23
+62   24
+63   22
+64   22
+65   25
+66   20
+67   22
+68   20
+69   21
+70   22
+71   20
+72   19
+73   19
+74   19
+75   19
+76   18
+77   25
+78   40
+79   18
+80   20
+81   19
+82   21
+83   18
+84   17
+85   28
+86   21
+87   28
+88   18
+89   20
+90   19
+91   22
+92   18
+93   20
+94   19
+95   23
+96   21
+97   20
+98   18
+99   19
+100  21
+101  21
+102  26
+103  19
+104  18
+105  19
+106  19
+107  22
+108  18
+109  19
+110  18
+111  18
+112  18
+113  20
+114  20
+115  22
+116  19
+117  23
+118  20
+119  19
+120  19
+121  21
+122  19
+123  19
+124  20
+125  19
+126  19
+127  19
+128  21
+129  19
+130  20
+131  49
+132  30
+133  19
+134  19
+135  24
+136  19
+137  19
+138  19
+139  19
+140  21
+141  28
+142  20
+143  23
+144  24
+145  19
+146  35
+147  19
+148  32
+149  19
+150  19
+151  27
+152  21
+153  19
+154  19
+155  24
+156  22
+157  20
+158  22
+159  19
+160  20
+161  19
+162  19
+163  39
+164  30
+165  24
+166  26
+167  21
+168  19
+169  18
+170  19
+171  42
+172  18
+173  21
+174  18
+175  18
+176  20
+177  19
+178  26
+179  34
+180  28
+181  37
+182  49
+183  25
+184  21
+185  23
+186  18
+187  18
+188  19
+189  25
+190  23
+191  25
+192  24
+193  29
+194  18
+195  29
+196  35
+197  24
+198  48
+199  22
+200  46
+201  28
+202  41
+203  20
+204  24
+205  21
+206  21
+207  25
+208  40
+209  31
+210  25
+211  23
+212  25
+213  22
+214  22
+215  31
+216  27
+217  29
+218  34
+219  19
+220  20
+221  20
+222  20
+223  18
+224  34
+225  18
+226  34
+227  23
+228  18
+229  19
+230  18
+231  19
+232  31
+233  20
+234  44
+235  26
+236  23
+237  31
+238  22
+239  30
+240  25
+241  40
+242  29
+243  25
+244  19
+245  23
+246  24
+247  19
+248  20
+249  19
+250  19
+251  20
+252  19
+253  19
+254  20
+255  20
+256  20
+257  19
+258  32
+259  25
+260  27
+261  22
+262  28
+263  38
+264  25
+265  27
+266  27
+267  23
+268  20
+269  23
+270  24
+271  28
+272  27
+273  20
+274  19
+275  22
+276  24
+277  23
+278  25
+279  19
+280  19
+281  20
+282  35
+283  18
+284  20
+285  18
+286  19
+287  22
+288  19
+289  20
+290  20
+291  18
+292  23
+293  23
+294  18
+295  19
+296  19
+297  29
+298  19
+299  22
+300  18
+301  24
+302  19
+303  18
+304  19
+305  24
+306  19
+307  20
+308  20
+309  18
+310  19
+311  20
+312  27
+313  18
+314  24
+315  18
+316  52
+317  32
+318  18
+319  39
+320  20
+321  48
+322  19
+323  21
+324  48
+325  20
+326  30
+327  42
+328  21
+329  20
+330  23</code></pre>
+</div>
+</div>
+<p>Nótese cómo <strong>no</strong> estoy usando comillas aquí, una pequeña ventaja de usar <code>select</code>. ¿Cómo elegir dos columnas, por su nombre? Inténtalo hacer tú mismo, antes de mirar cómo se hace.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#voy a usar un pipe, porque soy muy fancy</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span> </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">c</span>(Age,Sex))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Age Sex
+1    26   F
+2    22   F
+3    35   F
+4    24   F
+5    25   F
+6    21   F
+7    23   F
+8    22   F
+9    22   F
+10   20   F
+11   23   F
+12   22   F
+13   22   F
+14   38   F
+15   25   F
+16   21   F
+17   20   F
+18   26   F
+19   35   F
+20   21   F
+21   35   F
+22   25   F
+23   25   F
+24   20   F
+25   25   F
+26   19   F
+27   19   F
+28   21   F
+29   25   F
+30   22   F
+31   22   F
+32   23   F
+33   18   F
+34   24   F
+35   34   F
+36   25   F
+37   20   F
+38   24   F
+39   35   F
+40   23   F
+41   20   F
+42   20   F
+43   24   F
+44   25   F
+45   32   F
+46   36   F
+47   30   F
+48   45   F
+49   22   F
+50   21   F
+51   24   F
+52   22   F
+53   25   F
+54   20   F
+55   51   F
+56   21   F
+57   35   F
+58   23   F
+59   38   F
+60   20   F
+61   23   F
+62   24   F
+63   22   F
+64   22   F
+65   25   F
+66   20   F
+67   22   F
+68   20   F
+69   21   F
+70   22   F
+71   20   F
+72   19   F
+73   19   F
+74   19   F
+75   19   F
+76   18   F
+77   25   F
+78   40   F
+79   18   F
+80   20   F
+81   19   F
+82   21   F
+83   18   F
+84   17   F
+85   28   F
+86   21   F
+87   28   F
+88   18   F
+89   20   F
+90   19   F
+91   22   F
+92   18   F
+93   20   F
+94   19   F
+95   23   F
+96   21   F
+97   20   F
+98   18   F
+99   19   F
+100  21   F
+101  21   F
+102  26   F
+103  19   F
+104  18   F
+105  19   F
+106  19   F
+107  22   F
+108  18   F
+109  19   F
+110  18   F
+111  18   F
+112  18   F
+113  20   F
+114  20   F
+115  22   F
+116  19   F
+117  23   F
+118  20   F
+119  19   F
+120  19   F
+121  21   F
+122  19   F
+123  19   F
+124  20   F
+125  19   F
+126  19   F
+127  19   F
+128  21   F
+129  19   F
+130  20   F
+131  49   F
+132  30   F
+133  19   F
+134  19   F
+135  24   F
+136  19   F
+137  19   F
+138  19   F
+139  19   F
+140  21   F
+141  28   F
+142  20   F
+143  23   F
+144  24   F
+145  19   F
+146  35   F
+147  19   F
+148  32   F
+149  19   F
+150  19   F
+151  27   F
+152  21   F
+153  19   F
+154  19   F
+155  24   F
+156  22   F
+157  20   F
+158  22   F
+159  19   F
+160  20   F
+161  19   F
+162  19   F
+163  39   F
+164  30   F
+165  24   F
+166  26   F
+167  21   F
+168  19   F
+169  18   F
+170  19   F
+171  42   F
+172  18   F
+173  21   F
+174  18   F
+175  18   F
+176  20   F
+177  19   F
+178  26   F
+179  34   F
+180  28   F
+181  37   F
+182  49   F
+183  25   F
+184  21   F
+185  23   F
+186  18   F
+187  18   F
+188  19   F
+189  25   M
+190  23   M
+191  25   M
+192  24   M
+193  29   M
+194  18   M
+195  29   M
+196  35   M
+197  24   M
+198  48   M
+199  22   M
+200  46   M
+201  28   M
+202  41   M
+203  20   M
+204  24   M
+205  21   M
+206  21   M
+207  25   M
+208  40   M
+209  31   M
+210  25   M
+211  23   M
+212  25   M
+213  22   M
+214  22   M
+215  31   M
+216  27   M
+217  29   M
+218  34   M
+219  19   M
+220  20   M
+221  20   M
+222  20   M
+223  18   M
+224  34   M
+225  18   M
+226  34   M
+227  23   M
+228  18   M
+229  19   M
+230  18   M
+231  19   M
+232  31   M
+233  20   M
+234  44   M
+235  26   M
+236  23   M
+237  31   M
+238  22   M
+239  30   M
+240  25   M
+241  40   M
+242  29   M
+243  25   M
+244  19   M
+245  23   M
+246  24   M
+247  19   M
+248  20   M
+249  19   M
+250  19   M
+251  20   M
+252  19   M
+253  19   M
+254  20   M
+255  20   M
+256  20   M
+257  19   M
+258  32   M
+259  25   M
+260  27   M
+261  22   M
+262  28   M
+263  38   M
+264  25   M
+265  27   M
+266  27   M
+267  23   M
+268  20   M
+269  23   M
+270  24   M
+271  28   M
+272  27   M
+273  20   M
+274  19   M
+275  22   M
+276  24   M
+277  23   M
+278  25   M
+279  19   M
+280  19   M
+281  20   M
+282  35   M
+283  18   M
+284  20   M
+285  18   M
+286  19   M
+287  22   M
+288  19   M
+289  20   M
+290  20   M
+291  18   M
+292  23   M
+293  23   M
+294  18   M
+295  19   M
+296  19   M
+297  29   M
+298  19   M
+299  22   M
+300  18   M
+301  24   M
+302  19   M
+303  18   M
+304  19   M
+305  24   M
+306  19   M
+307  20   M
+308  20   M
+309  18   M
+310  19   M
+311  20   M
+312  27   M
+313  18   M
+314  24   M
+315  18   M
+316  52   M
+317  32   M
+318  18   M
+319  39   M
+320  20   M
+321  48   M
+322  19   M
+323  21   M
+324  48   M
+325  20   M
+326  30   M
+327  42   M
+328  21   M
+329  20   M
+330  23   M</code></pre>
+</div>
+</div>
+<p>Muy bien! Pero, sabías que se puede hacer así también?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Age,Sex) <span class="co"># mirá Mamá, sin c()!!!</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Age Sex
+1    26   F
+2    22   F
+3    35   F
+4    24   F
+5    25   F
+6    21   F
+7    23   F
+8    22   F
+9    22   F
+10   20   F
+11   23   F
+12   22   F
+13   22   F
+14   38   F
+15   25   F
+16   21   F
+17   20   F
+18   26   F
+19   35   F
+20   21   F
+21   35   F
+22   25   F
+23   25   F
+24   20   F
+25   25   F
+26   19   F
+27   19   F
+28   21   F
+29   25   F
+30   22   F
+31   22   F
+32   23   F
+33   18   F
+34   24   F
+35   34   F
+36   25   F
+37   20   F
+38   24   F
+39   35   F
+40   23   F
+41   20   F
+42   20   F
+43   24   F
+44   25   F
+45   32   F
+46   36   F
+47   30   F
+48   45   F
+49   22   F
+50   21   F
+51   24   F
+52   22   F
+53   25   F
+54   20   F
+55   51   F
+56   21   F
+57   35   F
+58   23   F
+59   38   F
+60   20   F
+61   23   F
+62   24   F
+63   22   F
+64   22   F
+65   25   F
+66   20   F
+67   22   F
+68   20   F
+69   21   F
+70   22   F
+71   20   F
+72   19   F
+73   19   F
+74   19   F
+75   19   F
+76   18   F
+77   25   F
+78   40   F
+79   18   F
+80   20   F
+81   19   F
+82   21   F
+83   18   F
+84   17   F
+85   28   F
+86   21   F
+87   28   F
+88   18   F
+89   20   F
+90   19   F
+91   22   F
+92   18   F
+93   20   F
+94   19   F
+95   23   F
+96   21   F
+97   20   F
+98   18   F
+99   19   F
+100  21   F
+101  21   F
+102  26   F
+103  19   F
+104  18   F
+105  19   F
+106  19   F
+107  22   F
+108  18   F
+109  19   F
+110  18   F
+111  18   F
+112  18   F
+113  20   F
+114  20   F
+115  22   F
+116  19   F
+117  23   F
+118  20   F
+119  19   F
+120  19   F
+121  21   F
+122  19   F
+123  19   F
+124  20   F
+125  19   F
+126  19   F
+127  19   F
+128  21   F
+129  19   F
+130  20   F
+131  49   F
+132  30   F
+133  19   F
+134  19   F
+135  24   F
+136  19   F
+137  19   F
+138  19   F
+139  19   F
+140  21   F
+141  28   F
+142  20   F
+143  23   F
+144  24   F
+145  19   F
+146  35   F
+147  19   F
+148  32   F
+149  19   F
+150  19   F
+151  27   F
+152  21   F
+153  19   F
+154  19   F
+155  24   F
+156  22   F
+157  20   F
+158  22   F
+159  19   F
+160  20   F
+161  19   F
+162  19   F
+163  39   F
+164  30   F
+165  24   F
+166  26   F
+167  21   F
+168  19   F
+169  18   F
+170  19   F
+171  42   F
+172  18   F
+173  21   F
+174  18   F
+175  18   F
+176  20   F
+177  19   F
+178  26   F
+179  34   F
+180  28   F
+181  37   F
+182  49   F
+183  25   F
+184  21   F
+185  23   F
+186  18   F
+187  18   F
+188  19   F
+189  25   M
+190  23   M
+191  25   M
+192  24   M
+193  29   M
+194  18   M
+195  29   M
+196  35   M
+197  24   M
+198  48   M
+199  22   M
+200  46   M
+201  28   M
+202  41   M
+203  20   M
+204  24   M
+205  21   M
+206  21   M
+207  25   M
+208  40   M
+209  31   M
+210  25   M
+211  23   M
+212  25   M
+213  22   M
+214  22   M
+215  31   M
+216  27   M
+217  29   M
+218  34   M
+219  19   M
+220  20   M
+221  20   M
+222  20   M
+223  18   M
+224  34   M
+225  18   M
+226  34   M
+227  23   M
+228  18   M
+229  19   M
+230  18   M
+231  19   M
+232  31   M
+233  20   M
+234  44   M
+235  26   M
+236  23   M
+237  31   M
+238  22   M
+239  30   M
+240  25   M
+241  40   M
+242  29   M
+243  25   M
+244  19   M
+245  23   M
+246  24   M
+247  19   M
+248  20   M
+249  19   M
+250  19   M
+251  20   M
+252  19   M
+253  19   M
+254  20   M
+255  20   M
+256  20   M
+257  19   M
+258  32   M
+259  25   M
+260  27   M
+261  22   M
+262  28   M
+263  38   M
+264  25   M
+265  27   M
+266  27   M
+267  23   M
+268  20   M
+269  23   M
+270  24   M
+271  28   M
+272  27   M
+273  20   M
+274  19   M
+275  22   M
+276  24   M
+277  23   M
+278  25   M
+279  19   M
+280  19   M
+281  20   M
+282  35   M
+283  18   M
+284  20   M
+285  18   M
+286  19   M
+287  22   M
+288  19   M
+289  20   M
+290  20   M
+291  18   M
+292  23   M
+293  23   M
+294  18   M
+295  19   M
+296  19   M
+297  29   M
+298  19   M
+299  22   M
+300  18   M
+301  24   M
+302  19   M
+303  18   M
+304  19   M
+305  24   M
+306  19   M
+307  20   M
+308  20   M
+309  18   M
+310  19   M
+311  20   M
+312  27   M
+313  18   M
+314  24   M
+315  18   M
+316  52   M
+317  32   M
+318  18   M
+319  39   M
+320  20   M
+321  48   M
+322  19   M
+323  21   M
+324  48   M
+325  20   M
+326  30   M
+327  42   M
+328  21   M
+329  20   M
+330  23   M</code></pre>
+</div>
+</div>
+<p>WHAAAAAT? No estás usando la función <code>c()</code> para unir los dos nombres de columnas? Qué clase de herejía es ésta? Así es el <code>tidyverse</code>, conspira para que el código sea más sencillo, más legible, y más potente.</p>
+<p>Como te imaginarás, también se puede usar el número de columna, en vez del nombre:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,<span class="dv">7</span>) <span class="co"># columnas random</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Sex Age NPI16TOTAL Sign.Area
+1     F  26          7 24.296531
+2     F  22          5 18.989508
+3     F  35          0 11.851519
+4     F  24         10 39.050062
+5     F  25          6 18.758396
+6     F  21          1 41.063246
+7     F  23          1 16.445833
+8     F  22          8 43.822996
+9     F  22          0 22.923881
+10    F  20          0 18.717845
+11    F  23          0 18.110752
+12    F  22          0 20.705285
+13    F  22          2 18.155226
+14    F  38          1 15.509954
+15    F  25          0 15.214579
+16    F  21          4 32.720134
+17    F  20          6 17.071622
+18    F  26          6 43.898422
+19    F  35          3 30.281682
+20    F  21          1 18.896037
+21    F  35          5 20.559884
+22    F  25          3 17.572770
+23    F  25          5 20.560058
+24    F  20          0 16.571107
+25    F  25          7 21.039624
+26    F  19          2 20.701303
+27    F  19          4 26.396454
+28    F  21          4 17.061541
+29    F  25          6 25.272681
+30    F  22          1 16.205651
+31    F  22          1 19.877382
+32    F  23          3 11.094241
+33    F  18          4 25.915746
+34    F  24          3 33.190521
+35    F  34          1 15.394440
+36    F  25          2 18.155029
+37    F  20          3 17.172521
+38    F  24          1 19.127735
+39    F  35          0 28.909917
+40    F  23          0 18.538134
+41    F  20          1 26.630998
+42    F  20          0 24.121680
+43    F  24          2 24.776395
+44    F  25          3 34.710442
+45    F  32          1 29.133823
+46    F  36          5 28.204931
+47    F  30          2 22.904642
+48    F  45          3 27.658023
+49    F  22          0 20.945377
+50    F  21          6 47.804887
+51    F  24          2 13.142438
+52    F  22          1 22.793739
+53    F  25          3 22.881940
+54    F  20          2 14.701313
+55    F  51          1 30.765821
+56    F  21          1 18.769857
+57    F  35          3 20.045627
+58    F  23          5 25.533704
+59    F  38          1 23.227077
+60    F  20          5 22.521970
+61    F  23          3 27.121893
+62    F  24          6 17.630194
+63    F  22          5 23.207935
+64    F  22          4 25.120758
+65    F  25          0 21.780243
+66    F  20          3 29.962910
+67    F  22          2 12.705079
+68    F  20          0 23.768574
+69    F  21          7 25.731424
+70    F  22          2 26.418714
+71    F  20          3 34.455485
+72    F  19          7 26.434718
+73    F  19          4 29.008930
+74    F  19          9 49.147961
+75    F  19          5 23.804587
+76    F  18          2 21.507667
+77    F  25          2 17.977268
+78    F  40          1 19.096791
+79    F  18          2 17.723466
+80    F  20          1 27.346023
+81    F  19          2 32.176898
+82    F  21          3 20.087602
+83    F  18          2 20.912495
+84    F  17          8 20.511712
+85    F  28          4 24.513888
+86    F  21          3 20.370385
+87    F  28          1 21.725539
+88    F  18          5 15.606021
+89    F  20          5 25.519663
+90    F  19          4 17.419537
+91    F  22          1 18.745972
+92    F  18          2 27.947055
+93    F  20          4 21.405770
+94    F  19          1  9.563961
+95    F  23          5 13.276478
+96    F  21          4 16.504572
+97    F  20          1 19.295643
+98    F  18          4 19.112926
+99    F  19          1 18.648398
+100   F  21          5 17.720230
+101   F  21          5 16.262613
+102   F  26          2 23.857528
+103   F  19          5 19.638104
+104   F  18          1 26.870831
+105   F  19          7 24.924233
+106   F  19          2 14.872924
+107   F  22          0 15.172115
+108   F  18          2 20.734865
+109   F  19          3 28.383166
+110   F  18          5 21.160570
+111   F  18          0 15.631494
+112   F  18          0 12.949295
+113   F  20          3 21.450263
+114   F  20          1 46.225209
+115   F  22          3 36.797092
+116   F  19          0 13.216139
+117   F  23          0 18.060017
+118   F  20          1 19.316250
+119   F  19          0 33.358237
+120   F  19          2 14.949362
+121   F  21          6 13.349439
+122   F  19          2 25.840955
+123   F  19          0 30.191711
+124   F  20          0 15.943433
+125   F  19          0 19.707519
+126   F  19          1 27.407425
+127   F  19          2 13.980259
+128   F  21          3 24.396344
+129   F  19          4 20.700610
+130   F  20          0 37.769685
+131   F  49          5 24.763227
+132   F  30          0 26.901493
+133   F  19          1 20.040083
+134   F  19          4 26.420206
+135   F  24          0 23.848212
+136   F  19          4 21.002283
+137   F  19          4 29.109331
+138   F  19          1 22.964497
+139   F  19          6 15.523120
+140   F  21          4 42.806934
+141   F  28          2 25.335006
+142   F  20          8 13.056248
+143   F  23          1 18.223013
+144   F  24          5 24.634363
+145   F  19          3 26.272873
+146   F  35          2 15.578667
+147   F  19          7 18.266232
+148   F  32          7 19.618566
+149   F  19          2 25.282181
+150   F  19          5 39.689075
+151   F  27          5 18.812011
+152   F  21          6 17.821076
+153   F  19          6 31.275367
+154   F  19          3 22.527380
+155   F  24          3 16.814382
+156   F  22          2 24.593007
+157   F  20          2 23.727824
+158   F  22          4 26.601507
+159   F  19          1 12.774289
+160   F  20          2 25.442862
+161   F  19          4 25.681230
+162   F  19          2 33.664557
+163   F  39          1 22.355848
+164   F  30          1 31.631358
+165   F  24          3 18.578498
+166   F  26          4 19.367396
+167   F  21          3 22.461414
+168   F  19          5 17.657010
+169   F  18          4 24.066789
+170   F  19          3 20.645129
+171   F  42          5 31.460816
+172   F  18          2 15.009659
+173   F  21          4 23.872397
+174   F  18          1 20.655891
+175   F  18          1 21.953823
+176   F  20          2 24.311278
+177   F  19          2 21.354135
+178   F  26          2 36.655876
+179   F  34          3 20.058496
+180   F  28          3 18.908362
+181   F  37          5 31.588724
+182   F  49          2 21.213182
+183   F  25          8 20.609161
+184   F  21          4 18.351390
+185   F  23          5 35.646074
+186   F  18          0 13.551957
+187   F  18          4 12.182295
+188   F  19          4 23.285642
+189   M  25          2 25.974872
+190   M  23          4 37.006211
+191   M  25          2 19.968055
+192   M  24          4 45.912681
+193   M  29          1 22.112593
+194   M  18          5 34.522100
+195   M  29          3 26.954601
+196   M  35          0 20.889859
+197   M  24         10 34.266473
+198   M  48          1 19.442756
+199   M  22          2 21.999978
+200   M  46          5 46.441422
+201   M  28          3 45.858549
+202   M  41          1 19.087780
+203   M  20          6 27.697261
+204   M  24          2 16.901978
+205   M  21          7 15.421889
+206   M  21          1 25.090778
+207   M  25          2 29.722703
+208   M  40          0 30.958955
+209   M  31          2 35.384792
+210   M  25          0 36.289421
+211   M  23          5 23.093988
+212   M  25          3 31.632944
+213   M  22          7 15.229884
+214   M  22          6 20.950510
+215   M  31          3 35.700029
+216   M  27          7 32.767860
+217   M  29          8 20.324233
+218   M  34          7 21.257910
+219   M  19          9 18.871362
+220   M  20          1 49.809048
+221   M  20          1 14.786882
+222   M  20          4 20.840387
+223   M  18         10 25.885302
+224   M  34          0 38.328105
+225   M  18          6 34.358397
+226   M  34          2 10.900977
+227   M  23          4 16.725685
+228   M  18          3 16.128500
+229   M  19          4 17.984444
+230   M  18          4 19.384045
+231   M  19          4 20.668380
+232   M  31          5 11.755563
+233   M  20          2 36.204282
+234   M  44          1 49.454394
+235   M  26          1 27.319665
+236   M  23          6 35.716290
+237   M  31         12 23.182748
+238   M  22          6 15.509954
+239   M  30          2 36.461757
+240   M  25          5 20.473583
+241   M  40          0        NA
+242   M  29          5 31.996832
+243   M  25          0 36.457825
+244   M  19          0 22.314446
+245   M  23          5 18.465099
+246   M  24          1 23.860683
+247   M  19          4 14.810618
+248   M  20          6 41.355052
+249   M  19          4 19.783758
+250   M  19          5 25.064623
+251   M  20          2 17.068892
+252   M  19          5        NA
+253   M  19          4 30.373982
+254   M  20          5 10.629629
+255   M  20          5 10.836010
+256   M  20          2 32.968943
+257   M  19          1 22.300949
+258   M  32          1 16.593587
+259   M  25          0        NA
+260   M  27          5 45.446366
+261   M  22          3 44.618771
+262   M  28          4        NA
+263   M  38          4 37.565389
+264   M  25          2 27.163885
+265   M  27          4 27.596658
+266   M  27          3 46.058355
+267   M  23          1 28.386323
+268   M  20          4 18.453061
+269   M  23          4 15.343366
+270   M  24          2 22.382767
+271   M  28          8 15.252225
+272   M  27         10 28.403742
+273   M  20          0        NA
+274   M  19          1 15.219761
+275   M  22          4 16.867589
+276   M  24          2 39.069424
+277   M  23          6 31.472776
+278   M  25          1 32.208963
+279   M  19          6 15.666537
+280   M  19          4 21.868271
+281   M  20          8 22.008611
+282   M  35          6 32.338677
+283   M  18          4 20.143195
+284   M  20          3 28.299445
+285   M  18          6 33.899882
+286   M  19          6 31.380395
+287   M  22          1 18.249153
+288   M  19          3 40.294574
+289   M  20          2 18.105804
+290   M  20          5 15.256924
+291   M  18          4 27.738898
+292   M  23          5 10.750000
+293   M  23          3        NA
+294   M  18          1 26.977861
+295   M  19          6 16.086667
+296   M  19          5 20.203248
+297   M  29          6 18.311112
+298   M  19          4 22.148386
+299   M  22          1 26.810606
+300   M  18          2 23.240653
+301   M  24          6 20.780450
+302   M  19          4 11.519646
+303   M  18          2 22.697616
+304   M  19          8 21.790772
+305   M  24          3 15.333786
+306   M  19          3 15.460653
+307   M  20          1 30.967984
+308   M  20          6 19.968414
+309   M  18          5 14.142882
+310   M  19          3 10.989720
+311   M  20          7 13.136164
+312   M  27          3 36.293273
+313   M  18          7 24.644982
+314   M  24          5 30.309957
+315   M  18          4 14.651493
+316   M  52          3 36.272528
+317   M  32          2 32.107761
+318   M  18          2  7.831552
+319   M  39          3 34.821579
+320   M  20          0 23.519205
+321   M  48          1 23.094608
+322   M  19          0 12.909654
+323   M  21          1 17.481360
+324   M  48          3 37.675430
+325   M  20          5 18.491479
+326   M  30          4 27.407425
+327   M  42          6 25.941458
+328   M  21          0 19.364250
+329   M  20          1 19.251197
+330   M  23          6 29.268717</code></pre>
+</div>
+</div>
+<p>Hasta acá, es sólo una forma <em>fancy</em> de elegir columnas, compatible con pipe. Pero ahora se pone interesante.</p>
+</section>
+<section id="el-paquete-tidyselect" class="level2">
+<h2 class="anchored" data-anchor-id="el-paquete-tidyselect">El paquete <code>tidyselect</code></h2>
+<p>A menudo nos enfrentamos a conjuntos de datos con muchas columnas. Muuuchas. O sea, de repente tenemos 10 o 15 columnas que queremos elegir para algo, del total de 32 columnas que tenemos. Y a veces no son columnas contiguas (de la 5 a la 15, por ejemplo), así que llamarlas por nombre o por número es igual de engorroso: tendremos que escribir a mano los 10 o 15 números o nombres de columna a mano…</p>
+<p><code>tidyselect</code> al rescate!! Este pequeño paquete (parte del <code>tidyverse</code> obvvviamente), nos provee de varias funciones que nos hacen la vida más fácil a la hora de elegir varias columnas a la vez, siempre y cuando tengan alguna REGULARIDAD en los nombres. Por ejemplo, todas empiezan o terminan con la misma expresión, o tienen algo en común en su nombre (y generalmente éste suele ser el caso). Por ejemplo, puedo tener medidas “pre” y “post” de 10 escalas psicométricas, quizás se llamen algo así como “puntuacion_pre_UnaEscala”, “puntuacion_post_otraEscala”, etc. Éste es el escenario típico en el que las siguientes funciones son más útiles. Como es el espíritu <code>tidy</code>, los nombres son bastante intuitivos y nos permiten inferir qué cornos hacen:</p>
+<ul>
+<li><code>starts_with()</code> Elige columnas que empiecen con el mismo prefijo.</li>
+<li><code>ends_with()</code> ” ” ” terminen con el mismo sufijo.</li>
+<li><code>contains()</code> ” ” ” contengan la misma expresión en su nombre.</li>
+<li><code>matches()</code> ” ” cuyo nombre dé <em>match</em> con una <a href="https://www.rexegg.com/">expresión regular</a> (como <code>contains</code> pero avanzado, para “hackers” digamos).</li>
+<li><code>num_range()</code> ” ” cuyo nombre sea consistente con un esquema numérico (“toma_1”, “toma_2”, etc.)</li>
+</ul>
+<p>Estas funciones suelen usarse como ayudantes, digamos, cuando usamos otras funciones como <code>select</code>. Veamos cómo usarlas entonces.</p>
+<p>Supongamos que quiero quedarme sólo con las variables de escalas psicométricas en <code>datosLimpios</code>. Convenientemente, todas esas variables terminan en <em>“TOTAL”</em>. Así que puedo usar eso para elegirlas:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>( <span class="fu">ends_with</span>(<span class="st">"TOTAL"</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    NPI16TOTAL GSESTOTAL ADTOTAL SDTOTAL
+1            7        27      20      31
+2            5        25      19      30
+3            0        23      11      25
+4           10        25      25      31
+5            6        29      19      24
+6            1        24      13      27
+7            1        25      17      24
+8            8        25      22      22
+9            0        27      11      NA
+10           0        20       8      19
+11           0        25       7      21
+12           0        32      13      19
+13           2        26      12      29
+14           1        22       9      22
+15           0        24       9      30
+16           4        22      15      36
+17           6        28      19      34
+18           6        25      14      38
+19           3        24      13      29
+20           1        27      15      24
+21           5        32      18      30
+22           3        29      13      28
+23           5        NA      14      32
+24           0        26       8      22
+25           7        27      18      22
+26           2        24      16      32
+27           4        28      27      29
+28           4        26      13      31
+29           6        25      19      34
+30           1        31       9      26
+31           1        31      13      25
+32           3        25      NA      30
+33           4        26      14      31
+34           3        26      16      NA
+35           1        28      12      26
+36           2        26       7      NA
+37           3        29      17      28
+38           1        25       7      17
+39           0        25      10      35
+40           0        26      13      33
+41           1        27      19      32
+42           0        27      10      31
+43           2        26      10      24
+44           3        26      26      NA
+45           1        27       7      27
+46           5        27      21      34
+47           2        22      14      25
+48           3        28       8      37
+49           0        28      NA      33
+50           6        26      11      36
+51           2        27      11      16
+52           1        26      14      20
+53           3        25      10      36
+54           2        26      16      25
+55           1        27      NA      28
+56           1        30      10      26
+57           3        25      11      32
+58           5        25      22      30
+59           1        28      18      27
+60           5        26      10      32
+61           3        21      14      27
+62           6        27      18      31
+63           5        26      20      30
+64           4        NA      10      37
+65           0        28       9      30
+66           3        26      17      23
+67           2        30      10      27
+68           0        28       7      36
+69           7        28       8      31
+70           2        23      11      33
+71           3        24      20      26
+72           7        26      NA      NA
+73           4        25      NA      NA
+74           9        25      18      36
+75           5        27      20      37
+76           2        NA      19      29
+77           2        24      14      28
+78           1        25       9      28
+79           2        23      18      34
+80           1        30      10      29
+81           2        26      11      21
+82           3        26       9      15
+83           2        27      17      18
+84           8        31      26      31
+85           4        32      19      30
+86           3        31       9      24
+87           1        28      15      30
+88           5        NA      25      25
+89           5        28      17      31
+90           4        27      11      22
+91           1        26       9      NA
+92           2        31      13      28
+93           4        26      15      30
+94           1        28       8      20
+95           5        26      18      28
+96           4        29      14      33
+97           1        NA      15      22
+98           4        26      20      35
+99           1        26      16      23
+100          5        24      27      26
+101          5        26      27      20
+102          2        29      10      39
+103          5        28      13      31
+104          1        22       9      15
+105          7        28      NA      31
+106          2        25      15      31
+107          0        25      11      24
+108          2        NA      18      27
+109          3        30      16      33
+110          5        25      10      34
+111          0        25      16      37
+112          0        24      13      27
+113          3        26      20      29
+114          1        25      12      28
+115          3        25      23      31
+116          0        27       8      34
+117          0        25       9      17
+118          1        24      13      28
+119          0        NA      NA      15
+120          2        26      20      22
+121          6        30      18      25
+122          2        NA      19      28
+123          0        26       8      21
+124          0        31      14      NA
+125          0        28       7      26
+126          1        26      23      28
+127          2        33      12      24
+128          3        NA      15      26
+129          4        26      25      28
+130          0        30       8      26
+131          5        28      13      25
+132          0        28       7      25
+133          1        28      14      23
+134          4        26      18      32
+135          0        26       9      16
+136          4        27      18      29
+137          4        26      12      31
+138          1        26      16      28
+139          6        25      15      33
+140          4        25      12      38
+141          2        26      18      26
+142          8        23      17      33
+143          1        26      14      23
+144          5        25       7      22
+145          3        26      11      31
+146          2        26       9      33
+147          7        26      17      29
+148          7        26      21      27
+149          2        27      22      31
+150          5        32      17      38
+151          5        25      29      36
+152          6        24      17      26
+153          6        26      16      29
+154          3        23       8      22
+155          3        27      23      17
+156          2        23      21      24
+157          2        27      14      26
+158          4        23      10      37
+159          1        28      13      NA
+160          2        27      21      25
+161          4        27      14      33
+162          2        24      23      30
+163          1        25       8      32
+164          1        31      12      27
+165          3        28      17      21
+166          4        24      11      31
+167          3        27      NA      34
+168          5        27      13      34
+169          4        27      13      28
+170          3        24       9      27
+171          5        27      10      NA
+172          2        30      19      32
+173          4        27       8      31
+174          1        23      21      24
+175          1        23      14      16
+176          2        NA      NA      NA
+177          2        26      17      31
+178          2        24      10      16
+179          3        26      12      30
+180          3        26      NA      30
+181          5        27      25      36
+182          2        NA       7      NA
+183          8        26      16      34
+184          4        27      18      27
+185          5        25      15      25
+186          0        26      14      32
+187          4        25      16      25
+188          4        28      21      27
+189          2        33      17      27
+190          4        29      13      19
+191          2        29      20      28
+192          4        26      30      22
+193          1        25      15      34
+194          5        30      20      16
+195          3        26      19      31
+196          0        24      13      31
+197         10        25      23      37
+198          1        25      19      35
+199          2        27      12      27
+200          5        29      19      25
+201          3        23      15      28
+202          1        28       8      31
+203          6        25      20      33
+204          2        25      29      28
+205          7        29      26      33
+206          1        35       8      NA
+207          2        29      17      25
+208          0        25       7      36
+209          2        23      14      27
+210          0        25      16      23
+211          5        25      20      30
+212          3        26      18      26
+213          7        31      23      28
+214          6        29      17      21
+215          3        29      22      30
+216          7        25      21      37
+217          8        27      14      32
+218          7        24      19      NA
+219          9        23      26      32
+220          1        27      10      40
+221          1        25      15      20
+222          4        27      21      13
+223         10        29      26      28
+224          0        28      13      NA
+225          6        31      21      33
+226          2        26      20      25
+227          4        NA      31      30
+228          3        28       9      31
+229          4        27      26      20
+230          4        28      14      25
+231          4        26      14      24
+232          5        26      20      34
+233          2        26      19      30
+234          1        NA      13      33
+235          1        28      16      28
+236          6        31      25      39
+237         12        33      31      28
+238          6        25      22      30
+239          2        NA      15      30
+240          5        NA      21      33
+241          0        25       7      36
+242          5        20      NA      NA
+243          0        23      15      17
+244          0        27      13      28
+245          5        29      27      16
+246          1        25      11      28
+247          4        26      11      26
+248          6        28      26      34
+249          4        28      17      32
+250          5        31      14      22
+251          2        27      23      30
+252          5        27      16      31
+253          4        30      19      35
+254          5        29      24      31
+255          5        24      11      30
+256          2        24      15      29
+257          1        26      15      36
+258          1        25      19      35
+259          0        27      13      25
+260          5        26      12      36
+261          3        30      20      26
+262          4        30      21      28
+263          4        NA       7      39
+264          2        25      13      19
+265          4        31      16      32
+266          3        28      21      26
+267          1        29       8      29
+268          4        25      14      27
+269          4        25      22      22
+270          2        24      19      34
+271          8        28      21      31
+272         10        23      NA      34
+273          0        24      12      34
+274          1        28      12      28
+275          4        25      12      29
+276          2        31       9      32
+277          6        35      19      29
+278          1        27       7      36
+279          6        25      19      33
+280          4        28      21      32
+281          8        31      18      27
+282          6        30      16      21
+283          4        28      23      24
+284          3        28      14      33
+285          6        28      12      33
+286          6        27      19      27
+287          1        29      14      32
+288          3        26      24      26
+289          2        27      10      28
+290          5        NA      15      NA
+291          4        25      16      29
+292          5        32      20      27
+293          3        28      27      29
+294          1        25      10      26
+295          6        28      23      34
+296          5        NA      17      20
+297          6        29      27      31
+298          4        23      NA      NA
+299          1        28      16      17
+300          2        28      11      29
+301          6        27      17      37
+302          4        27      26      14
+303          2        28      14      20
+304          8        24      18      26
+305          3        28      17      23
+306          3        24      19      18
+307          1        27      NA      27
+308          6        28      12      29
+309          5        29      18      30
+310          3        25      20      31
+311          7        25      15      37
+312          3        30      22      30
+313          7        21      17      20
+314          5        26      21      36
+315          4        31      20      31
+316          3        24       7      40
+317          2        25      18      35
+318          2        26      12      19
+319          3        25      14      30
+320          0        28      22      26
+321          1        25      12      31
+322          0        25      16      32
+323          1        24      12      27
+324          3        28      10      39
+325          5        25      18      37
+326          4        NA      22      NA
+327          6        30      NA      NA
+328          0        NA       8      29
+329          1        29      17      25
+330          6        28      20      32</code></pre>
+</div>
+</div>
+<p>Un lector atento habrá pensado… ¿pero no era más fácil pedirle las columnas de la 3 a la 6? Bueno, en este caso sí, pero piensa en un dataframe más “sucio”, donde puede haber 15 variables de escala entremezcladas con otras 45 que no te interesan…</p>
+<p>Otra razón para usar nombres y no números, es la robustez del código. Sí, ahora las columnas que te interesan son las 3,4,5 y 6. Pero quizás la próxima vez que corras el experimento haya habido un cambio, quizás haya un columna de más o de menos, y las columnas pasen a ser la 4,5,6 y 8, y chau, tu código ya no funciona.</p>
+<p>Veamos algún otro ejemplo de estas funciones:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">contains</span>(<span class="st">"D"</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    ADTOTAL SDTOTAL
+1        20      31
+2        19      30
+3        11      25
+4        25      31
+5        19      24
+6        13      27
+7        17      24
+8        22      22
+9        11      NA
+10        8      19
+11        7      21
+12       13      19
+13       12      29
+14        9      22
+15        9      30
+16       15      36
+17       19      34
+18       14      38
+19       13      29
+20       15      24
+21       18      30
+22       13      28
+23       14      32
+24        8      22
+25       18      22
+26       16      32
+27       27      29
+28       13      31
+29       19      34
+30        9      26
+31       13      25
+32       NA      30
+33       14      31
+34       16      NA
+35       12      26
+36        7      NA
+37       17      28
+38        7      17
+39       10      35
+40       13      33
+41       19      32
+42       10      31
+43       10      24
+44       26      NA
+45        7      27
+46       21      34
+47       14      25
+48        8      37
+49       NA      33
+50       11      36
+51       11      16
+52       14      20
+53       10      36
+54       16      25
+55       NA      28
+56       10      26
+57       11      32
+58       22      30
+59       18      27
+60       10      32
+61       14      27
+62       18      31
+63       20      30
+64       10      37
+65        9      30
+66       17      23
+67       10      27
+68        7      36
+69        8      31
+70       11      33
+71       20      26
+72       NA      NA
+73       NA      NA
+74       18      36
+75       20      37
+76       19      29
+77       14      28
+78        9      28
+79       18      34
+80       10      29
+81       11      21
+82        9      15
+83       17      18
+84       26      31
+85       19      30
+86        9      24
+87       15      30
+88       25      25
+89       17      31
+90       11      22
+91        9      NA
+92       13      28
+93       15      30
+94        8      20
+95       18      28
+96       14      33
+97       15      22
+98       20      35
+99       16      23
+100      27      26
+101      27      20
+102      10      39
+103      13      31
+104       9      15
+105      NA      31
+106      15      31
+107      11      24
+108      18      27
+109      16      33
+110      10      34
+111      16      37
+112      13      27
+113      20      29
+114      12      28
+115      23      31
+116       8      34
+117       9      17
+118      13      28
+119      NA      15
+120      20      22
+121      18      25
+122      19      28
+123       8      21
+124      14      NA
+125       7      26
+126      23      28
+127      12      24
+128      15      26
+129      25      28
+130       8      26
+131      13      25
+132       7      25
+133      14      23
+134      18      32
+135       9      16
+136      18      29
+137      12      31
+138      16      28
+139      15      33
+140      12      38
+141      18      26
+142      17      33
+143      14      23
+144       7      22
+145      11      31
+146       9      33
+147      17      29
+148      21      27
+149      22      31
+150      17      38
+151      29      36
+152      17      26
+153      16      29
+154       8      22
+155      23      17
+156      21      24
+157      14      26
+158      10      37
+159      13      NA
+160      21      25
+161      14      33
+162      23      30
+163       8      32
+164      12      27
+165      17      21
+166      11      31
+167      NA      34
+168      13      34
+169      13      28
+170       9      27
+171      10      NA
+172      19      32
+173       8      31
+174      21      24
+175      14      16
+176      NA      NA
+177      17      31
+178      10      16
+179      12      30
+180      NA      30
+181      25      36
+182       7      NA
+183      16      34
+184      18      27
+185      15      25
+186      14      32
+187      16      25
+188      21      27
+189      17      27
+190      13      19
+191      20      28
+192      30      22
+193      15      34
+194      20      16
+195      19      31
+196      13      31
+197      23      37
+198      19      35
+199      12      27
+200      19      25
+201      15      28
+202       8      31
+203      20      33
+204      29      28
+205      26      33
+206       8      NA
+207      17      25
+208       7      36
+209      14      27
+210      16      23
+211      20      30
+212      18      26
+213      23      28
+214      17      21
+215      22      30
+216      21      37
+217      14      32
+218      19      NA
+219      26      32
+220      10      40
+221      15      20
+222      21      13
+223      26      28
+224      13      NA
+225      21      33
+226      20      25
+227      31      30
+228       9      31
+229      26      20
+230      14      25
+231      14      24
+232      20      34
+233      19      30
+234      13      33
+235      16      28
+236      25      39
+237      31      28
+238      22      30
+239      15      30
+240      21      33
+241       7      36
+242      NA      NA
+243      15      17
+244      13      28
+245      27      16
+246      11      28
+247      11      26
+248      26      34
+249      17      32
+250      14      22
+251      23      30
+252      16      31
+253      19      35
+254      24      31
+255      11      30
+256      15      29
+257      15      36
+258      19      35
+259      13      25
+260      12      36
+261      20      26
+262      21      28
+263       7      39
+264      13      19
+265      16      32
+266      21      26
+267       8      29
+268      14      27
+269      22      22
+270      19      34
+271      21      31
+272      NA      34
+273      12      34
+274      12      28
+275      12      29
+276       9      32
+277      19      29
+278       7      36
+279      19      33
+280      21      32
+281      18      27
+282      16      21
+283      23      24
+284      14      33
+285      12      33
+286      19      27
+287      14      32
+288      24      26
+289      10      28
+290      15      NA
+291      16      29
+292      20      27
+293      27      29
+294      10      26
+295      23      34
+296      17      20
+297      27      31
+298      NA      NA
+299      16      17
+300      11      29
+301      17      37
+302      26      14
+303      14      20
+304      18      26
+305      17      23
+306      19      18
+307      NA      27
+308      12      29
+309      18      30
+310      20      31
+311      15      37
+312      22      30
+313      17      20
+314      21      36
+315      20      31
+316       7      40
+317      18      35
+318      12      19
+319      14      30
+320      22      26
+321      12      31
+322      16      32
+323      12      27
+324      10      39
+325      18      37
+326      22      NA
+327      NA      NA
+328       8      29
+329      17      25
+330      20      32</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">starts_with</span>(<span class="st">"S"</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Sex SDTOTAL Sign.Area
+1     F      31 24.296531
+2     F      30 18.989508
+3     F      25 11.851519
+4     F      31 39.050062
+5     F      24 18.758396
+6     F      27 41.063246
+7     F      24 16.445833
+8     F      22 43.822996
+9     F      NA 22.923881
+10    F      19 18.717845
+11    F      21 18.110752
+12    F      19 20.705285
+13    F      29 18.155226
+14    F      22 15.509954
+15    F      30 15.214579
+16    F      36 32.720134
+17    F      34 17.071622
+18    F      38 43.898422
+19    F      29 30.281682
+20    F      24 18.896037
+21    F      30 20.559884
+22    F      28 17.572770
+23    F      32 20.560058
+24    F      22 16.571107
+25    F      22 21.039624
+26    F      32 20.701303
+27    F      29 26.396454
+28    F      31 17.061541
+29    F      34 25.272681
+30    F      26 16.205651
+31    F      25 19.877382
+32    F      30 11.094241
+33    F      31 25.915746
+34    F      NA 33.190521
+35    F      26 15.394440
+36    F      NA 18.155029
+37    F      28 17.172521
+38    F      17 19.127735
+39    F      35 28.909917
+40    F      33 18.538134
+41    F      32 26.630998
+42    F      31 24.121680
+43    F      24 24.776395
+44    F      NA 34.710442
+45    F      27 29.133823
+46    F      34 28.204931
+47    F      25 22.904642
+48    F      37 27.658023
+49    F      33 20.945377
+50    F      36 47.804887
+51    F      16 13.142438
+52    F      20 22.793739
+53    F      36 22.881940
+54    F      25 14.701313
+55    F      28 30.765821
+56    F      26 18.769857
+57    F      32 20.045627
+58    F      30 25.533704
+59    F      27 23.227077
+60    F      32 22.521970
+61    F      27 27.121893
+62    F      31 17.630194
+63    F      30 23.207935
+64    F      37 25.120758
+65    F      30 21.780243
+66    F      23 29.962910
+67    F      27 12.705079
+68    F      36 23.768574
+69    F      31 25.731424
+70    F      33 26.418714
+71    F      26 34.455485
+72    F      NA 26.434718
+73    F      NA 29.008930
+74    F      36 49.147961
+75    F      37 23.804587
+76    F      29 21.507667
+77    F      28 17.977268
+78    F      28 19.096791
+79    F      34 17.723466
+80    F      29 27.346023
+81    F      21 32.176898
+82    F      15 20.087602
+83    F      18 20.912495
+84    F      31 20.511712
+85    F      30 24.513888
+86    F      24 20.370385
+87    F      30 21.725539
+88    F      25 15.606021
+89    F      31 25.519663
+90    F      22 17.419537
+91    F      NA 18.745972
+92    F      28 27.947055
+93    F      30 21.405770
+94    F      20  9.563961
+95    F      28 13.276478
+96    F      33 16.504572
+97    F      22 19.295643
+98    F      35 19.112926
+99    F      23 18.648398
+100   F      26 17.720230
+101   F      20 16.262613
+102   F      39 23.857528
+103   F      31 19.638104
+104   F      15 26.870831
+105   F      31 24.924233
+106   F      31 14.872924
+107   F      24 15.172115
+108   F      27 20.734865
+109   F      33 28.383166
+110   F      34 21.160570
+111   F      37 15.631494
+112   F      27 12.949295
+113   F      29 21.450263
+114   F      28 46.225209
+115   F      31 36.797092
+116   F      34 13.216139
+117   F      17 18.060017
+118   F      28 19.316250
+119   F      15 33.358237
+120   F      22 14.949362
+121   F      25 13.349439
+122   F      28 25.840955
+123   F      21 30.191711
+124   F      NA 15.943433
+125   F      26 19.707519
+126   F      28 27.407425
+127   F      24 13.980259
+128   F      26 24.396344
+129   F      28 20.700610
+130   F      26 37.769685
+131   F      25 24.763227
+132   F      25 26.901493
+133   F      23 20.040083
+134   F      32 26.420206
+135   F      16 23.848212
+136   F      29 21.002283
+137   F      31 29.109331
+138   F      28 22.964497
+139   F      33 15.523120
+140   F      38 42.806934
+141   F      26 25.335006
+142   F      33 13.056248
+143   F      23 18.223013
+144   F      22 24.634363
+145   F      31 26.272873
+146   F      33 15.578667
+147   F      29 18.266232
+148   F      27 19.618566
+149   F      31 25.282181
+150   F      38 39.689075
+151   F      36 18.812011
+152   F      26 17.821076
+153   F      29 31.275367
+154   F      22 22.527380
+155   F      17 16.814382
+156   F      24 24.593007
+157   F      26 23.727824
+158   F      37 26.601507
+159   F      NA 12.774289
+160   F      25 25.442862
+161   F      33 25.681230
+162   F      30 33.664557
+163   F      32 22.355848
+164   F      27 31.631358
+165   F      21 18.578498
+166   F      31 19.367396
+167   F      34 22.461414
+168   F      34 17.657010
+169   F      28 24.066789
+170   F      27 20.645129
+171   F      NA 31.460816
+172   F      32 15.009659
+173   F      31 23.872397
+174   F      24 20.655891
+175   F      16 21.953823
+176   F      NA 24.311278
+177   F      31 21.354135
+178   F      16 36.655876
+179   F      30 20.058496
+180   F      30 18.908362
+181   F      36 31.588724
+182   F      NA 21.213182
+183   F      34 20.609161
+184   F      27 18.351390
+185   F      25 35.646074
+186   F      32 13.551957
+187   F      25 12.182295
+188   F      27 23.285642
+189   M      27 25.974872
+190   M      19 37.006211
+191   M      28 19.968055
+192   M      22 45.912681
+193   M      34 22.112593
+194   M      16 34.522100
+195   M      31 26.954601
+196   M      31 20.889859
+197   M      37 34.266473
+198   M      35 19.442756
+199   M      27 21.999978
+200   M      25 46.441422
+201   M      28 45.858549
+202   M      31 19.087780
+203   M      33 27.697261
+204   M      28 16.901978
+205   M      33 15.421889
+206   M      NA 25.090778
+207   M      25 29.722703
+208   M      36 30.958955
+209   M      27 35.384792
+210   M      23 36.289421
+211   M      30 23.093988
+212   M      26 31.632944
+213   M      28 15.229884
+214   M      21 20.950510
+215   M      30 35.700029
+216   M      37 32.767860
+217   M      32 20.324233
+218   M      NA 21.257910
+219   M      32 18.871362
+220   M      40 49.809048
+221   M      20 14.786882
+222   M      13 20.840387
+223   M      28 25.885302
+224   M      NA 38.328105
+225   M      33 34.358397
+226   M      25 10.900977
+227   M      30 16.725685
+228   M      31 16.128500
+229   M      20 17.984444
+230   M      25 19.384045
+231   M      24 20.668380
+232   M      34 11.755563
+233   M      30 36.204282
+234   M      33 49.454394
+235   M      28 27.319665
+236   M      39 35.716290
+237   M      28 23.182748
+238   M      30 15.509954
+239   M      30 36.461757
+240   M      33 20.473583
+241   M      36        NA
+242   M      NA 31.996832
+243   M      17 36.457825
+244   M      28 22.314446
+245   M      16 18.465099
+246   M      28 23.860683
+247   M      26 14.810618
+248   M      34 41.355052
+249   M      32 19.783758
+250   M      22 25.064623
+251   M      30 17.068892
+252   M      31        NA
+253   M      35 30.373982
+254   M      31 10.629629
+255   M      30 10.836010
+256   M      29 32.968943
+257   M      36 22.300949
+258   M      35 16.593587
+259   M      25        NA
+260   M      36 45.446366
+261   M      26 44.618771
+262   M      28        NA
+263   M      39 37.565389
+264   M      19 27.163885
+265   M      32 27.596658
+266   M      26 46.058355
+267   M      29 28.386323
+268   M      27 18.453061
+269   M      22 15.343366
+270   M      34 22.382767
+271   M      31 15.252225
+272   M      34 28.403742
+273   M      34        NA
+274   M      28 15.219761
+275   M      29 16.867589
+276   M      32 39.069424
+277   M      29 31.472776
+278   M      36 32.208963
+279   M      33 15.666537
+280   M      32 21.868271
+281   M      27 22.008611
+282   M      21 32.338677
+283   M      24 20.143195
+284   M      33 28.299445
+285   M      33 33.899882
+286   M      27 31.380395
+287   M      32 18.249153
+288   M      26 40.294574
+289   M      28 18.105804
+290   M      NA 15.256924
+291   M      29 27.738898
+292   M      27 10.750000
+293   M      29        NA
+294   M      26 26.977861
+295   M      34 16.086667
+296   M      20 20.203248
+297   M      31 18.311112
+298   M      NA 22.148386
+299   M      17 26.810606
+300   M      29 23.240653
+301   M      37 20.780450
+302   M      14 11.519646
+303   M      20 22.697616
+304   M      26 21.790772
+305   M      23 15.333786
+306   M      18 15.460653
+307   M      27 30.967984
+308   M      29 19.968414
+309   M      30 14.142882
+310   M      31 10.989720
+311   M      37 13.136164
+312   M      30 36.293273
+313   M      20 24.644982
+314   M      36 30.309957
+315   M      31 14.651493
+316   M      40 36.272528
+317   M      35 32.107761
+318   M      19  7.831552
+319   M      30 34.821579
+320   M      26 23.519205
+321   M      31 23.094608
+322   M      32 12.909654
+323   M      27 17.481360
+324   M      39 37.675430
+325   M      37 18.491479
+326   M      NA 27.407425
+327   M      NA 25.941458
+328   M      29 19.364250
+329   M      25 19.251197
+330   M      32 29.268717</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="across-the-tidyverse" class="level1">
+<h1>Across the <code>tidyverse</code></h1>
+<p>Todo muy lindo, pero esto se puede usar para algo más…. potente? Bueno, así como <code>group_by</code> sirve para agrupar filas, típicamente para sumarizar o mutar según estas agrupaciones, se puede hacer algo parecido pero con las columnas. Es decir, se puede sumarizar y mutar, aplicando la misma función (o funciones) a diferentes columnas. Qué pasa si quiero tener la media y el desvío de <em>cada columna</em> que sea numérica, por ejemplo. Digamos que quiero pasar a z-score <em>todas</em> mis medidas, que tengo, convenientemente, en diferentes columnas. Cómo puedo hacer eso? Con la función <code>across</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span> <span class="fu">summarize</span>(<span class="fu">across</span>(<span class="fu">ends_with</span>(<span class="st">"TOTAL"</span>),mean,<span class="at">na.rm=</span>T))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  NPI16TOTAL GSESTOTAL  ADTOTAL  SDTOTAL
+1   3.233333  26.65806 15.75238 28.39032</code></pre>
+</div>
+</div>
+<p>EH?</p>
+<p>Vamos por partes. La función <code>across</code> necesita de al menos <em>dos</em> argumentos: un conjunto de columnas, y una función.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">across</span>(<span class="fu">ends_with</span>(<span class="st">"TOTAL"</span>),mean)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Pero como nos advierte <code>R</code> en la consola si queremos correr lo que se ve arriba directamente, <code>across</code> no es una función que pueda usarse “suelta”, sino que tiene que ir <em>dentro</em> de un <em>verbo</em> de <code>dplyr</code>: (generalmente <code>summarize</code>, <code>mutate</code>, o el rara vez usado <code>transmute</code>, que no vimos).</p>
+<p>Lo que hace <code>across</code> es indicarle a <code>mutate</code> o <code>summarize</code>, que la operación (cuenta, suma, promedio, etc) se va a hacer a varias columnas a la vez. Por eso hay que indicarle a cuáles columnas. En este caso estamos usando <code>tidyselect</code> para indicarle que son las columnas que terminan en “TOTAL” las que queremos. El otro argumento es la función que queremos usar. En este caso, queremos la media, por eso indicamos la función <code>mean</code>, así, sin paréntesis ni nada.</p>
+<p>Entonces tendríamos:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span>  <span class="co">#pongo los datos en el pipe</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>( <span class="co">#sumarizo</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>( <span class="co"># varias columnas a la vez</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ends_with</span>(<span class="st">"TOTAL"</span>), <span class="co"># las que terminan en "TOTAL"</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>      mean <span class="co">#calculale la media a cada una</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>    ) </span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  NPI16TOTAL GSESTOTAL ADTOTAL SDTOTAL
+1   3.233333        NA      NA      NA</code></pre>
+</div>
+</div>
+<p>Oops! Tenemos varios <code>NAs</code>! Tendría que pasarle a <code>mean</code> el argumento <code>na.rm=T</code>… Fácil, le paso ese argumento <strong>a <code>across</code></strong>, para que cuando “llame” a la función <code>mean</code> para calcular la media de cada columna, le “pase” ese argumento. Entonces tenemos la expresión final (o sea, la que mostré al principio :P, pero acá la escribimos un poco “desaparramada” para que se vea mejor qué hace cada parte):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span>  <span class="co">#pongo los datos en el pipe</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>( <span class="co">#sumarizo</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>( <span class="co"># varias columnas a la vez</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ends_with</span>(<span class="st">"TOTAL"</span>), <span class="co"># las que terminan en "TOTAL"</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>      mean,  <span class="co">#calculale la media a cada una</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm=</span>T <span class="co">#pasale el argumento na.rm=T a la función .mean.</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  NPI16TOTAL GSESTOTAL  ADTOTAL  SDTOTAL
+1   3.233333  26.65806 15.75238 28.39032</code></pre>
+</div>
+</div>
+<p>Claro está, puedo elegir las columnas como yo quiera. Las siguientes expresiones hacen lo mismo que la anterior:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span>  <span class="co">#pongo los datos en el pipe</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>( <span class="co">#sumarizo</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>( <span class="co"># varias columnas a la vez</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>      <span class="dv">3</span><span class="sc">:</span><span class="dv">6</span>, <span class="co"># las columnas 3 a la 6</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>      mean,  <span class="co">#calculale la media a cada una</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm=</span>T <span class="co">#pasale el argumento na.rm=T a la función .mean.</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span>  <span class="co">#pongo los datos en el pipe</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>( <span class="co">#sumarizo</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>( <span class="co"># varias columnas a la vez</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="st">"NPI16TOTAL"</span>,<span class="st">"GSESTOTAL"</span>,<span class="st">"ADTOTAL"</span>,<span class="st">"SDTOTAL"</span>), <span class="co"># lista de nombres de columna</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>      mean,  <span class="co">#calculale la media a cada una</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm=</span>T <span class="co">#pasale el argumento na.rm=T a la función .mean.</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Como siempre, <code>across</code> puede integrarse en un <code>pipeline</code> o tubería más grande. Por ejemplo, puedo además agrupar or filas:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span>  <span class="co">#pongo los datos en el pipe</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Sex) <span class="sc">%&gt;%</span> <span class="co">#agrupo filas por Sexo</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>( <span class="co">#sumarizo</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>( <span class="co"># varias columnas a la vez</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ends_with</span>(<span class="st">"TOTAL"</span>), <span class="co"># las que terminan en "TOTAL"</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>      mean,  <span class="co">#calculale la media a cada una</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm=</span>T <span class="co">#pasale el argumento na.rm=T a la función .mean.</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  Sex   NPI16TOTAL GSESTOTAL ADTOTAL SDTOTAL
+  &lt;fct&gt;      &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+1 M           3.65      27.0    17.2    28.9
+2 F           2.91      26.4    14.6    28.0</code></pre>
+</div>
+</div>
+<p>NOICE!</p>
+<p><strong>IMPORTANTE</strong> <code>across</code> puede usarse en grupos, pero NO puede elegirse una columna de grupo para aplicar las funciones.</p>
+<section id="varias-funciones-a-la-vez" class="level2">
+<h2 class="anchored" data-anchor-id="varias-funciones-a-la-vez">Varias funciones a la vez</h2>
+<p>Ya lo dice el dicho: el que calcula la media, quiere calcular también el desvío. ¿Cómo hacerlo eficientemente con <code>across</code>? Simplemente agregar la función <code>sd</code> en la lista de argumentos (combinándolas en una lista de funciones mediante el combine <code>c()</code>):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span>  <span class="co">#pongo los datos en el pipe</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>( <span class="co">#sumarizo</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>( <span class="co"># varias columnas a la vez</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ends_with</span>(<span class="st">"TOTAL"</span>), <span class="co"># las que terminan en "TOTAL"</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(mean,sd),  <span class="co">#calculale la media y el desvío a cada una</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm=</span>T <span class="co">#pasale el argumento na.rm=T a la función .mean.</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  NPI16TOTAL_1 NPI16TOTAL_2 GSESTOTAL_1 GSESTOTAL_2 ADTOTAL_1 ADTOTAL_2
+1     3.233333     2.341014    26.65806     2.43475  15.75238  5.410736
+  SDTOTAL_1 SDTOTAL_2
+1  28.39032   5.53008</code></pre>
+</div>
+</div>
+<p>Pero… qué son esos nombres de columnas! Horror! Acá es relativamente fácil deducir cuál es la media y cuál el desvío. Y si bien el mundo es como debe ser y la numeración <code>_1</code> y <code>_2</code> respeta el orden en que fueron nombradas en la lista (media y desvío, respectivamente), esa nomenclatura es una receta para el desastre.</p>
+<p>Antes de ver una solución sencilla a este problema, tengo que mostrarles un algo que no vimos: cómo crear una lista <strong>nominada</strong> (o sea, que lleva nombres) con <code>c()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#esta es una lista donde cada elemento tiene un "nombre" o etiqueta</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>miListaConEtiquetas <span class="ot">=</span> <span class="fu">c</span>(<span class="at">primerElemento=</span><span class="st">"hola"</span>,<span class="at">segundoElemento=</span><span class="st">"che"</span>,<span class="at">tercerElemento=</span><span class="st">"todo bien?"</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>miListaConEtiquetas</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> primerElemento segundoElemento  tercerElemento 
+         "hola"           "che"    "todo bien?" </code></pre>
+</div>
+</div>
+<p>Si entendiste qué hace eso de arriba, entonces vas a entender lo siguiente:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span>  <span class="co">#pongo los datos en el pipe</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>( <span class="co">#sumarizo</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>( <span class="co"># varias columnas a la vez</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ends_with</span>(<span class="st">"TOTAL"</span>), <span class="co"># las que terminan en "TOTAL"</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="at">media=</span>mean,desvío<span class="ot">=</span>sd),  <span class="co">#calculale la media y el desvío a cada una</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">na.rm=</span>T <span class="co">#pasale el argumento na.rm=T a la función .mean.</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  NPI16TOTAL_media NPI16TOTAL_desvío GSESTOTAL_media GSESTOTAL_desvío
+1         3.233333          2.341014        26.65806          2.43475
+  ADTOTAL_media ADTOTAL_desvío SDTOTAL_media SDTOTAL_desvío
+1      15.75238       5.410736      28.39032        5.53008</code></pre>
+</div>
+</div>
+<p>Ahora esto es legible!</p>
+<p>Hay una forma más avanzada de nombrar <em>como uno quiera</em> las columnas resultantes. Si les interesa, vean la documentación (<code>help(across)</code> o <code>?across</code>)</p>
+</section>
+<section id="mutatis-mutandi" class="level2">
+<h2 class="anchored" data-anchor-id="mutatis-mutandi">Mutatis mutandi</h2>
+<p>No sólo de <code>summarise</code> viven les humanes. Qué pasa si, por ejemplo, quiero calcular el z-score de <em>todas</em> las escalas? Acá no puedo sumarizar, porque quiero un valor para cada fila, justamente. Entonces necesitaría usar <code>mutate</code>. Ningún problema. Usaremos la función <code>scale</code> que nos calcula el z-score de una (ver <a href="https://eva-cursos.psico.edu.uy/">sesión 3</a>)..</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span> </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ends_with</span>(<span class="st">"TOTAL"</span>),</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>      scale</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    ) </span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Sex Age  NPI16TOTAL  GSESTOTAL     ADTOTAL     SDTOTAL Sign.Area Name.Area
+1     F  26  1.60898968  0.1404396  0.78503529  0.47190592 24.296531 26.000525
+2     F  22  0.75465888 -0.6809998  0.60021756  0.29107671 18.989508 17.436401
+3     F  35 -1.38116814 -1.5024393 -0.87832423 -0.61306937 11.851519 15.189587
+4     F  24  2.89048589 -0.6809998  1.70912391  0.47190592 39.050062 29.264798
+5     F  25  1.18182428  0.9618791  0.60021756 -0.79389859 18.758396 15.191003
+6     F  21 -0.95400273 -1.0917195 -0.50868878 -0.25141094 41.063246 55.455051
+7     F  23 -0.95400273 -0.6809998  0.23058211 -0.79389859 16.445833 14.834557
+8     F  22  2.03615509 -0.6809998  1.15467073 -1.15555702 43.822996 16.560289
+9     F  22 -1.38116814  0.1404396 -0.87832423          NA 22.923881 18.055849
+10    F  20 -1.38116814 -2.7345985 -1.43277740 -1.69804467 18.717845 17.600487
+11    F  23 -1.38116814 -0.6809998 -1.61759513 -1.33638624 18.110752 17.869281
+12    F  22 -1.38116814  2.1940383 -0.50868878 -1.69804467 20.705285 15.379532
+13    F  22 -0.52683733 -0.2702801 -0.69350651  0.11024749 18.155226 22.547101
+14    F  38 -0.95400273 -1.9131590 -1.24795968 -1.15555702 15.509954 14.646354
+15    F  25 -1.38116814 -1.0917195 -1.24795968  0.29107671 15.214579 18.870793
+16    F  21  0.32749348 -1.9131590 -0.13905334  1.37605200 32.720134 26.120044
+17    F  20  1.18182428  0.5511594  0.60021756  1.01439357 17.071622 12.318345
+18    F  26  1.18182428 -0.6809998 -0.32387106  1.73771043 43.898422 17.522932
+19    F  35 -0.09967193 -1.0917195 -0.50868878  0.11024749 30.281682 18.094715
+20    F  21 -0.95400273  0.1404396 -0.13905334 -0.79389859 18.896037 17.055448
+21    F  35  0.75465888  2.1940383  0.41539984  0.29107671 20.559884 16.064371
+22    F  25 -0.09967193  0.9618791 -0.50868878 -0.07058173 17.572770 18.094120
+23    F  25  0.75465888         NA -0.32387106  0.65273514 20.560058 17.661069
+24    F  20 -1.38116814 -0.2702801 -1.43277740 -1.15555702 16.571107 17.299370
+25    F  25  1.60898968  0.1404396  0.41539984 -1.15555702 21.039624 19.489892
+26    F  19 -0.52683733 -1.0917195  0.04576439  0.65273514 20.701303 26.525676
+27    F  19  0.32749348  0.5511594  2.07875935  0.11024749 26.396454 15.353875
+28    F  21  0.32749348 -0.2702801 -0.50868878  0.47190592 17.061541 16.419877
+29    F  25  1.18182428 -0.6809998  0.60021756  1.01439357 25.272681 19.610525
+30    F  22 -0.95400273  1.7833186 -1.24795968 -0.43224016 16.205651 17.085054
+31    F  22 -0.95400273  1.7833186 -0.50868878 -0.61306937 19.877382 15.631494
+32    F  23 -0.09967193 -0.6809998          NA  0.29107671 11.094241 21.109015
+33    F  18  0.32749348 -0.2702801 -0.32387106  0.47190592 25.915746 16.202997
+34    F  24 -0.09967193 -0.2702801  0.04576439          NA 33.190521 16.263936
+35    F  34 -0.95400273  0.5511594 -0.69350651 -0.43224016 15.394440 14.899650
+36    F  25 -0.52683733 -0.2702801 -1.61759513          NA 18.155029 17.268679
+37    F  20 -0.09967193  0.9618791  0.23058211 -0.07058173 17.172521 16.529527
+38    F  24 -0.95400273 -0.6809998 -1.61759513 -2.05970310 19.127735 12.494287
+39    F  35 -1.38116814 -0.6809998 -1.06314196  1.19522278 28.909917 17.989226
+40    F  23 -1.38116814 -0.2702801 -0.50868878  0.83356435 18.538134 13.186001
+41    F  20 -0.95400273  0.1404396  0.60021756  0.65273514 26.630998 10.057887
+42    F  20 -1.38116814  0.1404396 -1.06314196  0.47190592 24.121680 18.062002
+43    F  24 -0.52683733 -0.2702801 -1.06314196 -0.79389859 24.776395 19.808200
+44    F  25 -0.09967193 -0.2702801  1.89394163          NA 34.710442 21.385667
+45    F  32 -0.95400273  0.1404396 -1.61759513 -0.25141094 29.133823 21.237668
+46    F  36  0.75465888  0.1404396  0.96985301  1.01439357 28.204931 13.247019
+47    F  30 -0.52683733 -1.9131590 -0.32387106 -0.61306937 22.904642 23.223991
+48    F  45 -0.09967193  0.5511594 -1.43277740  1.55688121 27.658023 19.901170
+49    F  22 -1.38116814  0.5511594          NA  0.83356435 20.945377 21.380806
+50    F  21  1.18182428 -0.2702801 -0.87832423  1.37605200 47.804887 30.036984
+51    F  24 -0.52683733  0.1404396 -0.87832423 -2.24053231 13.142438 13.589989
+52    F  22 -0.95400273 -0.2702801 -0.32387106 -1.51721545 22.793739 15.981829
+53    F  25 -0.09967193 -0.6809998 -1.06314196  1.37605200 22.881940 16.072401
+54    F  20 -0.52683733 -0.2702801  0.04576439 -0.61306937 14.701313 17.536427
+55    F  51 -0.95400273  0.1404396          NA -0.07058173 30.765821 26.467239
+56    F  21 -0.95400273  1.3725988 -1.06314196 -0.43224016 18.769857 18.626474
+57    F  35 -0.09967193 -0.6809998 -0.87832423  0.65273514 20.045627 24.362824
+58    F  23  0.75465888 -0.6809998  1.15467073  0.29107671 25.533704 16.822907
+59    F  38 -0.95400273  0.5511594  0.41539984 -0.25141094 23.227077 20.359473
+60    F  20  0.75465888 -0.2702801 -1.06314196  0.65273514 22.521970 20.530576
+61    F  23 -0.09967193 -2.3238787 -0.32387106 -0.25141094 27.121893 22.724603
+62    F  24  1.18182428  0.1404396  0.41539984  0.47190592 17.630194 15.417240
+63    F  22  0.75465888 -0.2702801  0.78503529  0.29107671 23.207935 16.672670
+64    F  22  0.32749348         NA -1.06314196  1.55688121 25.120758 13.172675
+65    F  25 -1.38116814  0.5511594 -1.24795968  0.29107671 21.780243 15.415845
+66    F  20 -0.09967193 -0.2702801  0.23058211 -0.97472780 29.962910 19.584921
+67    F  22 -0.52683733  1.3725988 -1.06314196 -0.25141094 12.705079 15.715192
+68    F  20 -1.38116814  0.5511594 -1.61759513  1.37605200 23.768574 13.772329
+69    F  21  1.60898968  0.5511594 -1.43277740  0.47190592 25.731424 28.835433
+70    F  22 -0.52683733 -1.5024393 -0.87832423  0.83356435 26.418714 15.705610
+71    F  20 -0.09967193 -1.0917195  0.78503529 -0.43224016 34.455485 19.946144
+72    F  19  1.60898968 -0.2702801          NA          NA 26.434718 19.890000
+73    F  19  0.32749348 -0.6809998          NA          NA 29.008930 29.544178
+74    F  19  2.46332049 -0.6809998  0.41539984  1.37605200 49.147961 25.233082
+75    F  19  0.75465888  0.1404396  0.78503529  1.55688121 23.804587 15.832893
+76    F  18 -0.52683733         NA  0.60021756  0.11024749 21.507667 15.756191
+77    F  25 -0.52683733 -1.0917195 -0.32387106 -0.07058173 17.977268 15.485670
+78    F  40 -0.95400273 -0.6809998 -1.24795968 -0.07058173 19.096791 13.691676
+79    F  18 -0.52683733 -1.5024393  0.41539984  1.01439357 17.723466 17.376273
+80    F  20 -0.95400273  1.3725988 -1.06314196  0.11024749 27.346023 24.511110
+81    F  19 -0.52683733 -0.2702801 -0.87832423 -1.33638624 32.176898 14.688142
+82    F  21 -0.09967193 -0.2702801 -1.24795968 -2.42136153 20.087602 21.536145
+83    F  18 -0.52683733  0.1404396  0.23058211 -1.87887388 20.912495 18.242671
+84    F  17  2.03615509  1.7833186  1.89394163  0.47190592 20.511712 16.663639
+85    F  28  0.32749348  2.1940383  0.60021756  0.29107671 24.513888 22.309787
+86    F  21 -0.09967193  1.7833186 -1.24795968 -0.79389859 20.370385 15.747772
+87    F  28 -0.95400273  0.5511594 -0.13905334  0.29107671 21.725539 21.316504
+88    F  18  0.75465888         NA  1.70912391 -0.61306937 15.606021 17.331248
+89    F  20  0.75465888  0.5511594  0.23058211  0.47190592 25.519663  9.902743
+90    F  19  0.32749348  0.1404396 -0.87832423 -1.15555702 17.419537 13.772329
+91    F  22 -0.95400273 -0.2702801 -1.24795968          NA 18.745972 15.672026
+92    F  18 -0.52683733  1.7833186 -0.50868878 -0.07058173 27.947055 18.067359
+93    F  20  0.32749348 -0.2702801 -0.13905334  0.29107671 21.405770 14.784458
+94    F  19 -0.95400273  0.5511594 -1.43277740 -1.51721545  9.563961 22.864233
+95    F  23  0.75465888 -0.2702801  0.41539984 -0.07058173 13.276478 10.248514
+96    F  21  0.32749348  0.9618791 -0.32387106  0.83356435 16.504572 23.079239
+97    F  20 -0.95400273         NA -0.13905334 -1.15555702 19.295643 14.538033
+98    F  18  0.32749348 -0.2702801  0.78503529  1.19522278 19.112926 25.736439
+99    F  19 -0.95400273 -0.2702801  0.04576439 -0.97472780 18.648398 16.727185
+100   F  21  0.75465888 -1.0917195  2.07875935 -0.43224016 17.720230 18.573675
+101   F  21  0.75465888 -0.2702801  2.07875935 -1.51721545 16.262613 25.250547
+102   F  26 -0.52683733  0.9618791 -1.06314196  1.91853965 23.857528 14.652960
+103   F  19  0.75465888  0.5511594 -0.50868878  0.47190592 19.638104 16.766565
+104   F  18 -0.95400273 -1.9131590 -1.24795968 -2.42136153 26.870831 18.589684
+105   F  19  1.60898968  0.5511594          NA  0.47190592 24.924233 17.992812
+106   F  19 -0.52683733 -0.6809998 -0.13905334  0.47190592 14.872924 21.047800
+107   F  22 -1.38116814 -0.6809998 -0.87832423 -0.79389859 15.172115 11.345017
+108   F  18 -0.52683733         NA  0.41539984 -0.25141094 20.734865 17.316352
+109   F  19 -0.09967193  1.3725988  0.04576439  0.83356435 28.383166 20.023622
+110   F  18  0.75465888 -0.6809998 -1.06314196  1.01439357 21.160570 14.213917
+111   F  18 -1.38116814 -0.6809998  0.04576439  1.55688121 15.631494 12.608228
+112   F  18 -1.38116814 -1.0917195 -0.50868878 -0.25141094 12.949295 15.721576
+113   F  20 -0.09967193 -0.2702801  0.78503529  0.11024749 21.450263 15.070429
+114   F  20 -0.95400273 -0.6809998 -0.69350651 -0.07058173 46.225209 30.008571
+115   F  22 -0.09967193 -0.6809998  1.33948846  0.47190592 36.797092 17.360177
+116   F  19 -1.38116814  0.1404396 -1.43277740  1.01439357 13.216139 11.146134
+117   F  23 -1.38116814 -0.6809998 -1.24795968 -2.05970310 18.060017 11.195546
+118   F  20 -0.95400273 -1.0917195 -0.50868878 -0.07058173 19.316250 15.035427
+119   F  19 -1.38116814         NA          NA -2.42136153 33.358237 45.440372
+120   F  19 -0.52683733 -0.2702801  0.78503529 -1.15555702 14.949362 17.360177
+121   F  21  1.18182428  1.3725988  0.41539984 -0.61306937 13.349439 17.314282
+122   F  19 -0.52683733         NA  0.60021756 -0.07058173 25.840955 16.857812
+123   F  19 -1.38116814 -0.2702801 -1.43277740 -1.33638624 30.191711 20.853969
+124   F  20 -1.38116814  1.7833186 -0.32387106          NA 15.943433 12.502030
+125   F  19 -1.38116814  0.5511594 -1.61759513 -0.43224016 19.707519 16.384695
+126   F  19 -0.95400273 -0.2702801  1.33948846 -0.07058173 27.407425 13.445216
+127   F  19 -0.52683733  2.6047580 -0.69350651 -0.79389859 13.980259 13.440417
+128   F  21 -0.09967193         NA -0.13905334 -0.43224016 24.396344 16.679118
+129   F  19  0.32749348 -0.2702801  1.70912391 -0.07058173 20.700610 18.932989
+130   F  20 -1.38116814  1.3725988 -1.43277740 -0.43224016 37.769685 19.530675
+131   F  49  0.75465888  0.5511594 -0.50868878 -0.61306937 24.763227 17.675067
+132   F  30 -1.38116814  0.5511594 -1.61759513 -0.61306937 26.901493 18.223996
+133   F  19 -0.95400273  0.5511594 -0.32387106 -0.97472780 20.040083 17.690269
+134   F  19  0.32749348 -0.2702801  0.41539984  0.65273514 26.420206 23.691997
+135   F  24 -1.38116814 -0.2702801 -1.24795968 -2.24053231 23.848212 13.263243
+136   F  19  0.32749348  0.1404396  0.41539984  0.11024749 21.002283 26.425225
+137   F  19  0.32749348 -0.2702801 -0.69350651  0.47190592 29.109331 18.789134
+138   F  19 -0.95400273 -0.2702801  0.04576439 -0.07058173 22.964497 23.053134
+139   F  19  1.18182428 -0.6809998 -0.13905334  0.83356435 15.523120 11.486930
+140   F  21  0.32749348 -0.6809998 -0.69350651  1.73771043 42.806934 18.590456
+141   F  28 -0.52683733 -0.2702801  0.41539984 -0.43224016 25.335006 23.140192
+142   F  20  2.03615509 -1.5024393  0.23058211  0.83356435 13.056248 12.262353
+143   F  23 -0.95400273 -0.2702801 -0.32387106 -0.97472780 18.223013 13.893591
+144   F  24  0.75465888 -0.6809998 -1.61759513 -1.15555702 24.634363 15.082553
+145   F  19 -0.09967193 -0.2702801 -0.87832423  0.47190592 26.272873 14.452974
+146   F  35 -0.52683733 -0.2702801 -1.24795968  0.83356435 15.578667 17.527432
+147   F  19  1.60898968 -0.2702801  0.23058211  0.11024749 18.266232 12.805396
+148   F  32  1.60898968 -0.2702801  0.96985301 -0.25141094 19.618566 13.924514
+149   F  19 -0.52683733  0.1404396  1.15467073  0.47190592 25.282181 15.280164
+150   F  19  0.75465888  2.1940383  0.23058211  1.73771043 39.689075 22.423723
+151   F  27  0.75465888 -0.6809998  2.44839480  1.37605200 18.812011 15.485670
+152   F  21  1.18182428 -1.0917195  0.23058211 -0.43224016 17.821076 17.923355
+153   F  19  1.18182428 -0.2702801  0.04576439  0.11024749 31.275367 21.096786
+154   F  19 -0.09967193 -1.5024393 -1.43277740 -1.15555702 22.527380 26.788271
+155   F  24 -0.09967193  0.1404396  1.33948846 -2.05970310 16.814382 21.030423
+156   F  22 -0.52683733 -1.5024393  0.96985301 -0.79389859 24.593007 15.415380
+157   F  20 -0.52683733  0.1404396 -0.32387106 -0.43224016 23.727824 17.548277
+158   F  22  0.32749348 -1.5024393 -1.06314196  1.55688121 26.601507 18.795237
+159   F  19 -0.95400273  0.5511594 -0.50868878          NA 12.774289 14.973079
+160   F  20 -0.52683733  0.1404396  0.96985301 -0.61306937 25.442862 25.499430
+161   F  19  0.32749348  0.1404396 -0.32387106  0.83356435 25.681230 17.984444
+162   F  19 -0.52683733 -1.0917195  1.33948846  0.29107671 33.664557 15.344067
+163   F  39 -0.95400273 -0.6809998 -1.43277740  0.65273514 22.355848 20.438190
+164   F  30 -0.95400273  1.7833186 -0.69350651 -0.25141094 31.631358 13.698219
+165   F  24 -0.09967193  0.5511594  0.23058211 -1.33638624 18.578498 16.912153
+166   F  26  0.32749348 -1.0917195 -0.87832423  0.47190592 19.367396 23.783649
+167   F  21 -0.09967193  0.1404396          NA  1.01439357 22.461414 12.526375
+168   F  19  0.75465888  0.1404396 -0.50868878  1.01439357 17.657010 15.892545
+169   F  18  0.32749348  0.1404396 -0.50868878 -0.07058173 24.066789 19.243748
+170   F  19 -0.09967193 -1.0917195 -1.24795968 -0.25141094 20.645129 26.555522
+171   F  42  0.75465888  0.1404396 -1.06314196          NA 31.460816 18.918406
+172   F  18 -0.52683733  1.3725988  0.60021756  0.65273514 15.009659 20.084747
+173   F  21  0.32749348  0.1404396 -1.43277740  0.47190592 23.872397 15.950625
+174   F  18 -0.95400273 -1.5024393  0.96985301 -0.79389859 20.655891 17.041993
+175   F  18 -0.95400273 -1.5024393 -0.32387106 -2.24053231 21.953823 18.576569
+176   F  20 -0.52683733         NA          NA          NA 24.311278 14.470571
+177   F  19 -0.52683733 -0.2702801  0.23058211  0.47190592 21.354135 17.695131
+178   F  26 -0.52683733 -1.0917195 -1.06314196 -2.24053231 36.655876 29.065710
+179   F  34 -0.09967193 -0.2702801 -0.69350651  0.29107671 20.058496 16.271647
+180   F  28 -0.09967193 -0.2702801          NA  0.29107671 18.908362 21.754391
+181   F  37  0.75465888  0.1404396  1.70912391  1.37605200 31.588724 21.811816
+182   F  49 -0.52683733         NA -1.61759513          NA 21.213182 17.670808
+183   F  25  2.03615509 -0.2702801  0.04576439  1.01439357 20.609161 18.036981
+184   F  21  0.32749348  0.1404396  0.41539984 -0.25141094 18.351390 11.983848
+185   F  23  0.75465888 -0.6809998 -0.13905334 -0.61306937 35.646074 23.706062
+186   F  18 -1.38116814 -0.2702801 -0.32387106  0.65273514 13.551957 13.574155
+187   F  18  0.32749348 -0.6809998  0.04576439 -0.61306937 12.182295 13.542697
+188   F  19  0.32749348  0.5511594  0.96985301 -0.25141094 23.285642 21.824465
+189   M  25 -0.52683733  2.6047580  0.23058211 -0.25141094 25.974872 18.677398
+190   M  23  0.32749348  0.9618791 -0.50868878 -1.69804467 37.006211 39.469744
+191   M  25 -0.52683733  0.9618791  0.78503529 -0.07058173 19.968055 20.512237
+192   M  24  0.32749348 -0.2702801  2.63321253 -1.15555702 45.912681 48.293484
+193   M  29 -0.95400273 -0.6809998 -0.13905334  1.01439357 22.112593 15.467374
+194   M  18  0.75465888  1.3725988  0.78503529 -2.24053231 34.522100 31.870675
+195   M  29 -0.09967193 -0.2702801  0.60021756  0.47190592 26.954601 20.839871
+196   M  35 -1.38116814 -1.0917195 -0.50868878  0.47190592 20.889859 23.227695
+197   M  24  2.89048589 -0.6809998  1.33948846  1.55688121 34.266473 28.667138
+198   M  48 -0.95400273 -0.6809998  0.60021756  1.19522278 19.442756 13.467058
+199   M  22 -0.52683733  0.1404396 -0.69350651 -0.25141094 21.999978 22.815742
+200   M  46  0.75465888  0.9618791  0.60021756 -0.61306937 46.441422 25.225836
+201   M  28 -0.09967193 -1.5024393 -0.13905334 -0.07058173 45.858549 22.851845
+202   M  41 -0.95400273  0.5511594 -1.43277740  0.47190592 19.087780 19.024583
+203   M  20  1.18182428 -0.6809998  0.78503529  0.83356435 27.697261 15.075898
+204   M  24 -0.52683733 -0.6809998  2.44839480 -0.07058173 16.901978 22.337884
+205   M  21  1.60898968  0.9618791  1.89394163  0.83356435 15.421889 17.250197
+206   M  21 -0.95400273  3.4261975 -1.43277740          NA 25.090778 13.989229
+207   M  25 -0.52683733  0.9618791  0.23058211 -0.61306937 29.722703 32.784700
+208   M  40 -1.38116814 -0.6809998 -1.61759513  1.37605200 30.958955 23.467181
+209   M  31 -0.52683733 -1.5024393 -0.32387106 -0.25141094 35.384792 17.373385
+210   M  25 -1.38116814 -0.6809998  0.04576439 -0.97472780 36.289421 16.837175
+211   M  23  0.75465888 -0.6809998  0.78503529  0.29107671 23.093988 15.301026
+212   M  25 -0.09967193 -0.2702801  0.41539984 -0.43224016 31.632944 18.029428
+213   M  22  1.60898968  1.7833186  1.33948846 -0.07058173 15.229884 12.780180
+214   M  22  1.18182428  0.9618791  0.23058211 -1.33638624 20.950510 25.101632
+215   M  31 -0.09967193  0.9618791  1.15467073  0.29107671 35.700029 12.781022
+216   M  27  1.60898968 -0.6809998  0.96985301  1.55688121 32.767860 17.074981
+217   M  29  2.03615509  0.1404396 -0.32387106  0.65273514 20.324233 14.672027
+218   M  34  1.60898968 -1.0917195  0.60021756          NA 21.257910 16.840368
+219   M  19  2.46332049 -1.5024393  1.89394163  0.65273514 18.871362 21.941249
+220   M  20 -0.95400273  0.1404396 -1.06314196  2.09936886 49.809048 28.169963
+221   M  20 -0.95400273 -0.6809998 -0.13905334 -1.51721545 14.786882 17.730947
+222   M  20  0.32749348  0.1404396  0.96985301 -2.78301996 20.840387 15.847601
+223   M  18  2.89048589  0.9618791  1.89394163 -0.07058173 25.885302 18.350609
+224   M  34 -1.38116814  0.5511594 -0.50868878          NA 38.328105 21.551284
+225   M  18  1.18182428  1.7833186  0.96985301  0.83356435 34.358397 21.817074
+226   M  34 -0.52683733 -0.2702801  0.78503529 -0.61306937 10.900977 44.934794
+227   M  23  0.32749348         NA  2.81803025  0.29107671 16.725685 11.530220
+228   M  18 -0.09967193  0.5511594 -1.24795968  0.47190592 16.128500 22.094594
+229   M  19  0.32749348  0.1404396  1.89394163 -1.51721545 17.984444 14.308416
+230   M  18  0.32749348  0.5511594 -0.32387106 -0.61306937 19.384045 14.749750
+231   M  19  0.32749348 -0.2702801 -0.32387106 -0.79389859 20.668380 19.171345
+232   M  31  0.75465888 -0.2702801  0.78503529  1.01439357 11.755563 13.403030
+233   M  20 -0.52683733 -0.2702801  0.60021756  0.29107671 36.204282 33.723064
+234   M  44 -0.95400273         NA -0.50868878  0.83356435 49.454394 16.519332
+235   M  26 -0.95400273  0.5511594  0.04576439 -0.07058173 27.319665 17.068472
+236   M  23  1.18182428  1.7833186  1.70912391  1.91853965 35.716290 28.688885
+237   M  31  3.74481670  2.6047580  2.81803025 -0.07058173 23.182748 12.021474
+238   M  22  1.18182428 -0.6809998  1.15467073  0.29107671 15.509954 15.902915
+239   M  30 -0.52683733         NA -0.13905334  0.29107671 36.461757 10.160000
+240   M  25  0.75465888         NA  0.96985301  0.83356435 20.473583 15.886680
+241   M  40 -1.38116814 -0.6809998 -1.61759513  1.37605200        NA 19.825745
+242   M  29  0.75465888 -2.7345985          NA          NA 31.996832 20.006431
+243   M  25 -1.38116814 -1.5024393 -0.13905334 -2.05970310 36.457825 26.193354
+244   M  19 -1.38116814  0.1404396 -0.50868878 -0.07058173 22.314446 17.378336
+245   M  23  0.75465888  0.9618791  2.07875935 -2.24053231 18.465099 13.452412
+246   M  24 -0.95400273 -0.6809998 -0.87832423 -0.07058173 23.860683 13.375458
+247   M  19  0.32749348 -0.2702801 -0.87832423 -0.43224016 14.810618 11.808193
+248   M  20  1.18182428  0.5511594  1.89394163  1.01439357 41.355052 30.731084
+249   M  19  0.32749348  0.5511594  0.23058211  0.65273514 19.783758 18.986866
+250   M  19  0.75465888  1.7833186 -0.32387106 -1.15555702 25.064623 17.165840
+251   M  20 -0.52683733  0.1404396  1.33948846  0.29107671 17.068892 14.845425
+252   M  19  0.75465888  0.1404396  0.04576439  0.47190592        NA 94.017825
+253   M  19  0.32749348  1.3725988  0.60021756  1.19522278 30.373982 21.475479
+254   M  20  0.75465888  0.9618791  1.52430618  0.47190592 10.629629 40.530757
+255   M  20  0.75465888 -1.0917195 -0.87832423  0.29107671 10.836010 16.037574
+256   M  20 -0.52683733 -1.0917195 -0.13905334  0.11024749 32.968943 13.546667
+257   M  19 -0.95400273 -0.2702801 -0.13905334  1.37605200 22.300949 21.000576
+258   M  32 -0.95400273 -0.6809998  0.60021756  1.19522278 16.593587 20.591240
+259   M  25 -1.38116814  0.1404396 -0.50868878 -0.61306937        NA 54.161790
+260   M  27  0.75465888 -0.2702801 -0.69350651  1.37605200 45.446366 45.449205
+261   M  22 -0.09967193  1.3725988  0.78503529 -0.43224016 44.618771 46.327678
+262   M  28  0.32749348  1.3725988  0.96985301 -0.07058173        NA 73.024448
+263   M  38  0.32749348         NA -1.61759513  1.91853965 37.565389 26.270281
+264   M  25 -0.52683733 -0.6809998 -0.50868878 -1.69804467 27.163885 11.796045
+265   M  27  0.32749348  1.7833186  0.04576439  0.65273514 27.596658 20.321587
+266   M  27 -0.09967193  0.5511594  0.96985301 -0.43224016 46.058355 35.190180
+267   M  23 -0.95400273  0.9618791 -1.43277740  0.11024749 28.386323 18.964577
+268   M  20  0.32749348 -0.6809998 -0.32387106 -0.25141094 18.453061 30.485409
+269   M  23  0.32749348 -0.6809998  1.15467073 -1.15555702 15.343366 15.548728
+270   M  24 -0.52683733 -1.0917195  0.60021756  1.01439357 22.382767 53.837948
+271   M  28  2.03615509  0.5511594  0.96985301  0.47190592 15.252225 12.166691
+272   M  27  2.89048589 -1.5024393          NA  1.01439357 28.403742 16.106262
+273   M  20 -1.38116814 -1.0917195 -0.69350651  1.01439357        NA 85.006134
+274   M  19 -0.95400273  0.5511594 -0.69350651 -0.07058173 15.219761 16.400438
+275   M  22  0.32749348 -0.6809998 -0.69350651  0.11024749 16.867589 22.102703
+276   M  24 -0.52683733  1.7833186 -1.24795968  0.65273514 39.069424 19.176579
+277   M  23  1.18182428  3.4261975  0.60021756  0.11024749 31.472776 29.129271
+278   M  25 -0.95400273  0.1404396 -1.61759513  1.37605200 32.208963 19.742952
+279   M  19  1.18182428 -0.6809998  0.60021756  0.83356435 15.666537 17.316766
+280   M  19  0.32749348  0.5511594  0.96985301  0.65273514 21.868271 22.207213
+281   M  20  2.03615509  1.7833186  0.41539984 -0.25141094 22.008611 15.209631
+282   M  35  1.18182428  1.3725988  0.04576439 -1.33638624 32.338677 21.542634
+283   M  18  0.32749348  0.5511594  1.33948846 -0.79389859 20.143195 15.743675
+284   M  20 -0.09967193  0.5511594 -0.32387106  0.83356435 28.299445 24.619518
+285   M  18  1.18182428  0.5511594 -0.69350651  0.83356435 33.899882 24.422334
+286   M  19  1.18182428  0.1404396  0.60021756 -0.25141094 31.380395 15.200438
+287   M  22 -0.95400273  0.9618791 -0.32387106  0.65273514 18.249153 17.626941
+288   M  19 -0.09967193 -0.2702801  1.52430618 -0.43224016 40.294574 19.632080
+289   M  20 -0.52683733  0.1404396 -1.06314196 -0.07058173 18.105804 24.990869
+290   M  20  0.75465888         NA -0.13905334          NA 15.256924 15.721576
+291   M  18  0.32749348 -0.6809998  0.04576439  0.11024749 27.738898 18.623588
+292   M  23  0.75465888  2.1940383  0.78503529 -0.25141094 10.750000 16.905158
+293   M  23 -0.09967193  0.5511594  2.07875935  0.11024749        NA 23.255762
+294   M  18 -0.95400273 -0.6809998 -1.06314196 -0.43224016 26.977861 16.885853
+295   M  19  1.18182428  0.5511594  1.33948846  1.01439357 16.086667 17.944341
+296   M  19  0.75465888         NA  0.23058211 -1.51721545 20.203248 14.928248
+297   M  29  1.18182428  0.9618791  2.07875935  0.47190592 18.311112 20.754907
+298   M  19  0.32749348 -1.5024393          NA          NA 22.148386 13.190893
+299   M  22 -0.95400273  0.5511594  0.04576439 -2.05970310 26.810606 13.771027
+300   M  18 -0.52683733  0.5511594 -0.87832423  0.11024749 23.240653 20.254100
+301   M  24  1.18182428  0.1404396  0.23058211  1.55688121 20.780450 25.952094
+302   M  19  0.32749348  0.1404396  1.89394163 -2.60219074 11.519646 19.727152
+303   M  18 -0.52683733  0.5511594 -0.32387106 -1.51721545 22.697616 22.945604
+304   M  19  2.03615509 -1.0917195  0.41539984 -0.43224016 21.790772 28.170853
+305   M  24 -0.09967193  0.5511594  0.23058211 -0.97472780 15.333786 13.256756
+306   M  19 -0.09967193 -1.0917195  0.60021756 -1.87887388 15.460653 14.577181
+307   M  20 -0.95400273  0.1404396          NA -0.25141094 30.967984 18.685839
+308   M  20  1.18182428  0.5511594 -0.69350651  0.11024749 19.968414 14.198022
+309   M  18  0.75465888  0.9618791  0.41539984  0.29107671 14.142882 11.262895
+310   M  19 -0.09967193 -0.6809998  0.78503529  0.47190592 10.989720 17.206300
+311   M  20  1.60898968 -0.6809998 -0.13905334  1.55688121 13.136164 17.056919
+312   M  27 -0.09967193  1.3725988  1.15467073  0.29107671 36.293273 30.435282
+313   M  18  1.60898968 -2.3238787  0.23058211 -1.51721545 24.644982 34.540680
+314   M  24  0.75465888 -0.2702801  0.96985301  1.37605200 30.309957 14.936409
+315   M  18  0.32749348  1.7833186  0.78503529  0.47190592 14.651493 12.096375
+316   M  52 -0.09967193 -1.0917195 -1.61759513  2.09936886 36.272528 25.652323
+317   M  32 -0.52683733 -0.6809998  0.41539984  1.19522278 32.107761 10.404014
+318   M  18 -0.52683733 -0.2702801 -0.69350651 -1.69804467  7.831552 17.961710
+319   M  39 -0.09967193 -0.6809998 -0.32387106  0.29107671 34.821579 30.820062
+320   M  20 -1.38116814  0.5511594  1.15467073 -0.43224016 23.519205 14.368410
+321   M  48 -0.95400273 -0.6809998 -0.69350651  0.47190592 23.094608 18.643592
+322   M  19 -1.38116814 -0.6809998  0.04576439  0.65273514 12.909654 10.842624
+323   M  21 -0.95400273 -1.0917195 -0.69350651 -0.25141094 17.481360 21.144642
+324   M  48 -0.09967193  0.5511594 -1.06314196  1.91853965 37.675430 21.630304
+325   M  20  0.75465888 -0.6809998  0.41539984  1.55688121 18.491479 16.013643
+326   M  30  0.32749348         NA  1.15467073          NA 27.407425 22.198819
+327   M  42  1.18182428  1.3725988          NA          NA 25.941458 18.200183
+328   M  21 -1.38116814         NA -1.43277740  0.11024749 19.364250 14.160358
+329   M  20 -0.95400273  0.9618791  0.23058211 -0.61306937 19.251197 16.728685
+330   M  23  1.18182428  0.5511594  0.78503529  0.65273514 29.268717 18.456557</code></pre>
+</div>
+</div>
+<p>Bien. Pero noten que esto me <em>remplaza</em> las columnas que tenía con las columnas con el z-score. Si quiero conservar las columnas originales, una solución es darle nombre a la función “scale”.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span> </span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ends_with</span>(<span class="st">"TOTAL"</span>),</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="at">z=</span>scale), <span class="co">#no te olvides de usar el combine</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    ) </span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Sex Age NPI16TOTAL GSESTOTAL ADTOTAL SDTOTAL Sign.Area Name.Area
+1     F  26          7        27      20      31 24.296531 26.000525
+2     F  22          5        25      19      30 18.989508 17.436401
+3     F  35          0        23      11      25 11.851519 15.189587
+4     F  24         10        25      25      31 39.050062 29.264798
+5     F  25          6        29      19      24 18.758396 15.191003
+6     F  21          1        24      13      27 41.063246 55.455051
+7     F  23          1        25      17      24 16.445833 14.834557
+8     F  22          8        25      22      22 43.822996 16.560289
+9     F  22          0        27      11      NA 22.923881 18.055849
+10    F  20          0        20       8      19 18.717845 17.600487
+11    F  23          0        25       7      21 18.110752 17.869281
+12    F  22          0        32      13      19 20.705285 15.379532
+13    F  22          2        26      12      29 18.155226 22.547101
+14    F  38          1        22       9      22 15.509954 14.646354
+15    F  25          0        24       9      30 15.214579 18.870793
+16    F  21          4        22      15      36 32.720134 26.120044
+17    F  20          6        28      19      34 17.071622 12.318345
+18    F  26          6        25      14      38 43.898422 17.522932
+19    F  35          3        24      13      29 30.281682 18.094715
+20    F  21          1        27      15      24 18.896037 17.055448
+21    F  35          5        32      18      30 20.559884 16.064371
+22    F  25          3        29      13      28 17.572770 18.094120
+23    F  25          5        NA      14      32 20.560058 17.661069
+24    F  20          0        26       8      22 16.571107 17.299370
+25    F  25          7        27      18      22 21.039624 19.489892
+26    F  19          2        24      16      32 20.701303 26.525676
+27    F  19          4        28      27      29 26.396454 15.353875
+28    F  21          4        26      13      31 17.061541 16.419877
+29    F  25          6        25      19      34 25.272681 19.610525
+30    F  22          1        31       9      26 16.205651 17.085054
+31    F  22          1        31      13      25 19.877382 15.631494
+32    F  23          3        25      NA      30 11.094241 21.109015
+33    F  18          4        26      14      31 25.915746 16.202997
+34    F  24          3        26      16      NA 33.190521 16.263936
+35    F  34          1        28      12      26 15.394440 14.899650
+36    F  25          2        26       7      NA 18.155029 17.268679
+37    F  20          3        29      17      28 17.172521 16.529527
+38    F  24          1        25       7      17 19.127735 12.494287
+39    F  35          0        25      10      35 28.909917 17.989226
+40    F  23          0        26      13      33 18.538134 13.186001
+41    F  20          1        27      19      32 26.630998 10.057887
+42    F  20          0        27      10      31 24.121680 18.062002
+43    F  24          2        26      10      24 24.776395 19.808200
+44    F  25          3        26      26      NA 34.710442 21.385667
+45    F  32          1        27       7      27 29.133823 21.237668
+46    F  36          5        27      21      34 28.204931 13.247019
+47    F  30          2        22      14      25 22.904642 23.223991
+48    F  45          3        28       8      37 27.658023 19.901170
+49    F  22          0        28      NA      33 20.945377 21.380806
+50    F  21          6        26      11      36 47.804887 30.036984
+51    F  24          2        27      11      16 13.142438 13.589989
+52    F  22          1        26      14      20 22.793739 15.981829
+53    F  25          3        25      10      36 22.881940 16.072401
+54    F  20          2        26      16      25 14.701313 17.536427
+55    F  51          1        27      NA      28 30.765821 26.467239
+56    F  21          1        30      10      26 18.769857 18.626474
+57    F  35          3        25      11      32 20.045627 24.362824
+58    F  23          5        25      22      30 25.533704 16.822907
+59    F  38          1        28      18      27 23.227077 20.359473
+60    F  20          5        26      10      32 22.521970 20.530576
+61    F  23          3        21      14      27 27.121893 22.724603
+62    F  24          6        27      18      31 17.630194 15.417240
+63    F  22          5        26      20      30 23.207935 16.672670
+64    F  22          4        NA      10      37 25.120758 13.172675
+65    F  25          0        28       9      30 21.780243 15.415845
+66    F  20          3        26      17      23 29.962910 19.584921
+67    F  22          2        30      10      27 12.705079 15.715192
+68    F  20          0        28       7      36 23.768574 13.772329
+69    F  21          7        28       8      31 25.731424 28.835433
+70    F  22          2        23      11      33 26.418714 15.705610
+71    F  20          3        24      20      26 34.455485 19.946144
+72    F  19          7        26      NA      NA 26.434718 19.890000
+73    F  19          4        25      NA      NA 29.008930 29.544178
+74    F  19          9        25      18      36 49.147961 25.233082
+75    F  19          5        27      20      37 23.804587 15.832893
+76    F  18          2        NA      19      29 21.507667 15.756191
+77    F  25          2        24      14      28 17.977268 15.485670
+78    F  40          1        25       9      28 19.096791 13.691676
+79    F  18          2        23      18      34 17.723466 17.376273
+80    F  20          1        30      10      29 27.346023 24.511110
+81    F  19          2        26      11      21 32.176898 14.688142
+82    F  21          3        26       9      15 20.087602 21.536145
+83    F  18          2        27      17      18 20.912495 18.242671
+84    F  17          8        31      26      31 20.511712 16.663639
+85    F  28          4        32      19      30 24.513888 22.309787
+86    F  21          3        31       9      24 20.370385 15.747772
+87    F  28          1        28      15      30 21.725539 21.316504
+88    F  18          5        NA      25      25 15.606021 17.331248
+89    F  20          5        28      17      31 25.519663  9.902743
+90    F  19          4        27      11      22 17.419537 13.772329
+91    F  22          1        26       9      NA 18.745972 15.672026
+92    F  18          2        31      13      28 27.947055 18.067359
+93    F  20          4        26      15      30 21.405770 14.784458
+94    F  19          1        28       8      20  9.563961 22.864233
+95    F  23          5        26      18      28 13.276478 10.248514
+96    F  21          4        29      14      33 16.504572 23.079239
+97    F  20          1        NA      15      22 19.295643 14.538033
+98    F  18          4        26      20      35 19.112926 25.736439
+99    F  19          1        26      16      23 18.648398 16.727185
+100   F  21          5        24      27      26 17.720230 18.573675
+101   F  21          5        26      27      20 16.262613 25.250547
+102   F  26          2        29      10      39 23.857528 14.652960
+103   F  19          5        28      13      31 19.638104 16.766565
+104   F  18          1        22       9      15 26.870831 18.589684
+105   F  19          7        28      NA      31 24.924233 17.992812
+106   F  19          2        25      15      31 14.872924 21.047800
+107   F  22          0        25      11      24 15.172115 11.345017
+108   F  18          2        NA      18      27 20.734865 17.316352
+109   F  19          3        30      16      33 28.383166 20.023622
+110   F  18          5        25      10      34 21.160570 14.213917
+111   F  18          0        25      16      37 15.631494 12.608228
+112   F  18          0        24      13      27 12.949295 15.721576
+113   F  20          3        26      20      29 21.450263 15.070429
+114   F  20          1        25      12      28 46.225209 30.008571
+115   F  22          3        25      23      31 36.797092 17.360177
+116   F  19          0        27       8      34 13.216139 11.146134
+117   F  23          0        25       9      17 18.060017 11.195546
+118   F  20          1        24      13      28 19.316250 15.035427
+119   F  19          0        NA      NA      15 33.358237 45.440372
+120   F  19          2        26      20      22 14.949362 17.360177
+121   F  21          6        30      18      25 13.349439 17.314282
+122   F  19          2        NA      19      28 25.840955 16.857812
+123   F  19          0        26       8      21 30.191711 20.853969
+124   F  20          0        31      14      NA 15.943433 12.502030
+125   F  19          0        28       7      26 19.707519 16.384695
+126   F  19          1        26      23      28 27.407425 13.445216
+127   F  19          2        33      12      24 13.980259 13.440417
+128   F  21          3        NA      15      26 24.396344 16.679118
+129   F  19          4        26      25      28 20.700610 18.932989
+130   F  20          0        30       8      26 37.769685 19.530675
+131   F  49          5        28      13      25 24.763227 17.675067
+132   F  30          0        28       7      25 26.901493 18.223996
+133   F  19          1        28      14      23 20.040083 17.690269
+134   F  19          4        26      18      32 26.420206 23.691997
+135   F  24          0        26       9      16 23.848212 13.263243
+136   F  19          4        27      18      29 21.002283 26.425225
+137   F  19          4        26      12      31 29.109331 18.789134
+138   F  19          1        26      16      28 22.964497 23.053134
+139   F  19          6        25      15      33 15.523120 11.486930
+140   F  21          4        25      12      38 42.806934 18.590456
+141   F  28          2        26      18      26 25.335006 23.140192
+142   F  20          8        23      17      33 13.056248 12.262353
+143   F  23          1        26      14      23 18.223013 13.893591
+144   F  24          5        25       7      22 24.634363 15.082553
+145   F  19          3        26      11      31 26.272873 14.452974
+146   F  35          2        26       9      33 15.578667 17.527432
+147   F  19          7        26      17      29 18.266232 12.805396
+148   F  32          7        26      21      27 19.618566 13.924514
+149   F  19          2        27      22      31 25.282181 15.280164
+150   F  19          5        32      17      38 39.689075 22.423723
+151   F  27          5        25      29      36 18.812011 15.485670
+152   F  21          6        24      17      26 17.821076 17.923355
+153   F  19          6        26      16      29 31.275367 21.096786
+154   F  19          3        23       8      22 22.527380 26.788271
+155   F  24          3        27      23      17 16.814382 21.030423
+156   F  22          2        23      21      24 24.593007 15.415380
+157   F  20          2        27      14      26 23.727824 17.548277
+158   F  22          4        23      10      37 26.601507 18.795237
+159   F  19          1        28      13      NA 12.774289 14.973079
+160   F  20          2        27      21      25 25.442862 25.499430
+161   F  19          4        27      14      33 25.681230 17.984444
+162   F  19          2        24      23      30 33.664557 15.344067
+163   F  39          1        25       8      32 22.355848 20.438190
+164   F  30          1        31      12      27 31.631358 13.698219
+165   F  24          3        28      17      21 18.578498 16.912153
+166   F  26          4        24      11      31 19.367396 23.783649
+167   F  21          3        27      NA      34 22.461414 12.526375
+168   F  19          5        27      13      34 17.657010 15.892545
+169   F  18          4        27      13      28 24.066789 19.243748
+170   F  19          3        24       9      27 20.645129 26.555522
+171   F  42          5        27      10      NA 31.460816 18.918406
+172   F  18          2        30      19      32 15.009659 20.084747
+173   F  21          4        27       8      31 23.872397 15.950625
+174   F  18          1        23      21      24 20.655891 17.041993
+175   F  18          1        23      14      16 21.953823 18.576569
+176   F  20          2        NA      NA      NA 24.311278 14.470571
+177   F  19          2        26      17      31 21.354135 17.695131
+178   F  26          2        24      10      16 36.655876 29.065710
+179   F  34          3        26      12      30 20.058496 16.271647
+180   F  28          3        26      NA      30 18.908362 21.754391
+181   F  37          5        27      25      36 31.588724 21.811816
+182   F  49          2        NA       7      NA 21.213182 17.670808
+183   F  25          8        26      16      34 20.609161 18.036981
+184   F  21          4        27      18      27 18.351390 11.983848
+185   F  23          5        25      15      25 35.646074 23.706062
+186   F  18          0        26      14      32 13.551957 13.574155
+187   F  18          4        25      16      25 12.182295 13.542697
+188   F  19          4        28      21      27 23.285642 21.824465
+189   M  25          2        33      17      27 25.974872 18.677398
+190   M  23          4        29      13      19 37.006211 39.469744
+191   M  25          2        29      20      28 19.968055 20.512237
+192   M  24          4        26      30      22 45.912681 48.293484
+193   M  29          1        25      15      34 22.112593 15.467374
+194   M  18          5        30      20      16 34.522100 31.870675
+195   M  29          3        26      19      31 26.954601 20.839871
+196   M  35          0        24      13      31 20.889859 23.227695
+197   M  24         10        25      23      37 34.266473 28.667138
+198   M  48          1        25      19      35 19.442756 13.467058
+199   M  22          2        27      12      27 21.999978 22.815742
+200   M  46          5        29      19      25 46.441422 25.225836
+201   M  28          3        23      15      28 45.858549 22.851845
+202   M  41          1        28       8      31 19.087780 19.024583
+203   M  20          6        25      20      33 27.697261 15.075898
+204   M  24          2        25      29      28 16.901978 22.337884
+205   M  21          7        29      26      33 15.421889 17.250197
+206   M  21          1        35       8      NA 25.090778 13.989229
+207   M  25          2        29      17      25 29.722703 32.784700
+208   M  40          0        25       7      36 30.958955 23.467181
+209   M  31          2        23      14      27 35.384792 17.373385
+210   M  25          0        25      16      23 36.289421 16.837175
+211   M  23          5        25      20      30 23.093988 15.301026
+212   M  25          3        26      18      26 31.632944 18.029428
+213   M  22          7        31      23      28 15.229884 12.780180
+214   M  22          6        29      17      21 20.950510 25.101632
+215   M  31          3        29      22      30 35.700029 12.781022
+216   M  27          7        25      21      37 32.767860 17.074981
+217   M  29          8        27      14      32 20.324233 14.672027
+218   M  34          7        24      19      NA 21.257910 16.840368
+219   M  19          9        23      26      32 18.871362 21.941249
+220   M  20          1        27      10      40 49.809048 28.169963
+221   M  20          1        25      15      20 14.786882 17.730947
+222   M  20          4        27      21      13 20.840387 15.847601
+223   M  18         10        29      26      28 25.885302 18.350609
+224   M  34          0        28      13      NA 38.328105 21.551284
+225   M  18          6        31      21      33 34.358397 21.817074
+226   M  34          2        26      20      25 10.900977 44.934794
+227   M  23          4        NA      31      30 16.725685 11.530220
+228   M  18          3        28       9      31 16.128500 22.094594
+229   M  19          4        27      26      20 17.984444 14.308416
+230   M  18          4        28      14      25 19.384045 14.749750
+231   M  19          4        26      14      24 20.668380 19.171345
+232   M  31          5        26      20      34 11.755563 13.403030
+233   M  20          2        26      19      30 36.204282 33.723064
+234   M  44          1        NA      13      33 49.454394 16.519332
+235   M  26          1        28      16      28 27.319665 17.068472
+236   M  23          6        31      25      39 35.716290 28.688885
+237   M  31         12        33      31      28 23.182748 12.021474
+238   M  22          6        25      22      30 15.509954 15.902915
+239   M  30          2        NA      15      30 36.461757 10.160000
+240   M  25          5        NA      21      33 20.473583 15.886680
+241   M  40          0        25       7      36        NA 19.825745
+242   M  29          5        20      NA      NA 31.996832 20.006431
+243   M  25          0        23      15      17 36.457825 26.193354
+244   M  19          0        27      13      28 22.314446 17.378336
+245   M  23          5        29      27      16 18.465099 13.452412
+246   M  24          1        25      11      28 23.860683 13.375458
+247   M  19          4        26      11      26 14.810618 11.808193
+248   M  20          6        28      26      34 41.355052 30.731084
+249   M  19          4        28      17      32 19.783758 18.986866
+250   M  19          5        31      14      22 25.064623 17.165840
+251   M  20          2        27      23      30 17.068892 14.845425
+252   M  19          5        27      16      31        NA 94.017825
+253   M  19          4        30      19      35 30.373982 21.475479
+254   M  20          5        29      24      31 10.629629 40.530757
+255   M  20          5        24      11      30 10.836010 16.037574
+256   M  20          2        24      15      29 32.968943 13.546667
+257   M  19          1        26      15      36 22.300949 21.000576
+258   M  32          1        25      19      35 16.593587 20.591240
+259   M  25          0        27      13      25        NA 54.161790
+260   M  27          5        26      12      36 45.446366 45.449205
+261   M  22          3        30      20      26 44.618771 46.327678
+262   M  28          4        30      21      28        NA 73.024448
+263   M  38          4        NA       7      39 37.565389 26.270281
+264   M  25          2        25      13      19 27.163885 11.796045
+265   M  27          4        31      16      32 27.596658 20.321587
+266   M  27          3        28      21      26 46.058355 35.190180
+267   M  23          1        29       8      29 28.386323 18.964577
+268   M  20          4        25      14      27 18.453061 30.485409
+269   M  23          4        25      22      22 15.343366 15.548728
+270   M  24          2        24      19      34 22.382767 53.837948
+271   M  28          8        28      21      31 15.252225 12.166691
+272   M  27         10        23      NA      34 28.403742 16.106262
+273   M  20          0        24      12      34        NA 85.006134
+274   M  19          1        28      12      28 15.219761 16.400438
+275   M  22          4        25      12      29 16.867589 22.102703
+276   M  24          2        31       9      32 39.069424 19.176579
+277   M  23          6        35      19      29 31.472776 29.129271
+278   M  25          1        27       7      36 32.208963 19.742952
+279   M  19          6        25      19      33 15.666537 17.316766
+280   M  19          4        28      21      32 21.868271 22.207213
+281   M  20          8        31      18      27 22.008611 15.209631
+282   M  35          6        30      16      21 32.338677 21.542634
+283   M  18          4        28      23      24 20.143195 15.743675
+284   M  20          3        28      14      33 28.299445 24.619518
+285   M  18          6        28      12      33 33.899882 24.422334
+286   M  19          6        27      19      27 31.380395 15.200438
+287   M  22          1        29      14      32 18.249153 17.626941
+288   M  19          3        26      24      26 40.294574 19.632080
+289   M  20          2        27      10      28 18.105804 24.990869
+290   M  20          5        NA      15      NA 15.256924 15.721576
+291   M  18          4        25      16      29 27.738898 18.623588
+292   M  23          5        32      20      27 10.750000 16.905158
+293   M  23          3        28      27      29        NA 23.255762
+294   M  18          1        25      10      26 26.977861 16.885853
+295   M  19          6        28      23      34 16.086667 17.944341
+296   M  19          5        NA      17      20 20.203248 14.928248
+297   M  29          6        29      27      31 18.311112 20.754907
+298   M  19          4        23      NA      NA 22.148386 13.190893
+299   M  22          1        28      16      17 26.810606 13.771027
+300   M  18          2        28      11      29 23.240653 20.254100
+301   M  24          6        27      17      37 20.780450 25.952094
+302   M  19          4        27      26      14 11.519646 19.727152
+303   M  18          2        28      14      20 22.697616 22.945604
+304   M  19          8        24      18      26 21.790772 28.170853
+305   M  24          3        28      17      23 15.333786 13.256756
+306   M  19          3        24      19      18 15.460653 14.577181
+307   M  20          1        27      NA      27 30.967984 18.685839
+308   M  20          6        28      12      29 19.968414 14.198022
+309   M  18          5        29      18      30 14.142882 11.262895
+310   M  19          3        25      20      31 10.989720 17.206300
+311   M  20          7        25      15      37 13.136164 17.056919
+312   M  27          3        30      22      30 36.293273 30.435282
+313   M  18          7        21      17      20 24.644982 34.540680
+314   M  24          5        26      21      36 30.309957 14.936409
+315   M  18          4        31      20      31 14.651493 12.096375
+316   M  52          3        24       7      40 36.272528 25.652323
+317   M  32          2        25      18      35 32.107761 10.404014
+318   M  18          2        26      12      19  7.831552 17.961710
+319   M  39          3        25      14      30 34.821579 30.820062
+320   M  20          0        28      22      26 23.519205 14.368410
+321   M  48          1        25      12      31 23.094608 18.643592
+322   M  19          0        25      16      32 12.909654 10.842624
+323   M  21          1        24      12      27 17.481360 21.144642
+324   M  48          3        28      10      39 37.675430 21.630304
+325   M  20          5        25      18      37 18.491479 16.013643
+326   M  30          4        NA      22      NA 27.407425 22.198819
+327   M  42          6        30      NA      NA 25.941458 18.200183
+328   M  21          0        NA       8      29 19.364250 14.160358
+329   M  20          1        29      17      25 19.251197 16.728685
+330   M  23          6        28      20      32 29.268717 18.456557
+    NPI16TOTAL_z GSESTOTAL_z   ADTOTAL_z   SDTOTAL_z
+1     1.60898968   0.1404396  0.78503529  0.47190592
+2     0.75465888  -0.6809998  0.60021756  0.29107671
+3    -1.38116814  -1.5024393 -0.87832423 -0.61306937
+4     2.89048589  -0.6809998  1.70912391  0.47190592
+5     1.18182428   0.9618791  0.60021756 -0.79389859
+6    -0.95400273  -1.0917195 -0.50868878 -0.25141094
+7    -0.95400273  -0.6809998  0.23058211 -0.79389859
+8     2.03615509  -0.6809998  1.15467073 -1.15555702
+9    -1.38116814   0.1404396 -0.87832423          NA
+10   -1.38116814  -2.7345985 -1.43277740 -1.69804467
+11   -1.38116814  -0.6809998 -1.61759513 -1.33638624
+12   -1.38116814   2.1940383 -0.50868878 -1.69804467
+13   -0.52683733  -0.2702801 -0.69350651  0.11024749
+14   -0.95400273  -1.9131590 -1.24795968 -1.15555702
+15   -1.38116814  -1.0917195 -1.24795968  0.29107671
+16    0.32749348  -1.9131590 -0.13905334  1.37605200
+17    1.18182428   0.5511594  0.60021756  1.01439357
+18    1.18182428  -0.6809998 -0.32387106  1.73771043
+19   -0.09967193  -1.0917195 -0.50868878  0.11024749
+20   -0.95400273   0.1404396 -0.13905334 -0.79389859
+21    0.75465888   2.1940383  0.41539984  0.29107671
+22   -0.09967193   0.9618791 -0.50868878 -0.07058173
+23    0.75465888          NA -0.32387106  0.65273514
+24   -1.38116814  -0.2702801 -1.43277740 -1.15555702
+25    1.60898968   0.1404396  0.41539984 -1.15555702
+26   -0.52683733  -1.0917195  0.04576439  0.65273514
+27    0.32749348   0.5511594  2.07875935  0.11024749
+28    0.32749348  -0.2702801 -0.50868878  0.47190592
+29    1.18182428  -0.6809998  0.60021756  1.01439357
+30   -0.95400273   1.7833186 -1.24795968 -0.43224016
+31   -0.95400273   1.7833186 -0.50868878 -0.61306937
+32   -0.09967193  -0.6809998          NA  0.29107671
+33    0.32749348  -0.2702801 -0.32387106  0.47190592
+34   -0.09967193  -0.2702801  0.04576439          NA
+35   -0.95400273   0.5511594 -0.69350651 -0.43224016
+36   -0.52683733  -0.2702801 -1.61759513          NA
+37   -0.09967193   0.9618791  0.23058211 -0.07058173
+38   -0.95400273  -0.6809998 -1.61759513 -2.05970310
+39   -1.38116814  -0.6809998 -1.06314196  1.19522278
+40   -1.38116814  -0.2702801 -0.50868878  0.83356435
+41   -0.95400273   0.1404396  0.60021756  0.65273514
+42   -1.38116814   0.1404396 -1.06314196  0.47190592
+43   -0.52683733  -0.2702801 -1.06314196 -0.79389859
+44   -0.09967193  -0.2702801  1.89394163          NA
+45   -0.95400273   0.1404396 -1.61759513 -0.25141094
+46    0.75465888   0.1404396  0.96985301  1.01439357
+47   -0.52683733  -1.9131590 -0.32387106 -0.61306937
+48   -0.09967193   0.5511594 -1.43277740  1.55688121
+49   -1.38116814   0.5511594          NA  0.83356435
+50    1.18182428  -0.2702801 -0.87832423  1.37605200
+51   -0.52683733   0.1404396 -0.87832423 -2.24053231
+52   -0.95400273  -0.2702801 -0.32387106 -1.51721545
+53   -0.09967193  -0.6809998 -1.06314196  1.37605200
+54   -0.52683733  -0.2702801  0.04576439 -0.61306937
+55   -0.95400273   0.1404396          NA -0.07058173
+56   -0.95400273   1.3725988 -1.06314196 -0.43224016
+57   -0.09967193  -0.6809998 -0.87832423  0.65273514
+58    0.75465888  -0.6809998  1.15467073  0.29107671
+59   -0.95400273   0.5511594  0.41539984 -0.25141094
+60    0.75465888  -0.2702801 -1.06314196  0.65273514
+61   -0.09967193  -2.3238787 -0.32387106 -0.25141094
+62    1.18182428   0.1404396  0.41539984  0.47190592
+63    0.75465888  -0.2702801  0.78503529  0.29107671
+64    0.32749348          NA -1.06314196  1.55688121
+65   -1.38116814   0.5511594 -1.24795968  0.29107671
+66   -0.09967193  -0.2702801  0.23058211 -0.97472780
+67   -0.52683733   1.3725988 -1.06314196 -0.25141094
+68   -1.38116814   0.5511594 -1.61759513  1.37605200
+69    1.60898968   0.5511594 -1.43277740  0.47190592
+70   -0.52683733  -1.5024393 -0.87832423  0.83356435
+71   -0.09967193  -1.0917195  0.78503529 -0.43224016
+72    1.60898968  -0.2702801          NA          NA
+73    0.32749348  -0.6809998          NA          NA
+74    2.46332049  -0.6809998  0.41539984  1.37605200
+75    0.75465888   0.1404396  0.78503529  1.55688121
+76   -0.52683733          NA  0.60021756  0.11024749
+77   -0.52683733  -1.0917195 -0.32387106 -0.07058173
+78   -0.95400273  -0.6809998 -1.24795968 -0.07058173
+79   -0.52683733  -1.5024393  0.41539984  1.01439357
+80   -0.95400273   1.3725988 -1.06314196  0.11024749
+81   -0.52683733  -0.2702801 -0.87832423 -1.33638624
+82   -0.09967193  -0.2702801 -1.24795968 -2.42136153
+83   -0.52683733   0.1404396  0.23058211 -1.87887388
+84    2.03615509   1.7833186  1.89394163  0.47190592
+85    0.32749348   2.1940383  0.60021756  0.29107671
+86   -0.09967193   1.7833186 -1.24795968 -0.79389859
+87   -0.95400273   0.5511594 -0.13905334  0.29107671
+88    0.75465888          NA  1.70912391 -0.61306937
+89    0.75465888   0.5511594  0.23058211  0.47190592
+90    0.32749348   0.1404396 -0.87832423 -1.15555702
+91   -0.95400273  -0.2702801 -1.24795968          NA
+92   -0.52683733   1.7833186 -0.50868878 -0.07058173
+93    0.32749348  -0.2702801 -0.13905334  0.29107671
+94   -0.95400273   0.5511594 -1.43277740 -1.51721545
+95    0.75465888  -0.2702801  0.41539984 -0.07058173
+96    0.32749348   0.9618791 -0.32387106  0.83356435
+97   -0.95400273          NA -0.13905334 -1.15555702
+98    0.32749348  -0.2702801  0.78503529  1.19522278
+99   -0.95400273  -0.2702801  0.04576439 -0.97472780
+100   0.75465888  -1.0917195  2.07875935 -0.43224016
+101   0.75465888  -0.2702801  2.07875935 -1.51721545
+102  -0.52683733   0.9618791 -1.06314196  1.91853965
+103   0.75465888   0.5511594 -0.50868878  0.47190592
+104  -0.95400273  -1.9131590 -1.24795968 -2.42136153
+105   1.60898968   0.5511594          NA  0.47190592
+106  -0.52683733  -0.6809998 -0.13905334  0.47190592
+107  -1.38116814  -0.6809998 -0.87832423 -0.79389859
+108  -0.52683733          NA  0.41539984 -0.25141094
+109  -0.09967193   1.3725988  0.04576439  0.83356435
+110   0.75465888  -0.6809998 -1.06314196  1.01439357
+111  -1.38116814  -0.6809998  0.04576439  1.55688121
+112  -1.38116814  -1.0917195 -0.50868878 -0.25141094
+113  -0.09967193  -0.2702801  0.78503529  0.11024749
+114  -0.95400273  -0.6809998 -0.69350651 -0.07058173
+115  -0.09967193  -0.6809998  1.33948846  0.47190592
+116  -1.38116814   0.1404396 -1.43277740  1.01439357
+117  -1.38116814  -0.6809998 -1.24795968 -2.05970310
+118  -0.95400273  -1.0917195 -0.50868878 -0.07058173
+119  -1.38116814          NA          NA -2.42136153
+120  -0.52683733  -0.2702801  0.78503529 -1.15555702
+121   1.18182428   1.3725988  0.41539984 -0.61306937
+122  -0.52683733          NA  0.60021756 -0.07058173
+123  -1.38116814  -0.2702801 -1.43277740 -1.33638624
+124  -1.38116814   1.7833186 -0.32387106          NA
+125  -1.38116814   0.5511594 -1.61759513 -0.43224016
+126  -0.95400273  -0.2702801  1.33948846 -0.07058173
+127  -0.52683733   2.6047580 -0.69350651 -0.79389859
+128  -0.09967193          NA -0.13905334 -0.43224016
+129   0.32749348  -0.2702801  1.70912391 -0.07058173
+130  -1.38116814   1.3725988 -1.43277740 -0.43224016
+131   0.75465888   0.5511594 -0.50868878 -0.61306937
+132  -1.38116814   0.5511594 -1.61759513 -0.61306937
+133  -0.95400273   0.5511594 -0.32387106 -0.97472780
+134   0.32749348  -0.2702801  0.41539984  0.65273514
+135  -1.38116814  -0.2702801 -1.24795968 -2.24053231
+136   0.32749348   0.1404396  0.41539984  0.11024749
+137   0.32749348  -0.2702801 -0.69350651  0.47190592
+138  -0.95400273  -0.2702801  0.04576439 -0.07058173
+139   1.18182428  -0.6809998 -0.13905334  0.83356435
+140   0.32749348  -0.6809998 -0.69350651  1.73771043
+141  -0.52683733  -0.2702801  0.41539984 -0.43224016
+142   2.03615509  -1.5024393  0.23058211  0.83356435
+143  -0.95400273  -0.2702801 -0.32387106 -0.97472780
+144   0.75465888  -0.6809998 -1.61759513 -1.15555702
+145  -0.09967193  -0.2702801 -0.87832423  0.47190592
+146  -0.52683733  -0.2702801 -1.24795968  0.83356435
+147   1.60898968  -0.2702801  0.23058211  0.11024749
+148   1.60898968  -0.2702801  0.96985301 -0.25141094
+149  -0.52683733   0.1404396  1.15467073  0.47190592
+150   0.75465888   2.1940383  0.23058211  1.73771043
+151   0.75465888  -0.6809998  2.44839480  1.37605200
+152   1.18182428  -1.0917195  0.23058211 -0.43224016
+153   1.18182428  -0.2702801  0.04576439  0.11024749
+154  -0.09967193  -1.5024393 -1.43277740 -1.15555702
+155  -0.09967193   0.1404396  1.33948846 -2.05970310
+156  -0.52683733  -1.5024393  0.96985301 -0.79389859
+157  -0.52683733   0.1404396 -0.32387106 -0.43224016
+158   0.32749348  -1.5024393 -1.06314196  1.55688121
+159  -0.95400273   0.5511594 -0.50868878          NA
+160  -0.52683733   0.1404396  0.96985301 -0.61306937
+161   0.32749348   0.1404396 -0.32387106  0.83356435
+162  -0.52683733  -1.0917195  1.33948846  0.29107671
+163  -0.95400273  -0.6809998 -1.43277740  0.65273514
+164  -0.95400273   1.7833186 -0.69350651 -0.25141094
+165  -0.09967193   0.5511594  0.23058211 -1.33638624
+166   0.32749348  -1.0917195 -0.87832423  0.47190592
+167  -0.09967193   0.1404396          NA  1.01439357
+168   0.75465888   0.1404396 -0.50868878  1.01439357
+169   0.32749348   0.1404396 -0.50868878 -0.07058173
+170  -0.09967193  -1.0917195 -1.24795968 -0.25141094
+171   0.75465888   0.1404396 -1.06314196          NA
+172  -0.52683733   1.3725988  0.60021756  0.65273514
+173   0.32749348   0.1404396 -1.43277740  0.47190592
+174  -0.95400273  -1.5024393  0.96985301 -0.79389859
+175  -0.95400273  -1.5024393 -0.32387106 -2.24053231
+176  -0.52683733          NA          NA          NA
+177  -0.52683733  -0.2702801  0.23058211  0.47190592
+178  -0.52683733  -1.0917195 -1.06314196 -2.24053231
+179  -0.09967193  -0.2702801 -0.69350651  0.29107671
+180  -0.09967193  -0.2702801          NA  0.29107671
+181   0.75465888   0.1404396  1.70912391  1.37605200
+182  -0.52683733          NA -1.61759513          NA
+183   2.03615509  -0.2702801  0.04576439  1.01439357
+184   0.32749348   0.1404396  0.41539984 -0.25141094
+185   0.75465888  -0.6809998 -0.13905334 -0.61306937
+186  -1.38116814  -0.2702801 -0.32387106  0.65273514
+187   0.32749348  -0.6809998  0.04576439 -0.61306937
+188   0.32749348   0.5511594  0.96985301 -0.25141094
+189  -0.52683733   2.6047580  0.23058211 -0.25141094
+190   0.32749348   0.9618791 -0.50868878 -1.69804467
+191  -0.52683733   0.9618791  0.78503529 -0.07058173
+192   0.32749348  -0.2702801  2.63321253 -1.15555702
+193  -0.95400273  -0.6809998 -0.13905334  1.01439357
+194   0.75465888   1.3725988  0.78503529 -2.24053231
+195  -0.09967193  -0.2702801  0.60021756  0.47190592
+196  -1.38116814  -1.0917195 -0.50868878  0.47190592
+197   2.89048589  -0.6809998  1.33948846  1.55688121
+198  -0.95400273  -0.6809998  0.60021756  1.19522278
+199  -0.52683733   0.1404396 -0.69350651 -0.25141094
+200   0.75465888   0.9618791  0.60021756 -0.61306937
+201  -0.09967193  -1.5024393 -0.13905334 -0.07058173
+202  -0.95400273   0.5511594 -1.43277740  0.47190592
+203   1.18182428  -0.6809998  0.78503529  0.83356435
+204  -0.52683733  -0.6809998  2.44839480 -0.07058173
+205   1.60898968   0.9618791  1.89394163  0.83356435
+206  -0.95400273   3.4261975 -1.43277740          NA
+207  -0.52683733   0.9618791  0.23058211 -0.61306937
+208  -1.38116814  -0.6809998 -1.61759513  1.37605200
+209  -0.52683733  -1.5024393 -0.32387106 -0.25141094
+210  -1.38116814  -0.6809998  0.04576439 -0.97472780
+211   0.75465888  -0.6809998  0.78503529  0.29107671
+212  -0.09967193  -0.2702801  0.41539984 -0.43224016
+213   1.60898968   1.7833186  1.33948846 -0.07058173
+214   1.18182428   0.9618791  0.23058211 -1.33638624
+215  -0.09967193   0.9618791  1.15467073  0.29107671
+216   1.60898968  -0.6809998  0.96985301  1.55688121
+217   2.03615509   0.1404396 -0.32387106  0.65273514
+218   1.60898968  -1.0917195  0.60021756          NA
+219   2.46332049  -1.5024393  1.89394163  0.65273514
+220  -0.95400273   0.1404396 -1.06314196  2.09936886
+221  -0.95400273  -0.6809998 -0.13905334 -1.51721545
+222   0.32749348   0.1404396  0.96985301 -2.78301996
+223   2.89048589   0.9618791  1.89394163 -0.07058173
+224  -1.38116814   0.5511594 -0.50868878          NA
+225   1.18182428   1.7833186  0.96985301  0.83356435
+226  -0.52683733  -0.2702801  0.78503529 -0.61306937
+227   0.32749348          NA  2.81803025  0.29107671
+228  -0.09967193   0.5511594 -1.24795968  0.47190592
+229   0.32749348   0.1404396  1.89394163 -1.51721545
+230   0.32749348   0.5511594 -0.32387106 -0.61306937
+231   0.32749348  -0.2702801 -0.32387106 -0.79389859
+232   0.75465888  -0.2702801  0.78503529  1.01439357
+233  -0.52683733  -0.2702801  0.60021756  0.29107671
+234  -0.95400273          NA -0.50868878  0.83356435
+235  -0.95400273   0.5511594  0.04576439 -0.07058173
+236   1.18182428   1.7833186  1.70912391  1.91853965
+237   3.74481670   2.6047580  2.81803025 -0.07058173
+238   1.18182428  -0.6809998  1.15467073  0.29107671
+239  -0.52683733          NA -0.13905334  0.29107671
+240   0.75465888          NA  0.96985301  0.83356435
+241  -1.38116814  -0.6809998 -1.61759513  1.37605200
+242   0.75465888  -2.7345985          NA          NA
+243  -1.38116814  -1.5024393 -0.13905334 -2.05970310
+244  -1.38116814   0.1404396 -0.50868878 -0.07058173
+245   0.75465888   0.9618791  2.07875935 -2.24053231
+246  -0.95400273  -0.6809998 -0.87832423 -0.07058173
+247   0.32749348  -0.2702801 -0.87832423 -0.43224016
+248   1.18182428   0.5511594  1.89394163  1.01439357
+249   0.32749348   0.5511594  0.23058211  0.65273514
+250   0.75465888   1.7833186 -0.32387106 -1.15555702
+251  -0.52683733   0.1404396  1.33948846  0.29107671
+252   0.75465888   0.1404396  0.04576439  0.47190592
+253   0.32749348   1.3725988  0.60021756  1.19522278
+254   0.75465888   0.9618791  1.52430618  0.47190592
+255   0.75465888  -1.0917195 -0.87832423  0.29107671
+256  -0.52683733  -1.0917195 -0.13905334  0.11024749
+257  -0.95400273  -0.2702801 -0.13905334  1.37605200
+258  -0.95400273  -0.6809998  0.60021756  1.19522278
+259  -1.38116814   0.1404396 -0.50868878 -0.61306937
+260   0.75465888  -0.2702801 -0.69350651  1.37605200
+261  -0.09967193   1.3725988  0.78503529 -0.43224016
+262   0.32749348   1.3725988  0.96985301 -0.07058173
+263   0.32749348          NA -1.61759513  1.91853965
+264  -0.52683733  -0.6809998 -0.50868878 -1.69804467
+265   0.32749348   1.7833186  0.04576439  0.65273514
+266  -0.09967193   0.5511594  0.96985301 -0.43224016
+267  -0.95400273   0.9618791 -1.43277740  0.11024749
+268   0.32749348  -0.6809998 -0.32387106 -0.25141094
+269   0.32749348  -0.6809998  1.15467073 -1.15555702
+270  -0.52683733  -1.0917195  0.60021756  1.01439357
+271   2.03615509   0.5511594  0.96985301  0.47190592
+272   2.89048589  -1.5024393          NA  1.01439357
+273  -1.38116814  -1.0917195 -0.69350651  1.01439357
+274  -0.95400273   0.5511594 -0.69350651 -0.07058173
+275   0.32749348  -0.6809998 -0.69350651  0.11024749
+276  -0.52683733   1.7833186 -1.24795968  0.65273514
+277   1.18182428   3.4261975  0.60021756  0.11024749
+278  -0.95400273   0.1404396 -1.61759513  1.37605200
+279   1.18182428  -0.6809998  0.60021756  0.83356435
+280   0.32749348   0.5511594  0.96985301  0.65273514
+281   2.03615509   1.7833186  0.41539984 -0.25141094
+282   1.18182428   1.3725988  0.04576439 -1.33638624
+283   0.32749348   0.5511594  1.33948846 -0.79389859
+284  -0.09967193   0.5511594 -0.32387106  0.83356435
+285   1.18182428   0.5511594 -0.69350651  0.83356435
+286   1.18182428   0.1404396  0.60021756 -0.25141094
+287  -0.95400273   0.9618791 -0.32387106  0.65273514
+288  -0.09967193  -0.2702801  1.52430618 -0.43224016
+289  -0.52683733   0.1404396 -1.06314196 -0.07058173
+290   0.75465888          NA -0.13905334          NA
+291   0.32749348  -0.6809998  0.04576439  0.11024749
+292   0.75465888   2.1940383  0.78503529 -0.25141094
+293  -0.09967193   0.5511594  2.07875935  0.11024749
+294  -0.95400273  -0.6809998 -1.06314196 -0.43224016
+295   1.18182428   0.5511594  1.33948846  1.01439357
+296   0.75465888          NA  0.23058211 -1.51721545
+297   1.18182428   0.9618791  2.07875935  0.47190592
+298   0.32749348  -1.5024393          NA          NA
+299  -0.95400273   0.5511594  0.04576439 -2.05970310
+300  -0.52683733   0.5511594 -0.87832423  0.11024749
+301   1.18182428   0.1404396  0.23058211  1.55688121
+302   0.32749348   0.1404396  1.89394163 -2.60219074
+303  -0.52683733   0.5511594 -0.32387106 -1.51721545
+304   2.03615509  -1.0917195  0.41539984 -0.43224016
+305  -0.09967193   0.5511594  0.23058211 -0.97472780
+306  -0.09967193  -1.0917195  0.60021756 -1.87887388
+307  -0.95400273   0.1404396          NA -0.25141094
+308   1.18182428   0.5511594 -0.69350651  0.11024749
+309   0.75465888   0.9618791  0.41539984  0.29107671
+310  -0.09967193  -0.6809998  0.78503529  0.47190592
+311   1.60898968  -0.6809998 -0.13905334  1.55688121
+312  -0.09967193   1.3725988  1.15467073  0.29107671
+313   1.60898968  -2.3238787  0.23058211 -1.51721545
+314   0.75465888  -0.2702801  0.96985301  1.37605200
+315   0.32749348   1.7833186  0.78503529  0.47190592
+316  -0.09967193  -1.0917195 -1.61759513  2.09936886
+317  -0.52683733  -0.6809998  0.41539984  1.19522278
+318  -0.52683733  -0.2702801 -0.69350651 -1.69804467
+319  -0.09967193  -0.6809998 -0.32387106  0.29107671
+320  -1.38116814   0.5511594  1.15467073 -0.43224016
+321  -0.95400273  -0.6809998 -0.69350651  0.47190592
+322  -1.38116814  -0.6809998  0.04576439  0.65273514
+323  -0.95400273  -1.0917195 -0.69350651 -0.25141094
+324  -0.09967193   0.5511594 -1.06314196  1.91853965
+325   0.75465888  -0.6809998  0.41539984  1.55688121
+326   0.32749348          NA  1.15467073          NA
+327   1.18182428   1.3725988          NA          NA
+328  -1.38116814          NA -1.43277740  0.11024749
+329  -0.95400273   0.9618791  0.23058211 -0.61306937
+330   1.18182428   0.5511594  0.78503529  0.65273514</code></pre>
+</div>
+</div>
+<p>Cómo? Que querés calcular el z-score pero independientemente para cada nivel de la variable “Sexo”? Metele un <code>group_by</code> con fe!!!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span> </span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Sex) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">ends_with</span>(<span class="st">"TOTAL"</span>),</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="at">z=</span>scale), <span class="co">#no te olvides de usar el combine</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    ) </span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 330 × 12
+# Groups:   Sex [2]
+   Sex     Age NPI16TOTAL GSESTOTAL ADTOTAL SDTOTAL Sign.Area Name.Area
+   &lt;fct&gt; &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+ 1 F        26          7        27      20      31      24.3      26.0
+ 2 F        22          5        25      19      30      19.0      17.4
+ 3 F        35          0        23      11      25      11.9      15.2
+ 4 F        24         10        25      25      31      39.1      29.3
+ 5 F        25          6        29      19      24      18.8      15.2
+ 6 F        21          1        24      13      27      41.1      55.5
+ 7 F        23          1        25      17      24      16.4      14.8
+ 8 F        22          8        25      22      22      43.8      16.6
+ 9 F        22          0        27      11      NA      22.9      18.1
+10 F        20          0        20       8      19      18.7      17.6
+# ℹ 320 more rows
+# ℹ 4 more variables: NPI16TOTAL_z &lt;dbl[,1]&gt;, GSESTOTAL_z &lt;dbl[,1]&gt;,
+#   ADTOTAL_z &lt;dbl[,1]&gt;, SDTOTAL_z &lt;dbl[,1]&gt;</code></pre>
+</div>
+</div>
+<p>Ah, ahora querés calcular el z-score pero para <em>todas</em> las variables numéricas. No te preocupes, <code>across</code> también funciona con indexación lógica. No, en serio, no te preocupes, mirá que es muy fácil. Hay una función que te va a ayudar: <code>is.numeric</code>. Si le pasás un vector, te dice si es numérico o no, como dice el nombre.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.numeric</span>(datosLimpios<span class="sc">$</span>Sex)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.numeric</span>(datosLimpios<span class="sc">$</span>NPI16TOTAL)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p>Entonces podemos usar esta función (o cualquier otra expresión que nos devuelva un lógico para cada columna) para seleccionar columnas en <code>across</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span> </span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Sex) <span class="sc">%&gt;%</span> </span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>      is.numeric, <span class="co">#va sin paréntesis aquí también</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">c</span>(<span class="at">z=</span>scale), <span class="co">#no te olvides de usar el combine</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>    ) </span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 330 × 15
+# Groups:   Sex [2]
+   Sex     Age NPI16TOTAL GSESTOTAL ADTOTAL SDTOTAL Sign.Area Name.Area
+   &lt;fct&gt; &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+ 1 F        26          7        27      20      31      24.3      26.0
+ 2 F        22          5        25      19      30      19.0      17.4
+ 3 F        35          0        23      11      25      11.9      15.2
+ 4 F        24         10        25      25      31      39.1      29.3
+ 5 F        25          6        29      19      24      18.8      15.2
+ 6 F        21          1        24      13      27      41.1      55.5
+ 7 F        23          1        25      17      24      16.4      14.8
+ 8 F        22          8        25      22      22      43.8      16.6
+ 9 F        22          0        27      11      NA      22.9      18.1
+10 F        20          0        20       8      19      18.7      17.6
+# ℹ 320 more rows
+# ℹ 7 more variables: Age_z &lt;dbl[,1]&gt;, NPI16TOTAL_z &lt;dbl[,1]&gt;,
+#   GSESTOTAL_z &lt;dbl[,1]&gt;, ADTOTAL_z &lt;dbl[,1]&gt;, SDTOTAL_z &lt;dbl[,1]&gt;,
+#   Sign.Area_z &lt;dbl[,1]&gt;, Name.Area_z &lt;dbl[,1]&gt;</code></pre>
+</div>
+</div>
+<blockquote class="blockquote">
+<p>Acá está <a href="https://eva-cursos.psico.edu.uy/pluginfile.php/143982/mod_resource/content/1/curso-R---ejercicio-5_ssol_2022.pdf">el ejercicio</a> que acompaña a la sesión 5</p>
+</blockquote>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/almadana\.github\.io\/cursoR\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/almadana/cursoR/edit/main/lecciones/05-sesion-tidyselect.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li><li><a href="https://github.com/almadana/cursoR/issues/new" class="toc-action"><i class="bi empty"></i>Informar de un problema</a></li></ul></div></div></div></footer><script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Camila Zugarramurdi">
+<meta name="author" content="Álvaro Cabana">
+
+<title>Sesión 6: pivot – Curso de R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-7f257b5e78b96e17e6422cbf4f6352ae.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Sin resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Curso de R</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Buscar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Navegación de palanca" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="../index.html" aria-current="page"> 
+<span class="menu-text">Inicio</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-lecciones" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Lecciones</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-lecciones">    
+        <li>
+    <a class="dropdown-item" href="../lecciones/01-sesion-variables-indexacion.html">
+ <span class="dropdown-text">1 · Variables e indexación</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/02-sesion-funciones.html">
+ <span class="dropdown-text">2 · Funciones</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/03-sesion-importacion-directorios.html">
+ <span class="dropdown-text">3 · Importación y directorios</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/04-sesion-dplyr.html">
+ <span class="dropdown-text">4 · dplyr</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/05-sesion-tidyselect.html">
+ <span class="dropdown-text">5 · tidyselect</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/06-sesion-pivot.html">
+ <span class="dropdown-text">6 · pivot</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/07-sesion-ggplot2.html">
+ <span class="dropdown-text">7 · ggplot2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/08-sesion-modelos-lineales-1.html">
+ <span class="dropdown-text">8 · Modelos lineales I</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/09-sesion-medias-marginales.html">
+ <span class="dropdown-text">9 · Medias marginales</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-ejercicios" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Ejercicios</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-ejercicios">    
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-01.html">
+ <span class="dropdown-text">Ejercicio 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-02.html">
+ <span class="dropdown-text">Ejercicio 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-03.html">
+ <span class="dropdown-text">Ejercicio 3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-04.html">
+ <span class="dropdown-text">Ejercicio 4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-05.html">
+ <span class="dropdown-text">Ejercicio 5</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-06.html">
+ <span class="dropdown-text">Ejercicio 6</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-07.html">
+ <span class="dropdown-text">Ejercicio 7</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-08.html">
+ <span class="dropdown-text">Ejercicio 8</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-09.html">
+ <span class="dropdown-text">Ejercicio 9</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../lecciones/ejercicio-10.html">
+ <span class="dropdown-text">Ejercicio 10</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/almadana/cursoR"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lecciones/01-sesion-variables-indexacion.html">Sesiones</a></li><li class="breadcrumb-item"><a href="../lecciones/06-sesion-pivot.html">Sesión 6: pivot</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Material</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Curso de programación y estadística en R</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Sesiones</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/01-sesion-variables-indexacion.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 1: variables e indexación</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/02-sesion-funciones.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 2: funciones</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/03-sesion-importacion-directorios.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 3: importación y directorios</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/04-sesion-dplyr.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 4: dplyr</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/05-sesion-tidyselect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 5: tidyselect</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/06-sesion-pivot.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Sesión 6: pivot</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/07-sesion-ggplot2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 7: ggplot2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/08-sesion-modelos-lineales-1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 8: modelos lineales I</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/09-sesion-medias-marginales.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sesión 9: medias marginales y contrastes</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Ejercicios</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Alternar sección">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 1</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 2</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 3</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 4</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 5</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 6</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 7</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 8</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 9</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../lecciones/ejercicio-10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ejercicio 10</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#datos-a-lo-largo-y-a-lo-ancho" id="toc-datos-a-lo-largo-y-a-lo-ancho" class="nav-link active" data-scroll-target="#datos-a-lo-largo-y-a-lo-ancho">Datos a lo largo y a lo ancho</a>
+  <ul class="collapse">
+  <li><a href="#importando-datos-de-spss" id="toc-importando-datos-de-spss" class="nav-link" data-scroll-target="#importando-datos-de-spss">Importando datos de SPSS</a></li>
+  <li><a href="#formato-ancho-vs-formato-largo" id="toc-formato-ancho-vs-formato-largo" class="nav-link" data-scroll-target="#formato-ancho-vs-formato-largo">Formato ancho <em>vs</em> formato largo</a>
+  <ul class="collapse">
+  <li><a href="#formato-ancho" id="toc-formato-ancho" class="nav-link" data-scroll-target="#formato-ancho">Formato ancho</a></li>
+  <li><a href="#formato-largo" id="toc-formato-largo" class="nav-link" data-scroll-target="#formato-largo">Formato largo</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#pivotear" id="toc-pivotear" class="nav-link" data-scroll-target="#pivotear">Pivotear</a>
+  <ul class="collapse">
+  <li><a href="#pivot_longer-pivoteame-a-largo" id="toc-pivot_longer-pivoteame-a-largo" class="nav-link" data-scroll-target="#pivot_longer-pivoteame-a-largo">Pivot_longer: pivoteame a largo</a></li>
+  <li><a href="#pivot_wider-pivoteame-a-ancho" id="toc-pivot_wider-pivoteame-a-ancho" class="nav-link" data-scroll-target="#pivot_wider-pivoteame-a-ancho">Pivot_wider: pivoteame a ancho</a></li>
+  </ul></li>
+  <li><a href="#joinear-unir" id="toc-joinear-unir" class="nav-link" data-scroll-target="#joinear-unir">Joinear (unir)</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/almadana/cursoR/edit/main/lecciones/06-sesion-pivot.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li><li><a href="https://github.com/almadana/cursoR/issues/new" class="toc-action"><i class="bi empty"></i>Informar de un problema</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../lecciones/01-sesion-variables-indexacion.html">Sesiones</a></li><li class="breadcrumb-item"><a href="../lecciones/06-sesion-pivot.html">Sesión 6: pivot</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Sesión 6: pivot</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autores/as</div>
+    <div class="quarto-title-meta-contents">
+             <p>Camila Zugarramurdi </p>
+             <p>Álvaro Cabana </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Fecha de publicación</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">31 de diciembre de 2021</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="datos-a-lo-largo-y-a-lo-ancho" class="level1">
+<h1>Datos a lo largo y a lo ancho</h1>
+<p>Un objetivo del curso es que puedan lograr usar <code>R</code> para todos sus análisis de datos, y en el mejor de los casos, se convierta en su herramienta de cabecera para estos fines.</p>
+<section id="importando-datos-de-spss" class="level2">
+<h2 class="anchored" data-anchor-id="importando-datos-de-spss">Importando datos de SPSS</h2>
+<p>Muchos de ustedes seguramente usan o han usado SPSS para trabajar sus datos, así que lo más probable es que quieran importar los datos que tienen guardados en formato <code>.sav</code> de SPSS. Para lograr eso, pueden usar el paquete <code>haven</code>. Este paquete provee una función para eso, <code>read_sav()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>stroopdf <span class="ot">=</span> <span class="fu">read_sav</span>(<span class="st">'input/stroop.sav'</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Siempre hay que revisar que todo esté bien, echando un vistazo a la estructura con <code>str()</code> y mirando los datos con <code>View()</code>. Prueben. Mmmm, uno pensaría que la función <code>read_sav()</code> importa los datos en un data frame. Veamos:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(stroopdf)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "tbl_df"     "tbl"        "data.frame"</code></pre>
+</div>
+</div>
+<p>Ok, todo en orden doctor!</p>
+</section>
+<section id="formato-ancho-vs-formato-largo" class="level2">
+<h2 class="anchored" data-anchor-id="formato-ancho-vs-formato-largo">Formato ancho <em>vs</em> formato largo</h2>
+<p>Veamos en qué consisten los datos que he cargado:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>stroopdf</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 20 × 5
+   sujeto nItem congruente incongruente neutro
+   &lt;chr&gt;  &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;  &lt;dbl&gt;
+ 1 s1         1      0.703        0.708  0.751
+ 2 s1         2      0.758        0.539  0.773
+ 3 s1         3      0.657        0.713  0.811
+ 4 s1         4      0.592        0.729  0.574
+ 5 s1         5      0.519        0.656  0.848
+ 6 s1         6      0.744        0.604  0.653
+ 7 s1         7      0.792        0.698  0.631
+ 8 s1         8      0.606        0.569  0.649
+ 9 s1         9      0.560        0.741  0.623
+10 s1        10      0.698        0.632  0.644
+11 s2         1      0.735        0.641  0.603
+12 s2         2      0.597        0.739  0.653
+13 s2         3      0.574        0.668  0.743
+14 s2         4      0.672        0.633  0.696
+15 s2         5      0.575        0.621  0.612
+16 s2         6      0.709        0.682  0.715
+17 s2         7      0.719        0.665  0.623
+18 s2         8      0.617        0.700  0.542
+19 s2         9      0.626        0.647  0.861
+20 s2        10      0.527        0.705  0.739</code></pre>
+</div>
+</div>
+<p>Bueno, aparecen las clásicas variables de un stroop: una columna para identificar el sujeto, otra para el ítem (o sea, la palabra), otra para el tiempo de reacción, y otra que designa la condición a la que corresponde.</p>
+<p>¿Cómo que no hay columna de tiempo de reacción? ¿No hay columna RT? Ah, esperen, hay 3 columnas que dicen, congruente, incongruente, y neutro. Ah, esos deben ser los TR. Ok, en tres columnas, got it. Cada fila entonces corresponde a una combinación <strong>de sujeto X ítem</strong>, y en vez de tener <strong>una columna</strong> para los TR, tenemos <strong>tres</strong>. A esta forma de guardar los datos se le llama <strong>formato ancho</strong>, o <strong>wide format</strong> en inglish.</p>
+<section id="formato-ancho" class="level3">
+<h3 class="anchored" data-anchor-id="formato-ancho">Formato ancho</h3>
+<p>El formato ancho es el formato típico con el que se trabaja en SPSS, y adivinen, exacto, <em>NO</em> es el formato típico de trabajo en R. Por varias razones.</p>
+<p>Para resumirlas, digamos que siempre conviene que <em>cada columna corresponda a una variable</em>, y <em>cada fila a una observación</em>. Cuando veamos cómo graficar con <code>ggplot2</code> y cómo ajustar y analizar modelos lineales verán que esta disposición tiene muchas ventajas.</p>
+<p>El formato ancho no respeta esta máxima. Veamos: la variable “tiempo de reacción” está “cruzada” por los 3 niveles del factor “condición”, para cada sujeto y cada ítem. Cada fila, por tanto, no representa una observación, sino 3: tres tiempos de reacción medidos para cada una de las 3 condiciones, para un sujeto y un ítem.</p>
+</section>
+<section id="formato-largo" class="level3">
+<h3 class="anchored" data-anchor-id="formato-largo">Formato largo</h3>
+<p>En contraste, se le denomina <em>formato largo</em> al formato que respeta la máxima: <em>cada columna corresponda a una variable</em>, y <em>cada fila a una observación</em>. En la sesión 4, habíamos creado un data frame de stroop con este formato: una varible de sujeto, otra de ítem, otra de condición, y otra de RT. Cada columna, una variable. Cada fila, en tanto, es una observación, una medida: un único TR para una condición, para un sujeto, para un ítem.</p>
+</section>
+</section>
+</section>
+<section id="pivotear" class="level1">
+<h1>Pivotear</h1>
+<p>Entonces, ¿cómo puedo convertir los datos de un formato al otro? A través de las funciones <em>pivot</em> del paquete <code>tidyr</code>. Este paquete provee, entre otras, dos funciones clave: una para pasar de ancho a largo: <strong>pivot_longer</strong>, y otra para pasar de ancho a largo: <strong>pivot_wider</strong></p>
+<section id="pivot_longer-pivoteame-a-largo" class="level2">
+<h2 class="anchored" data-anchor-id="pivot_longer-pivoteame-a-largo">Pivot_longer: pivoteame a largo</h2>
+<p>La función se llama <code>pivot_longer()</code>, y admite varios argumentos. Pasemos nuestro <code>stroopdf</code> a formato largo:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pivot_longer</span>(stroopdf)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in `pivot_longer()`:
+! `cols` must select at least one column.</code></pre>
+</div>
+</div>
+<p>Hmm, no es tan simple. Veamos el mensaje de error: <em><code>cols</code> must select at least one column.</em>. Cierto, hay que avisarle a <code>pivot_longer</code> cuáles son las variables que queremos pasar de ancho a largo, o sea, las que están cruzadas. En nuestro data frame, el tiempo de reacción está cruzado por los niveles de condición, pero cada combinación de sujeto y número de ítem ya están “en formato largo”, por lo tanto estas últimas no las quiero pasar a largo. Indico entonces cuáles son las columnas que quiero pasar a largo:</p>
+<p>A ver ahora…</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pivot_longer</span>(stroopdf,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">cols =</span> <span class="fu">c</span>(congruente, incongruente, neutro))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 60 × 4
+   sujeto nItem name         value
+   &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;
+ 1 s1         1 congruente   0.703
+ 2 s1         1 incongruente 0.708
+ 3 s1         1 neutro       0.751
+ 4 s1         2 congruente   0.758
+ 5 s1         2 incongruente 0.539
+ 6 s1         2 neutro       0.773
+ 7 s1         3 congruente   0.657
+ 8 s1         3 incongruente 0.713
+ 9 s1         3 neutro       0.811
+10 s1         4 congruente   0.592
+# ℹ 50 more rows</code></pre>
+</div>
+</div>
+<p>Excelente! O casi. La salida es un data frame largo, sí, pero faltan los nombres de las variables “condición” y “rt”. En vez de esos nombres aparecen unos genéricos “name”, y “value”. Los podemos cambiar usando los argumentos de la función <em>names_to</em> y <em>values_to</em>, veamos:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pivot_longer</span>(stroopdf,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">cols =</span> <span class="fu">c</span>(congruente, incongruente, neutro),</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">names_to =</span> <span class="st">"condición"</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">values_to =</span> <span class="st">"rt"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 60 × 4
+   sujeto nItem condición       rt
+   &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt;        &lt;dbl&gt;
+ 1 s1         1 congruente   0.703
+ 2 s1         1 incongruente 0.708
+ 3 s1         1 neutro       0.751
+ 4 s1         2 congruente   0.758
+ 5 s1         2 incongruente 0.539
+ 6 s1         2 neutro       0.773
+ 7 s1         3 congruente   0.657
+ 8 s1         3 incongruente 0.713
+ 9 s1         3 neutro       0.811
+10 s1         4 congruente   0.592
+# ℹ 50 more rows</code></pre>
+</div>
+</div>
+<p>Perfecto! El data frame ya está en formato largo! En el código anterior no guardé la salida, la guardo ahora en una variable llamado <em>stroopLong</em> porque la voy a necesitar más adelante:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>stroopLong <span class="ot">=</span> <span class="fu">pivot_longer</span>(stroopdf,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">cols =</span> <span class="fu">c</span>(congruente, incongruente, neutro),</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">names_to =</span> <span class="st">"condicion"</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">values_to =</span> <span class="st">"rt"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="pivot_wider-pivoteame-a-ancho" class="level2">
+<h2 class="anchored" data-anchor-id="pivot_wider-pivoteame-a-ancho">Pivot_wider: pivoteame a ancho</h2>
+<p>A veces necesitamos los datos en formato ancho, sí, c’est la vie, todo depende, de según como se mire todo depende. Por ejemplo, para hacer correlaciones a menudo necesitamos el formato ancho, o para hacer pruebas t, o para hacer un gráfico de dispersión. Veamos entonces cómo se pasa de formato largo a formato ancho, o sea, cómo funciona la función <em>pivot_wider</em>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pivot_wider</span>(stroopLong,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">id_cols =</span> <span class="fu">c</span>(sujeto, nItem),</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">names_from =</span> condicion,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">values_from =</span> rt)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 20 × 5
+   sujeto nItem congruente incongruente neutro
+   &lt;chr&gt;  &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;  &lt;dbl&gt;
+ 1 s1         1      0.703        0.708  0.751
+ 2 s1         2      0.758        0.539  0.773
+ 3 s1         3      0.657        0.713  0.811
+ 4 s1         4      0.592        0.729  0.574
+ 5 s1         5      0.519        0.656  0.848
+ 6 s1         6      0.744        0.604  0.653
+ 7 s1         7      0.792        0.698  0.631
+ 8 s1         8      0.606        0.569  0.649
+ 9 s1         9      0.560        0.741  0.623
+10 s1        10      0.698        0.632  0.644
+11 s2         1      0.735        0.641  0.603
+12 s2         2      0.597        0.739  0.653
+13 s2         3      0.574        0.668  0.743
+14 s2         4      0.672        0.633  0.696
+15 s2         5      0.575        0.621  0.612
+16 s2         6      0.709        0.682  0.715
+17 s2         7      0.719        0.665  0.623
+18 s2         8      0.617        0.700  0.542
+19 s2         9      0.626        0.647  0.861
+20 s2        10      0.527        0.705  0.739</code></pre>
+</div>
+</div>
+<p>Simple no? Primero le digo cuáles son los datos, como siempre. Luego le digo cuáles son las columnas que sirven como identificadores, es decir, que no quiero ensanchar, en este caso son “sujeto” y “nItem”, y luego le digo de qué variable va a obtener los <em>nombres</em> de las nuevas columnas ( <em>names_from</em> ) y de qué variable va a obtener los <em>valores</em> de las nuevas columnas ( <em>values_from</em>). O sea, el procedimiento inverso al que vimos en pivot_longe&gt; r.</p>
+</section>
+</section>
+<section id="joinear-unir" class="level1">
+<h1>Joinear (unir)</h1>
+<p>Además de dar vuelta los datos para un lado y para otro, a menudo queremos <strong>unir dos bases de datos</strong> a partir de un identificador común. Por ejemplo, tomé parte de los datos en una computadora en una encuesta, o experimento de tiempo de reacción, y parte de los datos vienen de otra fuente, por ejemplo de información demográfica que el participante llenó en un formulario. Luego quiero tener una sola base de datos donde estén las respuestas de los participantes de la prueba computarizada y también sus datos demográficos cierto? Si ambas bases tuvieran exactamente el mismo número de filas en exactamente el mismo orden, fácil, las pego una y otra con la función <code>cbind</code> y listo (cbind = column bind = unir filas). Pero, <em>the truth is rarely pure and never simple</em><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Para eso existe en el paquete <em>dplyr</em> la función <code>join</code>, que es una maravilla. Más que una función es una <em>familia</em> de funciones: <code>left_join</code>, <code>right_join</code>, <code>inner_join</code> y <code>full_join</code>, pero son sabores del mismo tema. Veamos cómo funciona.</p>
+<p>Vamoa a usar un ejemplo <em>dummy</em> agregando la edad de los sujetos en la base. Como no lo tengo en un archivo, solo con el fin de mostrar cómo funciona me voy a armar un dataframe con datos demográficos de los sujetos del stroopdf. Como el stroopdf tiene solo dos sujetos (s1 y s2), voy a hacer un dataframe con dos filas, una para cada sujetos, y una columna para sujeto, una para edad y una para lugar de nacimiento.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>demograficos <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">sujeto =</span> <span class="fu">c</span>(<span class="st">"s1"</span>, <span class="st">"s2"</span>),</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">edad =</span> <span class="fu">c</span>(<span class="dv">25</span>, <span class="dv">30</span>),</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">lugar.nac =</span> <span class="fu">c</span>(<span class="st">"Montevideo"</span>, <span class="st">"Maldonado"</span>))  </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(demograficos)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Listo. Ahora quiero agregar en el stroopdf agregar estas columnas. Cómo lo hago?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>stroopdf.demo <span class="ot">=</span> <span class="fu">right_join</span>(<span class="at">x =</span> stroopdf,</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>                           <span class="at">y =</span> demograficos,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>                           <span class="at">by =</span> <span class="st">"sujeto"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>En <em>x</em> puse el dataframe con los datos experimentales, en <em>y</em> el dataframe con los datos demográficos, y en <em>by</em> le indico qué columna debe usar como identificador para unir las dos bases.</p>
+<p>Qué opciones de <em>by</em> tengo? Varias:</p>
+<ul>
+<li><p>si no pongo nada, y los dos dataframes tienen una (o más) columnas con exactamente el mismo nombre, automáticamente va a usar estas. En el ejemplo anterior, pueden probar qué pasa cuando no ponen nada en <em>by.</em></p></li>
+<li><p>si las columnas de identificador tienen distinto nombre en uno y otro dataframe, entonces le digo cuáles son:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>demograficos <span class="ot">=</span> <span class="fu">data.frame</span>(<span class="at">ID =</span> <span class="fu">c</span>(<span class="st">"s1"</span>, <span class="st">"s2"</span>),</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">edad =</span> <span class="fu">c</span>(<span class="dv">25</span>, <span class="dv">30</span>),</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">lugar.nac =</span> <span class="fu">c</span>(<span class="st">"Montevideo"</span>, <span class="st">"Maldonado"</span>))  </span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># nótese que ahora a la columna de sujeto le llamé ID, para mostrar</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>stroopdf.demo <span class="ot">=</span> <span class="fu">right_join</span>(<span class="at">x =</span> stroopdf,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>                           <span class="at">y =</span> demograficos,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>                           <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"sujeto"</span> <span class="ot">=</span> <span class="st">"ID"</span>)) <span class="co"># en el dataframe x la columna</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>                                                    <span class="co"># se llama sujeto, en el dataframe</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>                                                    <span class="co"># y se llama ID</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></li>
+</ul>
+<p>Perfecto! Un segundo punto importante para las funciones <code>join</code> es esto de left, right, inner y full. Básicamente indican qué hacer con los datos de identificadores que no coinciden (o sea, la yuxtaposición de dos conjuntos). Puede pasar que haya más identificadores en x que en y, más identificadores en y que en x, o distintos identificadores en x e y. Entonces:</p>
+<ul>
+<li><code>left_join</code> dice: quedate solamente con todos los identificadores que existan en lo que pongo a la izquierda (o sea, x).</li>
+<li><code>right_join</code> dice: quedate solamente con todos los identificadores que existan en lo que pongo a la derecha (o sea, y).</li>
+<li><code>inner_join</code> dice: quedate solamente con todos los identificadores que existan en x <strong>y también</strong> en y.</li>
+<li><code>full_join</code> dice: quedate con todos los identificadores que existan tanto en x como en y (o sea, en x <strong>o</strong> en y).</li>
+</ul>
+<p>En resumen:</p>
+<ul>
+<li>pasamos los datos de ancho a largo, casi siempre queremos usarlos en largo.</li>
+<li>pasamos los datos de largo a ancho, útil para hacer gráficos de dispersión</li>
+<li>unimos dos dataframes en función de identificadores</li>
+</ul>
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Notas</h2>
+
+<ol>
+<li id="fn1"><p>The importance of being Ernest, Oscar Wilde<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/almadana\.github\.io\/cursoR\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/almadana/cursoR/edit/main/lecciones/06-sesion-pivot.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li><li><a href="https://github.com/almadana/cursoR/issues/new" class="toc-action"><i class="bi empty"></i>Informar de un problema</a></li></ul></div></div></div></footer><script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

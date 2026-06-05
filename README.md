@@ -38,16 +38,15 @@ Luego `quarto render`.
 
 ## Publicar en GitHub Pages
 
-1. En `_quarto.yml`, ajustar `site-url` y `repo-url` a tu usuario/repositorio.
-2. Subir el proyecto y dejar que corra `.github/workflows/publicar.yml` (push a `main`).
-3. En GitHub: **Settings → Pages →**
+1. Ajustar `site-url` y `repo-url` en `_quarto.yml`.
+2. Generar el sitio: `quarto render` (crea/actualiza `docs/`, incluye `.nojekyll`).
+3. Commitear y pushear `docs/` junto con el resto del proyecto.
+4. En GitHub: **Settings → Pages →**
    - **Source:** Deploy from a branch
-   - **Branch:** `gh-pages`
-   - **Folder:** `/ (root)`
+   - **Branch:** `main` (o `master`)
+   - **Folder:** `/docs`
 
-No uses **main / docs**: GitHub activa Jekyll y falla con el HTML de Quarto. El archivo `.nojekyll` en la salida evita Jekyll; la acción lo genera y publica en `gh-pages`.
-
-La carpeta local `docs/` está en `.gitignore` (se genera con `quarto render`); no hace falta commitearla si usás la acción.
+El archivo `docs/.nojekyll` evita que GitHub use Jekyll (imprescindible para Quarto).
 
 **Sitio de proyecto** (`https://usuario.github.io/cursoR/`): `site-url` debe terminar en `/cursoR/` (con barra final).
 

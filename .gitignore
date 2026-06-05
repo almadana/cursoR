@@ -1,6 +1,5 @@
 /.quarto/
 /_site/
-/docs/
 *.knit.md
 *.utf8.md
 
