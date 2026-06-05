@@ -1,0 +1,307 @@
+---
+title: "Sesión 5: tidyselect"
+author:
+  - Camila Zugarramurdi
+  - Álvaro Cabana
+date: "2022"
+lang: es
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+```{r}
+#| label: setup
+#| include: false
+
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+options(tibble.print_max = 10)
+
+```
+# Elige tu(s) columna(s)
+
+En la sesión pasada vimos cómo usar `filter` para elegir o filtrar filas. Ahora veremos cómo usar `select` para elegir columnas. Si bien ya sabemos cómo elegir columnas (de un dataframe, con el símbolo de `$`, o con el uso del paréntesis recto: `miDataFrame[filas,columnas]`), `select` nos hace la sintaxis más fácil y más legible, pero además nos permite combinarla con otras funciones que veremos más adelante, lo que nos da mucha más potencia.
+
+## Elegir por nombre o número de columna, _business as usual_
+
+La funcionalidad básica de `select` nos permite elegir una o más columnas por nombre, o por número. Usemos el conocido dataframe de `datosLimpios`. Ah, me olvidaba, también vamos a usar `tidyverse`!! (a partir de ahora casi que __siempre__ vamos a usarlo).
+
+```{r}
+#| echo: false
+library(tidyverse)
+load("input/datosLimpios.RData")
+```
+
+Mmm, quiero elegir sólo la columna de edad:
+
+```{r}
+select(datosLimpios,Age)
+```
+
+Nótese cómo __no__ estoy usando comillas aquí, una pequeña ventaja de usar `select`. ¿Cómo elegir dos columnas, por su nombre? Inténtalo hacer tú mismo, antes de mirar cómo se hace.
+
+```{r}
+#voy a usar un pipe, porque soy muy fancy
+datosLimpios %>% 
+  select(c(Age,Sex))
+```
+
+Muy bien! Pero, sabías que se puede hacer así también?
+
+```{r}
+datosLimpios %>% 
+  select(Age,Sex) # mirá Mamá, sin c()!!!
+```
+
+
+WHAAAAAT? No estás usando la función `c()` para unir los dos nombres de columnas? Qué clase de herejía es ésta? Así es el `tidyverse`, conspira para que el código sea más sencillo, más legible, y más potente.
+
+Como te imaginarás, también se puede usar el número de columna, en vez del nombre:
+
+```{r}
+datosLimpios %>% 
+  select(1:3,7) # columnas random
+```
+
+Hasta acá, es sólo una forma _fancy_ de elegir columnas, compatible con pipe. Pero ahora se pone interesante.
+
+## El paquete `tidyselect`
+
+A menudo nos enfrentamos a conjuntos de datos con muchas columnas. Muuuchas. O sea, de repente tenemos 10 o 15 columnas que queremos elegir para algo, del total de 32 columnas que tenemos. Y a veces no son columnas contiguas (de la 5 a la 15, por ejemplo), así que llamarlas por nombre o por número es igual de engorroso: tendremos que escribir a mano los 10 o 15 números o nombres de columna a mano...
+
+`tidyselect` al rescate!! Este pequeño paquete (parte del `tidyverse` obvvviamente), nos provee de varias funciones que nos hacen la vida más fácil a la hora de elegir varias columnas a la vez, siempre y cuando tengan alguna REGULARIDAD en los nombres. Por ejemplo, todas empiezan o terminan con la misma expresión, o tienen algo en común en su nombre (y generalmente éste suele ser el caso). Por ejemplo, puedo tener medidas "pre" y "post"
+de 10 escalas psicométricas, quizás se llamen algo así como "puntuacion_pre_UnaEscala", "puntuacion_post_otraEscala", etc. Éste es el escenario típico en el que las siguientes funciones son más útiles. Como es el espíritu `tidy`, los nombres son bastante intuitivos y nos permiten inferir qué cornos hacen:
+
+* `starts_with()` Elige columnas que empiecen con el mismo prefijo.
+* `ends_with()`     "       "     "  terminen con el mismo sufijo.
+* `contains()`      "       "     "  contengan la misma expresión en su nombre.
+* `matches()`       "       "    cuyo nombre dé _match_ con una [expresión regular](https://www.rexegg.com/) (como `contains` pero avanzado, para "hackers" digamos). 
+* `num_range()`     "       "   cuyo nombre sea consistente con un esquema numérico ("toma_1", "toma_2", etc.) 
+
+Estas funciones suelen usarse como ayudantes, digamos, cuando usamos otras funciones como `select`. Veamos cómo usarlas entonces.
+
+Supongamos que quiero quedarme sólo con las variables de escalas psicométricas en `datosLimpios`. Convenientemente, todas esas variables terminan en _"TOTAL"_. Así que puedo usar eso para elegirlas:
+
+```{r}
+datosLimpios %>% 
+  select( ends_with("TOTAL"))
+```
+
+Un lector atento habrá pensado... ¿pero no era más fácil pedirle las columnas de la 3 a la 6? Bueno, en este caso sí, pero piensa en un dataframe más "sucio", donde puede haber 15 variables de escala entremezcladas con otras 45 que no te interesan... 
+
+Otra razón para usar nombres y no números, es la robustez del código. Sí, ahora las columnas que te interesan son las 3,4,5 y 6. Pero quizás la próxima vez que corras el experimento haya habido un cambio, quizás haya un columna de más o de menos, y las columnas pasen a ser la 4,5,6 y 8, y chau, tu código ya no funciona.
+
+Veamos algún otro ejemplo de estas funciones:
+
+```{r}
+datosLimpios %>% 
+  select(contains("D"))
+```
+
+```{r}
+datosLimpios %>% 
+  select(starts_with("S"))
+```
+
+
+# Across the `tidyverse`
+
+Todo muy lindo, pero esto se puede usar para algo más.... potente? Bueno, así como `group_by` sirve para agrupar filas, típicamente para sumarizar o mutar según estas agrupaciones, se puede hacer algo parecido pero con las columnas. Es decir, se puede sumarizar y mutar, aplicando la misma función (o funciones) a diferentes columnas. Qué pasa si quiero tener la media y el desvío de _cada columna_ que sea numérica, por ejemplo. Digamos que quiero pasar a z-score _todas_ mis medidas, que tengo, convenientemente, en diferentes columnas. Cómo puedo hacer eso? Con la función `across`.
+
+```{r}
+datosLimpios %>% summarize(across(ends_with("TOTAL"),mean,na.rm=T))
+```
+
+EH?
+
+Vamos por partes. La función `across` necesita de al menos _dos_ argumentos: un conjunto de columnas, y una función.
+
+```{r}
+#| eval: false
+across(ends_with("TOTAL"),mean)
+```
+
+Pero como nos advierte `R` en la consola si queremos correr lo que se ve arriba directamente, `across` no es una función que pueda usarse "suelta", sino que tiene que ir _dentro_ de un _verbo_ de `dplyr`: (generalmente `summarize`, `mutate`, o el rara vez usado `transmute`, que no vimos).
+
+Lo que hace `across` es indicarle a `mutate` o `summarize`, que la operación (cuenta, suma, promedio, etc) se va a hacer a varias columnas a la vez. Por eso hay que indicarle a cuáles columnas. En este caso estamos usando `tidyselect` para indicarle que son las columnas que terminan en "TOTAL" las que queremos. El otro argumento es la función que queremos usar. En este caso, queremos la media, por eso indicamos la función `mean`, así, sin paréntesis ni nada.
+
+Entonces tendríamos:
+```{r}
+datosLimpios %>%  #pongo los datos en el pipe
+  summarize( #sumarizo
+    across( # varias columnas a la vez
+      ends_with("TOTAL"), # las que terminan en "TOTAL"
+      mean #calculale la media a cada una
+    ) 
+  )
+```
+
+Oops! Tenemos varios `NAs`! Tendría que pasarle a `mean` el argumento `na.rm=T`... Fácil, le paso ese argumento __a `across`__, para que cuando "llame" a la función `mean` para calcular la media de cada columna, le "pase" ese argumento. Entonces tenemos la expresión final (o sea, la que mostré al principio :P, pero acá la escribimos un poco "desaparramada" para que se vea mejor qué hace cada parte):
+
+```{r}
+datosLimpios %>%  #pongo los datos en el pipe
+  summarize( #sumarizo
+    across( # varias columnas a la vez
+      ends_with("TOTAL"), # las que terminan en "TOTAL"
+      mean,  #calculale la media a cada una
+      na.rm=T #pasale el argumento na.rm=T a la función .mean.
+    )
+  )
+```
+
+Claro está, puedo elegir las columnas como yo quiera. Las siguientes expresiones hacen lo mismo que la anterior:
+
+```{r}
+#| eval: false
+datosLimpios %>%  #pongo los datos en el pipe
+  summarize( #sumarizo
+    across( # varias columnas a la vez
+      3:6, # las columnas 3 a la 6
+      mean,  #calculale la media a cada una
+      na.rm=T #pasale el argumento na.rm=T a la función .mean.
+    )
+  )
+```
+
+```{r}
+#| eval: false
+datosLimpios %>%  #pongo los datos en el pipe
+  summarize( #sumarizo
+    across( # varias columnas a la vez
+      c("NPI16TOTAL","GSESTOTAL","ADTOTAL","SDTOTAL"), # lista de nombres de columna
+      mean,  #calculale la media a cada una
+      na.rm=T #pasale el argumento na.rm=T a la función .mean.
+    )
+  )
+```
+
+
+Como siempre, `across` puede integrarse en un `pipeline` o tubería más grande. Por ejemplo, puedo además agrupar or filas:
+
+```{r}
+datosLimpios %>%  #pongo los datos en el pipe
+  group_by(Sex) %>% #agrupo filas por Sexo
+  summarize( #sumarizo
+    across( # varias columnas a la vez
+      ends_with("TOTAL"), # las que terminan en "TOTAL"
+      mean,  #calculale la media a cada una
+      na.rm=T #pasale el argumento na.rm=T a la función .mean.
+    )
+  )
+```
+
+NOICE!
+
+
+__IMPORTANTE__
+`across` puede usarse en grupos, pero NO puede elegirse una columna de grupo para aplicar las funciones.
+
+## Varias funciones a la vez
+
+Ya lo dice el dicho: el que calcula la media, quiere calcular también el desvío. ¿Cómo hacerlo eficientemente con `across`? Simplemente agregar la función `sd` en la lista de argumentos (combinándolas en una lista de funciones mediante el combine `c()`):
+
+```{r}
+datosLimpios %>%  #pongo los datos en el pipe
+  summarize( #sumarizo
+    across( # varias columnas a la vez
+      ends_with("TOTAL"), # las que terminan en "TOTAL"
+      c(mean,sd),  #calculale la media y el desvío a cada una
+      na.rm=T #pasale el argumento na.rm=T a la función .mean.
+    )
+  )
+```
+
+Pero... qué son esos nombres de columnas! Horror! Acá es relativamente fácil deducir cuál es la media y cuál el desvío. Y si bien el mundo es como debe ser y la numeración `_1` y `_2` respeta el orden en que fueron nombradas en la lista (media y desvío, respectivamente), esa nomenclatura es una receta para el desastre.
+
+Antes de ver una solución sencilla a este problema, tengo que mostrarles un algo que no vimos: cómo crear una lista __nominada__ (o sea, que lleva nombres) con `c()`:
+
+```{r}
+#esta es una lista donde cada elemento tiene un "nombre" o etiqueta
+miListaConEtiquetas = c(primerElemento="hola",segundoElemento="che",tercerElemento="todo bien?")
+miListaConEtiquetas
+```
+
+Si entendiste qué hace eso de arriba, entonces vas a entender lo siguiente:
+
+
+```{r}
+datosLimpios %>%  #pongo los datos en el pipe
+  summarize( #sumarizo
+    across( # varias columnas a la vez
+      ends_with("TOTAL"), # las que terminan en "TOTAL"
+      c(media=mean,desvío=sd),  #calculale la media y el desvío a cada una
+      na.rm=T #pasale el argumento na.rm=T a la función .mean.
+    )
+  )
+```
+
+Ahora esto es legible! 
+
+Hay una forma más avanzada de nombrar _como uno quiera_ las columnas resultantes. Si les interesa, vean la documentación (`help(across)` o `?across`)
+
+## Mutatis mutandi
+
+No sólo de `summarise` viven les humanes. Qué pasa si, por ejemplo, quiero calcular el z-score de _todas_ las escalas? Acá no puedo sumarizar, porque quiero un valor para cada fila, justamente. Entonces necesitaría usar `mutate`. Ningún problema. Usaremos la función `scale` que nos calcula el z-score de una (ver [sesión 3](https://eva-cursos.psico.edu.uy/))..
+
+```{r}
+datosLimpios %>% 
+  mutate(
+    across(
+      ends_with("TOTAL"),
+      scale
+    ) 
+  )
+```
+
+Bien. Pero noten que esto me _remplaza_ las columnas que tenía con las columnas con el z-score. Si quiero conservar las columnas originales, una solución es darle nombre a la función "scale".
+
+```{r}
+datosLimpios %>% 
+  mutate(
+    across(
+      ends_with("TOTAL"),
+      c(z=scale), #no te olvides de usar el combine
+    ) 
+  )
+```
+
+Cómo? Que querés calcular el z-score pero independientemente para cada nivel de la variable "Sexo"? Metele un `group_by` con fe!!!
+
+```{r}
+datosLimpios %>% 
+  group_by(Sex) %>% 
+  mutate(
+    across(
+      ends_with("TOTAL"),
+      c(z=scale), #no te olvides de usar el combine
+    ) 
+  )
+```
+
+Ah, ahora querés calcular el z-score pero para _todas_ las variables numéricas. No te preocupes, `across` también funciona con indexación lógica. No, en serio, no te preocupes, mirá que es muy fácil. Hay una función que te va a ayudar: `is.numeric`. Si le pasás un vector, te dice si es numérico o no, como dice el nombre.
+
+```{r}
+is.numeric(datosLimpios$Sex)
+```
+```{r}
+is.numeric(datosLimpios$NPI16TOTAL)
+```
+
+Entonces podemos usar esta función (o cualquier otra expresión que nos devuelva un lógico para cada columna) para seleccionar columnas en `across`:
+
+```{r}
+datosLimpios %>% 
+  group_by(Sex) %>% 
+  mutate(
+    across(
+      is.numeric, #va sin paréntesis aquí también
+      c(z=scale), #no te olvides de usar el combine
+    ) 
+  )
+```
+
+> Acá está [el ejercicio](https://eva-cursos.psico.edu.uy/pluginfile.php/143982/mod_resource/content/1/curso-R---ejercicio-5_ssol_2022.pdf) que acompaña a la sesión 5
+

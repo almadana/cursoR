@@ -1,0 +1,244 @@
+---
+title: "Ejercicio 4"
+author:
+  - Camila Zugarramurdi
+  - Álvaro Cabana
+date: "2022"
+lang: es
+code-fold: false
+code-tools: true
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+
+```{r}
+#| label: setup
+#| include: false
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Ejercicio 4: data-massage
+
+
+El **objetivo** del ejercicio 4 es hacer las mismas cosas que en el ejercicio 3, de manera más compacta, y con más datos. También la idea es refinar un poco el análisis de los datos.
+Vamos a trabajar con el mismo tipo de datos que la vez anterior: pueden repasar si quieren de qué se trataban los datos [enlace](https://eva-cursos.psico.edu.uy/pluginfile.php/142103/mod_resource/content/2/curso-R---ejercicio-3-csol_2022.pdf)
+
+## Empezamos
+
+Vamos a trabajar con 4 archivos de datos; descárguenlos aquí: [archivo 1](https://www.dropbox.com/s/qceav8o93xzaskf/080416_094310_094045_1_CCF.csv?dl=0), [archivo 2](https://www.dropbox.com/s/ixfikcqh8r30u01/080516_093900_094045_2_CCF.csv?dl=0), [archivo 3](https://www.dropbox.com/s/fsh762h04w6ge71/080916_094942_094045_3_CCF.csv?dl=0) y [archivo 4](https://www.dropbox.com/s/rfepjca7em0obn4/081116_094922_094045_4_CCF.csv?dl=0). 
+
+Una vez descargados, tenemos que cargarlos con `read.csv` (o `read.table`). Como tienen detalles de formato, aquí va el código para levantarlos:
+
+```{r}
+#| label: carga0
+
+archivo1=read.table('input/080416_094310_094045_1_CCF.csv',sep=",",skip = 2,header = T)
+archivo2=read.table('input/080516_093900_094045_2_CCF.csv',sep=",",skip = 2,header = T)
+archivo3=read.table('input/080916_094942_094045_3_CCF.csv',sep=",",skip = 2,header = T)
+archivo4=read.table('input/081116_094922_094045_4_CCF.csv',sep=",",skip = 2,header = T)
+
+```
+y así para cada archivo.
+__Tip: usar la tecla TAB para autocompletar el nombre del archivo. Evita errores y ahorra tiempo y frustraciones.__
+
+__Atentti:__ ¿dónde descargaron los archivos? Los dejaron en una carpeta que se llama "input"? Repasen el uso de archivos y directorios de la sesión anterior [enlace](https://eva-cursos.psico.edu.uy/pluginfile.php/142101/mod_resource/content/2/curso-R---sesion-3_2022_importacion-directorios.pdf).
+
+Ahora unimos todo en un solo data.frame, usando la función __rbind()__:
+```{r}
+#| label: carga1
+#| eval: false
+
+datos=rbind(archivo1, archivo2, archivo3, archivo4)
+
+```
+
+
+***
+### Factores
+
+El data frame obtenido presenta varios detalles de formato. Para dejarlo a punto hay que:
+
+1) Convertir la variable _ID_ y la variable _acierto_ en factores.
+
+2) Convertir la variable _trialType_ en un factor con 3 niveles asignándole a cada uno las siguientes etiquetas: "ejemplo", "ensayo", y "test". 
+
+3) Cambiar las etiquetas de los niveles del factor _acierto_ en "No" y "Si". 
+
+
+***
+### Paquetes
+
+1) Cargar en memoria el paquete `tidyverse` (si no lo has instalado antes, instálalo ahora)
+
+2) ¿Qué hace la función `qplot()`? ¿A qué paquete pertenece?
+
+3) ¿Y la función `aes()`?
+
+***
+
+### summarise y mutate
+
+Con los datos obtenidos
+
+1) Calcular el promedio de tiempos de reacción y la tasa de aciertos para cada tarea. Ojo, ¡que no aparezcan NAs!
+
+2) Hacer lo mismo, pero para cada tarea _y_ para cada tipo de ensayo (variable _trialType_). ¿Aparecen NaNs? ¿Qué son los NaNs?
+
+3) Crear un data frame que no tenga ensayos de tipo "ejemplo". Trabajar sobre ese data frame a continuación.
+
+4) Limpiar outliers de tiempo de reacción en los datos, esto es, quitar aquellos ensayos en que el tiempo de reacción es mayor a la media de todos los ensayos más 3 desvíos estándar, o menor a 200 ms (ver [ejercicio 1](https://eva-cursos.psico.edu.uy/pluginfile.php/140322/mod_resource/content/2/curso-R---ejercicio-1-csol_2022.pdf)), evaluando cada tarea por separado.
+Sugerencia: usar z-scores y `mutate`.
+
+
+_Tip_ Nótese que un outlier "por arriba", equivale a un z-score mayor de 3.
+
+
+***
+
+### Encuentre el error
+
+Las siguientes líneas de código dan error, o no hacen lo que se supone que tienen que hacer. Copialas, pegalas, ejecutalas, y corregilas.
+
+1) `library(lmerTest)`
+2) `factor(datos$session, labels="1,2,3,4") #suponemos que los datos están en el data frame llamado "datos"`
+3) `datosNoEjemplo$task %>% group_by(task)`
+4) `datosNoEjemplo %>% group_by(task) %>% summarise(mean)` 
+
+
+***
+
+
+------------------------------------------------------------------------
+
+::: {.callout-tip .callout-solution collapse="true"}
+## Soluciones
+
+Desplegá esta sección cuando quieras comparar con un conjunto de soluciones posibles.
+
+```{r}
+#| eval: false
+datos$ID=factor(datos$ID)
+
+datos$acierto=factor(datos$acierto)
+```
+
+2) Convertir la variable _trialType_ en un factor con 3 niveles asignándole a cada uno las siguientes etiquetas: "ejemplo", "ensayo", y "test".
+
+```{r}
+#| eval: false
+datos$trialType=factor(datos$trialType,labels=c("ejemplo","ensayo","test"))
+```
+
+3) Cambiar las etiquetas de los niveles del factor _acierto_ en "No" y "Si". 
+
+```{r}
+#| eval: false
+#opción 1
+levels(datos$acierto)=c("No","Si")
+#opción 2, con forcats
+datos = datos %>% 
+  mutate(acierto=fct_recode(acierto,No="False",Si="True"))
+```
+
+
+***
+### Paquetes
+
+1) Instalar `tidyverse` y cargarlo en memoria 
+`install.packages("tidyverse)`
+`library(tidyverse)`
+2) ¿Qué hace la función `qplot()`? ¿A qué paquete pertenece?
+_Permite graficar. Es del paquete "ggplot2"_
+3) ¿Y la función `aes()`?
+_Tiene algo que ver con plotear, es de ggplot2_
+
+***
+
+### summarise y mutate
+
+Con los datos obtenidos
+
+1) Calcular el promedio de tiempos de reacción y la tasa de aciertos para cada tarea. Ojo, ¡que no aparezcan NAs!
+
+
+```{r}
+#| label: summ1
+#| eval: false
+
+datos %>% 
+  group_by(task) %>% 
+  summarise(media = mean(RT, na.rm = T),
+            tasa=sum(acierto=="Si",na.rm=T)/n())
+
+```
+
+2) Hacer lo mismo, pero para cada tarea _y_ para cada tipo de ensayo (variable _trialType_). ¿Aparecen NaNs? ¿Qué son los NaNs?
+
+```{r}
+#| label: summ2
+#| eval: false
+
+datos %>% 
+  group_by(task, trialType) %>% 
+  summarise(media = mean(RT, na.rm = T),
+            tasa=sum(acierto=="Si",na.rm=T)/n())
+
+```
+
+
+3) Crear un data frame que no tenga ensayos de tipo "ejemplo". Trabajar sobre ese data frame a continuación.
+
+```{r}
+#| label: summ3
+#| eval: false
+
+datosNoEjemplo = datos %>% 
+  filter(trialType != "ejemplo")
+
+```
+
+4) Limpiar outliers de tiempo de reacción en los datos, esto es, quitar aquellos ensayos en que el tiempo de reacción es mayor a la media de todos los ensayos más 3 desvíos estándar, o menor a 200 ms (ver [ejercicio 1](https://eva-cursos.psico.edu.uy/pluginfile.php/140322/mod_resource/content/2/curso-R---ejercicio-1-csol_2022.pdf)), evaluando cada tarea por separado.
+Sugerencia: usar z-scores y `mutate`.
+
+_Agreguemos una columna de z-scores al data frame. Luego, usamos esa columna y la función filter para sacar los outliers
+
+```{r}
+#| label: outliers
+#| eval: false
+
+datosLimpios = datosNoEjemplo %>%
+  group_by(task) %>% 
+  mutate(zRT = scale(RT)) %>% 
+  filter(zRT < 3 & RT > 0.2)
+
+```
+
+_Tip_ Nótese que un outlier "por arriba", equivale a un z-score mayor de 3.
+
+
+***
+
+### Encuentre el error
+
+Las siguientes líneas de código dan error, o no hacen lo que se supone que tienen que hacer. Copialas, pegalas, ejecutalas, y corregilas.
+
+1) `library(lmerTest)`
+_Si no instalé antes la librería lmerTest, no la voy a poder cargar y no va a funcionar._
+
+2) `factor(datos$session, labels="1,2,3,4") #suponemos que los datos están en el data frame llamado "datos"`
+_En vez de "labels", habría que indicarle con "levels". Además, hay que usar la función c(). Sería levels=c(1,2,3,4)_
+
+3) `datosNoEjemplo$task %>% group_by(task)`
+_El `group_by` es aplicable a data frames, no a un vector columna de un dataframe. `datosNoEjemplo %>% group_by(task)` no da error, pero aplicarle el `group_by` a la columna `task`de ese data frame si._
+
+4) `datosNoEjemplo %>% group_by(task) %>% summarise(mean)`
+_`summarise` (o `summarize`) admiten una (o mas) funciones aplicadas a alguna columna (o columnas) en particular. Aquí se le pide que calcule la media, pero... ¿a cuál de todas las columnas que tiene el data frame?
+
+***
+
+:::

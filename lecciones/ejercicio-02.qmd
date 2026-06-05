@@ -1,0 +1,120 @@
+---
+title: "Ejercicio 2"
+author:
+  - Camila Zugarramurdi
+  - Álvaro Cabana
+date: "2022"
+lang: es
+code-fold: false
+code-tools: true
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+```{r}
+#| label: setup
+#| include: false
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Ejercicio 2
+
+Este ejercicio acompaña a la guía de la sesión 2 sobre funciones, busca avanzar en el uso de funciones built-in comunes en R.
+
+El **objetivo** del ejercicio 2 es separar el dataset del ejercicio 1 en dos grupos en función de sus puntajes en narcisismo y comparar sus características.
+
+Completar las siguientes tareas:
+
+*Previo: abrir el script "ejercicio1", cargar los datos del ejercicio 1 con la función **load** y decirle a R en qué directorio estamos trabajando [Session \> Set Working Directory\> To Source File Location] (ver instrucciones en ejercicio 1, podés ignorar este paso si estás trabajando bien con un proyecto, y guardás tus archivos en ese directorio)*
+
+### Parte A: Funciones Built-in
+
+1.  Ordenar los datos de datosLimpios en orden decreciente de narcisismo usando la función **order**. Almacenar la salida en una variable llamada "datosLimpiosOrdenados". Para esto hay que seguir 3 pasos:
+
+-   aplicar la función **order** sobre la columna de puntajes de narcisismo del data frame "datosLimpios" usando el argumento *decreasing*, y almacenar la salida de la función en una variable. Mirar la variable. Entenderla. [psst: es el índice de las filas originales de datosLimpios ordenado en función del puntaje en narcisismo].
+-   usar la salida de la función anterior como **índice** de filas para reordenar el data frame "datosLimpios", y almacenar el data frame reordenado bajo el nombre "datosLimpiosOrdenados"
+-   corroborar que el data frame "datosLimpiosOrdenados" efectivamente quedó ordenado en función del narcisismo. Usar la función **plot** para visualizarlo, copiar este comando: `plot(datosLimpiosOrdenados$NPI16TOTAL)`. Mirar la pestaña PLOTS.
+
+2.  Encontrar una función de R que devuelva las primeras 30 filas de un data frame. Encontrar una función de R que devuelva las últimas 30 filas de un data frame. Aplicarlas al data frame "DatosLimpiosOrdenados"" y almacenar la salida en una variable para cada una. Comparar los dos grupos con la función **summary** para cada variable. ¿En qué variables hay diferencias entre los grupos? ¿Esas diferencias son significativas? Tip: usar función **t.test**.
+
+### Parte B: Funciones definidas por usuario
+
+3.  En el punto 3 del ejercicio 1 encontramos outliers para una determinada columna del data frame "datosLimpios". Si quisieramos hacer lo mismo para el resto de las columnas,¿podemos convertir esta serie de comandos en una función definida por el usuario?
+
+
+------------------------------------------------------------------------
+
+::: {.callout-tip .callout-solution collapse="true"}
+## Soluciones
+
+Desplegá esta sección cuando quieras comparar con un conjunto de soluciones posibles.
+
+### Soluciones
+
+```{r}
+#| label: cargo
+#| echo: false
+load("input/datosLimpios.RData")
+
+```
+
+1.  
+
+```{r}
+#| label: uno
+
+# paso i) ordeno la columna de narcisismo
+o = order(datosLimpios$NPI16TOTAL, decreasing = TRUE)
+# el vector o tiene la posición de las filas en orden decreciente según el puntaje de narcisismo
+
+# paso ii) uso el orden de la columna de narcisismo para reordenar el data frame
+datosLimpiosOrdenados = datosLimpios[o,]
+
+
+
+```
+
+2.  
+
+```{r}
+#| label: dos
+# primeras 30 filas del data frame
+LosMasNarcis = head(datosLimpiosOrdenados, n = 30)
+
+# últimas 30 filas del data frame
+LosMenosNarcis = tail(datosLimpiosOrdenados, n = 30)
+
+summary(LosMasNarcis)
+summary(LosMenosNarcis)
+
+# A simple vista hay diferencias en dominancia agresiva
+# Hago una prueba t
+t.test(LosMasNarcis$ADTOTAL, LosMenosNarcis$ADTOTAL)
+```
+
+3.
+
+```{r}
+#| label: tres
+outliers = function(x) {
+# calculo los límites de outliers
+mediaName = mean(x, na.rm = T) #la media
+desvName = sd(x, na.rm = T) #el desvío
+Out = mediaName + 3*desvName #guardo el umbral en una variable
+
+# encuentro los no outliers
+Out.logi = x <= Out
+
+# guardo el vector lógico que indica con cuáles me quedo
+return(Out.logi) }
+
+# Ahora la pruebo:
+  salida = outliers(datosLimpios$Name.Area)
+```
+
+Como verán, sigo los mismos pasos, solo que los meto todos adentro de llaves y cambio el nombre de la columna con la que estaba trabajando (datosLimpios\$Name.Area) por un nombre genérico (x). Veo que la salida de mi función es un vector lógico con TRUE con los datos que *no* son outliers y false con los que sí son outliers. ¿Te acordás cómo usar este vector para limpiar el data frame?
+:::

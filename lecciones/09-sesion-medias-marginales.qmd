@@ -1,0 +1,218 @@
+---
+title: "Sesión 9: medias marginales y contrastes"
+author:
+  - Camila Zugarramurdi
+  - Álvaro Cabana
+date: "2022"
+lang: es
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+# Medias marginales, pruebas pareadas, contrastes, y todo eso.
+
+Por lo general, uno ajusta un modelo (en el mejor de los casos, nuestro diseño nos **dice** qué modelo formular), y mira las pruebas de hipótesis sobre los parámetros. Casi siempre, además, nos interesan los "efectos" de las variables, y los de sus interacciones. Generalmente utilizamos para esto último pruebas F o "ANOVAs".
+
+Pero, como casi siempre tenemos más de una variable predictora, y como mínimo una complejidad de 2x2 en el diseño (dos variables categóricas de dos niveles cada una), nos suele interesar *contrastar* directamente las diferencias entre *pares* de niveles. Las (a veces mal llamadas) comparaciones **post-hoc**. En esta sesión veremos algunas formas de calcular estos contrastes pareados.
+
+## Las medias marginales y el paquete `emmeans`
+
+El paquete `emmmeans` (antes conocido como) `lsmeans` permite, entre otras cosas, calcular "medias marginales", esto es, los promedios de la variable dependiente según diferentes niveles de una o más variables predictoras categóricas.
+
+¿Qué? ¿Que qué cornos quiero decir con esto? Ok, basta de cháchara, pongamos un ejemplo. Eso sí, necesitaremos volver los datos de Valentina Paz *et al* que usamos en el [ejercicio 6](https://eva-cursos.psico.edu.uy/pluginfile.php/144346/mod_resource/content/4/curso-R---ejercicio-6_csol_2022.pdf) y en la [sesión 7](https://eva-cursos.psico.edu.uy/pluginfile.php/144816/mod_resource/content/3/curso-R---sesion-7_2022_ggplot2.pdf). Porque reusar, reciclar, reparar, es un gran mantra. En particular, necesitaremos el data frame largo `parts3` que luce así:
+
+```{r}
+#| warning: false
+#| echo: false
+load("input/ejercicio6.RData")
+```
+
+```{r}
+#| warning: false
+library(tidyverse)
+str(parts3)
+```
+
+En sesiones pasadas vimos cómo usando paquetes como `dplyr` podíamos obtener los promedios para los valores de enojo según, sexo, tipo de oferta, o un para la combinación de los niveles de ambas. Algo así como:
+
+```{r}
+mediasEnojo=parts3 %>% group_by(sexo,tipo_oferta) %>% 
+  summarize(mediaEnojo = mean(enojo,na.rm=T))
+mediasEnojo
+```
+
+Ahora, ¿qué pasa si quieren **comparar** las medias de, digamos, ofertas justas e injustas, para los participantes hombres? Un ejemplo típico de comparación pareada, que cuando se calcula *a posteriori* (cuando no se "planifica" de antemano, o se realiza mansalva todos contra todos, ver más adelante), se suele llamar *post-hoc*.
+
+En tal caso, podemos utilizar el paquete `emmeans` para calcular estimaciones un poco más "prolijas" y menos caseras de las medias. Primero, debemos ajustar un modelo lineal relevante: en este caso, queremos el enojo según sexo y tipo de oferta.
+
+```{r}
+enojo.lm1 = lm(enojo~sexo + tipo_oferta,data=parts3)
+summary(enojo.lm1)
+```
+
+Primero que nada, calculemos una "grilla de referencia" con `ref_grid`.
+
+```{r}
+library(emmeans)
+# Primer paso, calcular la "grilla de referencia". Esto no es siempre necesario, 
+# pero es un buen hábito.
+enojo.lm1.rg = ref_grid(enojo.lm1)
+```
+
+Luego, calculemos las medias marginales para la variable `sexo`:
+
+```{r}
+enojo.lm1.emm.sexo = emmeans(enojo.lm1.rg,"sexo")
+```
+
+Hacemos el summary
+
+```{r}
+summary(enojo.lm1.emm.sexo)
+
+```
+
+Bien! En promedio, los hombres tienen 2.35 de enojo, y las mujeres 2.04. Eso es lo que informa la columna `emmean`. La gracia es que ahora sabemos el error estándar de la estimación, los grados de libertad, y el inervalo de confianza (`lower.CL` y `upper.CL` son los límites inferior y superior del intervalo).
+
+Ahora, ¿cómo hago para incluir el "desglose" del nivel de enojo según sexo y tipo de oferta?
+
+```{r}
+enojo.lm1.emm.sexo.tipoOferta = emmeans(enojo.lm1.rg,c("sexo","tipo_oferta"))
+summary(enojo.lm1.emm.sexo.tipoOferta)
+
+```
+
+Comparemos estos resultados a los que dió el `summarize`...
+
+```{r}
+#según emmeans
+summary(enojo.lm1.emm.sexo.tipoOferta)[1,]
+```
+
+```{r}
+#según ddply
+mediasEnojo[1,]
+```
+
+Eh... es 0.7333, o es 0.655 ?
+
+*Qué está pasando?* 
+
+![WHAT\'S GOING ON?!](images/4nonblondes.jpeg)
+
+
+## Contrastes
+
+OK, dejemos por un momento esa discrepancia... Sigamos adelante, porque, porqué no? Digamos que nos interesa comparar los niveles de enojo, para cada nivel de oferta, **entre** hombres y mujeres... Una de las tantas formas de hacerlo, es con la función `contrast`
+
+```{r}
+contrast(enojo.lm1.emm.sexo.tipoOferta,"pairwise")
+```
+
+Bueno, es como mucho no? Esto compara TODO CONTRA TODO (el argumento "pairwise" hace que se hagan comparaciones de a pares... más sobre esto pronto). La verdad que no me interesa compara H,medias contra M,injustas...
+
+Entonces, si sólo nos interesa hacer comparaciones entre sexos *según* tipo de oferta, al hacer las medias marginales, podemos especificar en vez de `c("sexo","tipo_oferta")`, especificar sólo `"sexo"`, y agregar `"by=tipo_oferta"` como otro argumento a `emmeans`.
+
+```{r}
+enojo.lm1.emm.sexo.tipoOferta_2 = emmeans(enojo.lm1.rg,"sexo",by="tipo_oferta")
+contrast(enojo.lm1.emm.sexo.tipoOferta_2  ,"pairwise")
+```
+
+Ahora sí! Según, cada tipo de oferta, tengo el contraste entre los sexos. Perfecto.
+
+No?
+
+Digamos que quiero el contraste inverso, dentro de cada sexo, comparar niveles de enojo entre las ofertas. Fácil, sólo hay que invertir los argumentos del `emmeans`:
+
+```{r}
+enojo.lm1.emm.sexo.tipoOferta_2 = emmeans(enojo.lm1.rg,by="sexo","tipo_oferta")
+contrast(enojo.lm1.emm.sexo.tipoOferta_2  ,"pairwise")
+```
+
+Excelente!!!
+
+No?
+
+Pero... todos los contrastes son iguales, no importa el sexo... Y en la otra, los contrastes entre sexos eran los mismos, sin importar el nivel del tipo de oferta..
+
+**WHAT'S GOING ON?!** *Qué está pasando?*
+
+![WHAT'S GOING ON?!](images/234096-4-non-blondes-i-said-hey-what-s-going-on%20(1).jpg)
+
+
+**A VER QUIÉN RESUELVE ESTE ENTUERTO!**
+
+> _Pausa:_ Intenta pensar realmente qué está pasando... tómate tu tiempo. Intenta elaborar al menos una hipótesis, vamos, tú puedes!  Vuelve a explorar el modelo lineal que especificaste, del que derivan todas las comparaciones... Le falta algo? Qué implica el dummy coding que está por detrás? _Tip:_ Prueba reemplazar el ´+´ por un asterisco, en la definición del modelo.
+
+\newpage 
+
+### Comparaciones múltiples
+
+Bueno, digamos que tenemos una chorrera de contrastes, como los de hace un momento (nota: se ha corregido lo que andaba mal hasta hace un momento, y los contrastes ahora son diferentes.... claro que no se los muestro aquí :P):
+
+```{r}
+#| echo: false
+enojo.lm1 = lm(enojo~sexo*tipo_oferta,data=parts3)
+enojo.lm1.rg = ref_grid(enojo.lm1)
+enojo.lm1.emm.sexo.tipoOferta = emmeans(enojo.lm1.rg,c("sexo","tipo_oferta"))
+```
+
+```{r}
+contrast(enojo.lm1.emm.sexo.tipoOferta,"pairwise")
+```
+
+Y bueno, esto es una chorrera de p-valores... Una cosa frecuente en esta situación, es hacer correcciones por comparaciones múltiples. Estas correcciones pueden ir desde atacar los p-valores con un martillo (Bonferroni), es decir, multiplicar los p-valores por el número de comparaciones realizadas, a estrategias un tanto menos violentas. Hay muchísimas formas de introducir esta corrección, aquí les dejo la forma en que yo suelo hacerlas.
+
+```{r}
+pairs(enojo.lm1.emm.sexo.tipoOferta,adjust="bonferroni")
+```
+
+En lugar de `bonferroni` puede ir `mvt` (prueba t multivariada) ,`holm` (Holm-Bonferroni) y `fdr` (False Discovery Rate, creo que es Benjamini-Hochberg, lean la documentación).
+
+## Contraste de contrastes (tumba de campeones)
+
+Hay veces, que más que explorar las diferencias, queremos caracterizarlas, queremos poder saber si dos diferencias, son estadísticamente significativas.
+
+Por ejemplo, la diferencia entre el enojo antes ofertas justas e injustas, es en los hombres de 3.3, y en las mujeres de 3.71. ¿Es esta diferencia significativa?
+
+```{r}
+a=contrast(enojo.lm1.emm.sexo.tipoOferta,"pairwise")
+a[c(2,7),]
+```
+
+```{r}
+a[c(11,14),]
+```
+
+Y la diferencia entre el enojo antes ofertas medias e injustas, es en los hombres de 1.75, y en las mujeres de 2.21. Pero, ¿es esta diferencia significativa?
+
+Para responder a esta pregunta, utilizaremos la función `contrast`, pero con un nuevo argumento. Y para esto, tendremos que volver un minuto al listado de medias marginales (sí, acá ya están corregidos :P).
+
+```{r}
+summary(enojo.lm1.emm.sexo.tipoOferta)
+```
+
+Primero que nada, ¿cuál es el contraste que queremos hacer? Digamos que sería la diferencia entre injustas y justas de los hombres, menos la misma diferencia para las mujeres:
+
+[ (H, injustas) - (H, medias) ] - [ (M, injustas) - (M, medias) ]
+
+o lo que es igual:
+
+(H, injustas) - (H, medias) - (M, injustas) + (M, medias)
+
+Ahora, identifiquemos los números de fila relevantes a nuestra comparación.
+
+fila3 - fila5 - fila4 + fila6
+
+Podemos ahora pasar como parámetro a la función `contrast`, los coeficientes de esta suma y resta (-1 y 1) para cada una de las filas de la tabla anterior. En nuestro caso, el coeficiente para la filas 1 y 2 es 0, y luego son 1, -1 -1 y 1 para las filas 3, 4, 5 y 6. Así queda entonces:
+
+```{r}
+contrast(enojo.lm1.emm.sexo.tipoOferta,
+         list(hombresVsMujeresEnInjustasMenosMedias=c(0,0,1,-1,-1,1)))
+```
+
+Este contraste tiene un estimado de -0.46 (recuerden que la resta entre condiciones daba 1.75 para hombres y 2.21 para mujeres). Eso medio que ya lo sabíamos: pero ahora tenmos una prueba t y un p-valor asociado y podemos decirlo: "no hay diferencias entre los sexos para ese contraste entre injustas y medias".

@@ -1,0 +1,213 @@
+---
+title: "Sesión 3: importación y directorios"
+author:
+  - Camila Zugarramurdi
+  - Álvaro Cabana
+date: "2022"
+lang: es
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+```{r}
+#| label: setup
+#| include: false
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Intro: Pipeline
+
+Llamamos **pipeline** (tubería) al flujo de procesamiento desde la lectura o importación de los datos crudos provenientes del experimento, pasando por el preprocesamiento y limpieza, y el análisis estadístico y visualización. Para completar este proceso hay 3 tipos de archivos fundamentales:
+
+-   los archivos de datos crudos, normalmente almacenados como texto con extensión **.csv**
+-   los archivos de datos en formato nativo de R, que usan la extensión **.RData**
+-   los archivos donde almacenamos el conjunto de comandos que usamos durante el procesamiento, que llamamos script o guión y tienen la extensión **.R**
+
+## Importación: datos crudos (.csv)
+
+Cuando colectamos datos en un estudio, independientemente del software de presentación de estímulos que usemos (Matlab, PsychoPy, ePrime, App Web, you name it), frecuentemente almacenamos los datos en archivos de texto de valores separados por coma con la extensión *.csv*, o en archivos de Excel (?) con la extensión *.xslx*. El primer paso del procesamiento de datos es **leer** estos archivos desde R y convertirlos a un formato nativo del lenguaje R. Existe un conjunto de funciones aptas para esto, dependiendo de las características de los datos almacenados, estas son: **read.table**, read.csv y read.delim. Todas usan más o menos los mismos argumentos. [si los datos crudos están almacenados en excel, se puede exportarlos como .csv o para leerlos directamente utilizar el paquete *readxl*]. Veamos un ejemplo:
+
+```{r}
+#| label: leer
+#| eval: false
+# leo el archivo cuadernilloslectura.csv
+
+reading = read.table("./cuadernillos/cuadernilloslectura.csv",
+                     header = TRUE,
+                     sep = ",",
+                     dec = ",",
+                     stringsAsFactors = TRUE,
+                     encoding = "UTF-8")
+
+
+```
+
+Los argumentos de la función indican a R cuáles son las características del archivo que se va a leer. Aquí se describen los más importantes, pero el menú es mucho más vasto, por más información se puede consultar la ayuda de la función read.table.
+
+-   **header:** (cabezal) es un lógico (TRUE o FALSE) que indica si la primera fila del archivo contiene el nombre de las columnas.
+-   **sep:** indica el caracter que se usa para separar las columnas o valores del archivo, para una *archivo separado por comas* lo esperable son las comas, pero a veces puede haber otros como el tabulador o el punto y coma.
+-   **dec:** indica el caracter utilizado para separar número decimales, esto es particularmente importante para nosotros dado que en los sistemas operativos en inglés se usa el punto mientras que los sistemas operativos en español se usa la coma.
+-   **stringsAsFactors:** es un lógico, indica si R debe automáticamente convertir las columnas que tengan texto (strings) a factores. Es muy útil.
+
+El primer y último argumento requieren de un poco más de desarrollo:
+
+### Directorios
+
+El primer argumento es el nombre de archivo. El nombre de archivo debe especificar el directorio (pssst: directorio es lo mismo que carpeta) relativo o absoluto, si no está almacenado en el mismo directorio que el que estamos trabajando. Llamamos **path** al nombre del archivo junto con su ubicación en la computadora. Para ver en qué directorio estamos trabajando usamos la función **getwd()** y para especificar un nuevo directorio usamos la función **setwd()** (de get y set working directory respectivamente). R puede acceder a todos los archivos que están almacenados en el directorio en que estemos trabajando. Sin embargo, normalmente para conseguir mantener archivos en orden, tenemos más de una carpeta en el directorio en el que estamos trabajando, por ejemplo una carpeta bajo el nombre de *input* donde almacenamos los archivos de datos crudos. El directorio se indica siempre entre comillas. Para indicar el directorio **relativo** al directorio en el que estamos trabajando usamos el punto ("."). El punto indica que lo que viene después son carpetas dentro de la carpeta sobre la que estamos trabajando. Para indicar el directorio **absoluto** debo especificar todas las carpetas desde el directorio raíz, que en Windows normalmente es el disco duro C:. Para separar los nombres de las carpetas usamos la barra **/**. Veamos un ejemplo:
+
+```{r}
+#| label: wd
+#| eval: false
+
+# para ver en qué directorio estoy trabajando 
+getwd()
+
+# para cambiar el directorio,
+# por ejemplo a la carpeta "input"
+# donde guardo los archivos de datos crudos
+
+# con path relativo
+setwd("input/")
+
+# con path absoluto
+setwd("C:/Users/Camila/Dropbox/09 R/curso R psico/input/")
+
+# chequeo que efectivamente haya cambiado de directorio:
+getwd()
+
+```
+
+### Codificación
+
+El último argumento de la función *read.table* del ejemplo indica el sistema de codificación de caracteres (letras, números, signos, etc) usado en el archivo .csv. El punto de interés para nosotros es que los tildes requieren del sistema de codificación **UTF-8**. Para eso tenemos que codificar nuestro .csv como UTF-8 cuando almacenamos los datos durante el experimento (si es que los tildes son importantes),esto se hace en el programa de presentación de estímulos que se use, e indicarlo en la función de lectura de datos. La codificación de un archivo csv puede cambiarse utilizando un buen editor de texto, y también puede cambiarse inintencionalmente usando un mal editor de texto. El editor de texto por defecto en Windows es el Bloc de Notas, o Notepad, y es poco recomendable; preferimos [Notepad++](https://notepad-plus-plus.org/download/v7.1.html%5D); en Linux [Kate](https://kate-editor.org/) o [Gedit](https://wiki.gnome.org/Apps/Gedit) son buenos ejemplos.
+
+### Tipos de variables
+
+Luego de importar datos es fundamental corroborar que estén almacenados bajo el tipo de variables adecuada. Por ejemplo, los tiempos de reacción deben estar almacenados como variable numérica y el sexo debe estar almacenado como factor. Muchos problemas posteriores operando entre columnas surgen de datos mal codificados. Para cambiar el tipo de una variable existen las funciones **as.factor**, **as.numeric**, **as.character**, entre otras.
+
+[Nota: También puedo importar datos crudos a través del botón de Import Dataset de la interfaz gráfica del panel Environment de R Studio]
+
+## Guardado: R Data (.RData)
+
+Luego de que leemos los datos crudos, y mientras procesamos, es conveniente guardar las variables que vamos creando en un archivo legible por R para no tener que empezar desde cero cada vez (especialmente cuando manejamos muchos datos crudos y la importación y lectura llevan tiempo computacional). Para guardar todas las variables en el **environment** o entorno de trabajo, que visualizamos en uno de los paneles de R Studio, usamos la función **save.image**:
+
+```{r}
+#| label: rdata
+#| eval: false
+# el nombre de archivo debe incluir la extensión .RData
+save.image('lasalidademisdatos.RData')
+
+# puedo especificar un path en el nombre
+save.image('./output/lasalidademisdatos.RData')
+
+```
+
+*Tip: Una función muy útil para generar nombres de archivos diferentes cada vez que guardamos las variables del entorno de trabajo es **Sys.Date()**, que devuelve la fecha actual. Se puede usar junto con la función **paste** (que pega dos conjuntos de strings) para combinar el nombre de archivo y la fecha. De este modo no sobreescribo los archivos .RData que voy almacenando. Por ejemplo, puedo hacer `save.image(paste0("lasalidademisdatos",Sys.Date(),".RData"))`*
+
+A menudo quiero guardar solo *algunas variables* del entorno de trabajo. Para eso uso la función *save* (en lugar de *save.image*). En este caso tengo que especificar el nombre de archivo y las variables a guardar, por ejemplo:
+
+```{r}
+#| eval: false
+
+# guardo solo la variable "datos"
+save(list = "datos",
+     file = 'laVariableDatos.RData')
+
+
+# guardo la variable "datos" y la variable "sujetos"
+save(list = c("datos","sujetos"),
+     file = 'algunasVariables.RData')
+
+```
+
+Para **cargar** las variables guardadas en el archivo con extensión .RData usamos la función **load**:
+
+```{r}
+#| label: load
+
+load('lasalidademisdatos.RData')
+
+```
+
+[Nota: También puedo guardar las variables del entorno de trabajo a través del botón de guardar de la interfaz gráfica del panel Environment de R Studio, y cargarlas a través del botón de abrir en el mismo panel, pero estos botones son inútiles cuando quiero automatizar el proceso en un script]
+
+## Organización: R scripts (.R)
+
+Un **script** o guión es un archivo de texto donde se almacena el conjunto de comandos que utilizamos para cumplir una determinada tarea. Por ejemplo, para hacer el análisis de un estudio experimental puedo tener un script para levantar los datos crudos y convertirlos a formato nativo de R, un script de limpieza (por ejemplo, remoción de outliers, sacar participantes que no responden a la consigna), un script de visualización de datos y uno de análisis estadístico.
+
+Los scripts de R tienen la extensión .R, pero son archivos de texto y pueden abrirse (aunque no ejecutarse) en cualquier editor de texto.
+
+Las buenas prácticas recomiendan el uso de comentarios (precedidos por \#), donde indicamos cuál es el fin de uno o un conjunto de comandos, de modo de que alguien más (pero en especial nosotros mismos en el futuro!) pueda entender qué hace cada sección del script. Por ejemplo:
+
+```{r}
+#| label: comments2
+#| eval: false
+
+# Saco a los participantes con
+# puntuaciones z demasiado extremas (menores a -2)
+# [df_clas es el nombre del data frame]
+
+df_clas=df_clas[df_clas$zscore>-2,]
+
+
+
+```
+
+otro ejemplo:
+
+```{r}
+#| label: comments
+#| eval: false
+
+# Leo la tarea RAN desde los cuadernillos de excel
+RAN = read.csv('./cuadernillos/cuadernillosran.csv', encoding='UTF-8') 
+# OJO! Excel exporta los .csv como ANSI,
+# hay que convertirlos a UTF-8 antes de importarlos en R
+
+
+```
+
+un ejemplo más (porque es muy importante comentar!!):
+
+```{r}
+#| eval: false
+
+# si respondieron con el oído derecho asigno 1,
+# si con el izquierdo asigno 0,
+# entonces si el promedio de los ensayo es mayor a 0.5
+# tienen ventaja en el oído derecho (tal como esperábamos)
+
+auxL=test_dataDLS$audioL==test_dataDLS$resp
+auxR=test_dataDLS$audioR==test_dataDLS$resp
+# creo columna acierto2
+test_dataDLS$acierto2[auxL]="0"
+test_dataDLS$acierto2[auxR]="1"
+test_dataDLS$acierto2=as.numeric(test_dataDLS$acierto2)
+
+
+```
+
+# Proyectos en RStudio:
+
+Una estructura de directorios limpia y ordenada hace el trabajo más fácil para todes. Una forma de *obligarse* una estructura de directorios prolija es creando "proyectos" en RStudio (*RStudio Projects*). En el menú "File -\> New Project" pueden crear un nuevo proyecto, o pueden cargar uno existente usando "File -\> Open Project". Cada proyecto creará un archivo con extensión `.Rproj` con el nombre del proyecto, en una carpeta con el mismo nombre (`miProyectoSupersecreto`).
+
+## Buenas prácticas en el manejo de directorios:
+
+A partir de esta carpeta se pueden crear carpetas específicas para almacenar scripts (`./scripts`), datos (`./datos`), informes (`./informes`), figuras (`./figuras`), resultados (`./output`) (no te la esperabas esa eh?). También es deseable que haya un archivo "léeme" (p. ej. `readme.txt` o mejor, en formato *Markdown* o *quarto*, como veremos más adelante) donde se realice una descripción de qué se trata el proyecto, quiénes están involucrados, qué fuentes de datos utiliza, y cuáles son los scripts principales que se emplean. Ten presente que es probable que alguien más vaya (o vos mismo vuelvas) a trabajar en el proyecto días, semanas, o meses después de no tocarlo en absoluto, y a menos que esté *bien ordenado y documentado*, hurgar en una maraña de scripts y archivos con nombres poco descriptivos en carpetas random *seguro* te hace perder tiempo y te dará más de un dolor de cabeza. Te habla la voz de la experiencia, por supuesto.
+
+## Buenas prácticas en el manejo de scripts: Un script, una tarea.
+
+A medida que vamos ganando experiencia en R, tendemos a ir generando archivos de script que contienen *todo* lo necesario para importar, filtrar, limpiar, analizar nuestros datos, y crear las tablas y figuras que luego llevaremos a nuestros artículos, tesis, informes, etc. Sin embargo, se vuelve muy difícil usar archivos de scripts de cientos de líneas, uno simplemente pierde la perspectiva de qué hace qué cosa, o dónde cornos está la parte que me hace la regresión de la tabla 5. Por ende, es buena idea que cada script haga **una cosa** y **sólo una cosa**. En lo posible, que el script no sea muy largo, y que, como vimos, esté muy bien comentado. Ayudará también que el nombre sea *descriptivo* de lo que el script hace. Nombres como `analisis1.r` son una tentación, pero, después de 3 semanas de no mirar al archivo, el nombre no nos va a hacer acordar qué corchos hace. En cambio, `regresiones_simples.r`, o `graficar_TRs.r` ya son un avance.
+
+También es buena idea replicar algunos tipos de script que suelen aparecer en todos los proyectos que empezamos. Por ejemplo, es recomendable que se dedique un script que cargue todos los datos y genere los data frames principales (p. ej. `levantaDatos.R`) o uno que realice las configuraciones iniciales del proyecto (`config.R`).
+
+#### Usar source:
+
+Dentro de un script, podemos ejecutar *todo* el contenido de otro script, usando la función `source`. Por ejemplo, podemos tener un script general que realice todos los análisis y las figuras de un paper, (p. ej., `analisis_paper_CogSci.r`), en el que se vayan llamando los scripts de análisis y figuras usando `source("./scripts/cargar_datos1.r")`, `source("./scripts/calcular_correlacione.r")` `source("./scripts/figura1.r")`, etc.
+
+> Eso es todo! Medio choclo esta sesión pero *ordem e progresso* ![](brazil.png){width="4%"}

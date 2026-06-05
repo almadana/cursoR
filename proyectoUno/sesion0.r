@@ -1,0 +1,80 @@
+#correr por primera vez
+#install.packages("tidyverse")
+
+#ejecutar cada vez que se abre una nueva sesión 
+library(tidyverse)
+
+#carga hoja de datos de cada ensayo
+crudos=read.csv('crudos.csv',as.is = T)
+str(crudos)
+head(crudos)
+
+#convertir respuesta en texto a formato numérico
+crudos$respuesta=as.numeric(crudos$respuesta)
+str(crudos)
+head(crudos)
+
+#convertir tipo de oferta a factor: 1= justas, 2: medias, 3: injustas
+crudos$tipo.de.oferta = as.factor(crudos$tipo.de.oferta)
+levels(crudos$tipo.de.oferta)
+levels(crudos$tipo.de.oferta) = c("justas","medias","injustas")
+
+#carga hoja de datos de sujetos
+sujetos=read.csv('sujetos.csv')
+head(sujetos)
+
+
+#conecta ambas hojas en una única tabla de datos
+juntos = crudos %>%  left_join(sujetos,by="sujeto") 
+head(juntos)
+
+#cuántos casos hay de cada respuesta, para cada tipo de oferta?
+juntos %>% select(tipo.de.oferta,respuesta) %>% table()
+
+#cuál es en promedio, la tasa de aceptación para cada tipo de oferta, según la autoestima?
+juntos %>% group_by(autoestima,tipo.de.oferta) %>% 
+  summarise(prop = sum(respuesta,na.rm=T)/n())
+
+#una linda figura descriptiva:
+figura1 = juntos %>% group_by(sujeto,tipo.de.oferta,autoestima) %>%  #me fijo, para cada combinación de sujeto, tipo de oferta, y autoestima
+  summarise(prop = sum(respuesta,na.rm=T)/n()) %>%  # calculo la proporción de aceptaciones
+  ggplot(aes(x=tipo.de.oferta,col=autoestima,y=prop)) + # armo una gráfica, defino los ejes x, y y el color
+  geom_point(alpha=.2,position = position_jitterdodge())+  # agrego un punto para cada sujeto, semitransparente, y los muevo para que no se solapen
+  stat_summary(geom = "pointrange",fun.data = mean_se,size=1.5,position = position_dodge(.5),fatten=2)+ # agrego la media y el error estándar para cada combinación
+  theme_classic() + # dejo la gráfica en blanco y negro
+  labs(x="Tipo de oferta",y="Proporción de rechazo",col="Autoestima",
+       title="Aceptación de ofertas, según tipo y autoestima",
+       subtitle="Los círculos y las líneas indican medias y errores estándar.") + # coloco títulos y etiquetas
+  scale_color_manual(values=c("#0448DD","#FF00D3"))+
+  theme(text=element_text(size=12)) # aumento el tamaño del texto
+
+figura1 #qué linda!
+ggsave(figura1,file="figura1.pdf",width=6, height=5)
+
+
+# cómo evoluciona en el tiempo la tasa de rechazo?
+figura2 = juntos %>% group_by(sujeto,tipo.de.oferta) %>% 
+  mutate(nTrial = 1:n()) %>%  #agrego el número de Trial _dentro_ de cada tipo de oferta
+  ggplot(aes(x=nTrial,y=respuesta,col=autoestima))+
+  geom_point(alpha=.01,position=position_jitter(height = .01)) + 
+  stat_summary(geom = "pointrange",fun.data = mean_se,size=1.5,position = position_dodge(.5),fatten=1)+ # agrego la media y el error estándar para cada combinación
+  facet_wrap(~tipo.de.oferta)+ #tipo de oferta en paneles separados
+  theme_classic() + # dejo la gráfica en blanco y negro
+  labs(x="Número de ensayo",y="Proporción de rechazo",col="Autoestima",
+       shape="Tipo de oferta",
+       title="Aceptación de ofertas en el tiempo, según tipo y autoestima",
+       subtitle="Los círculos y las líneas indican medias y errores estándar.") + # coloco títulos y etiquetas
+  scale_color_manual(values=c("#0448DD","#FF00D3"))+
+  theme(text=element_text(size=12)) # aumento el tamaño del texto
+
+figura2
+ggsave(figura2,file="figura2.pdf",width=12, height=5)
+
+# tasa de rechazo por sujeto, tipo de oferta
+por_sujeto = juntos %>% group_by(sujeto,autoestima,tipo.de.oferta) %>% 
+  summarise(prop = sum(respuesta,na.rm=T)/n())
+
+#prueba t / modelo lineal
+modelo1 = lm(prop ~ tipo.de.oferta*autoestima,data=por_sujeto)
+summary(modelo1)
+anova(modelo1)

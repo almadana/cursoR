@@ -1,0 +1,228 @@
+---
+title: "Ejercicio 10"
+author:
+  - Camila Zugarramurdi
+  - Álvaro Cabana
+date: "2022"
+lang: es
+code-fold: false
+code-tools: true
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+  
+```{r}
+#| label: setup
+#| include: false
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Ejercicio 10: Modelo lineal general con efectos mixtos
+
+
+El **objetivo** del ejercicio 10 es construir modelos lineales con efectos mixtos, poder elegir el mejor modelo según los diferentes efectos fijos y/o aleatorios, y sacar conclusiones a partir de los resultados obtenidos.
+
+Como ya es costumbre, veremos un par de casos de datos. 
+
+### Caso 1 - Enojo, tipo de ofertas, sexo y depresión
+
+Bueno, seguro que ya conocen __al dedillo__ los datos del estudio de [Valentina Paz _et al._](https://doi.org/10.1016/j.psychres.2016.12.063), de la tarea del Ultimatum Game que venimos usando hace rato...
+
+Recuerden que usaremos un data frame llamado `parts3`, si no lo tienen a mano sigan el ejercicio 6 hasta lograr el paso 3 (de la sección "datos anchos").
+
+> _Tip_: a cada modelo lineal que construyan, pónganle un nombre diferente. Sugiero que el nombre siempre comience con el nombre del data frame sobre el que hacen el modelo, seguido de ".lm" o "lmer", y luego algún tipo de indiciador. Por ejemplo: "parts3.lm0", "parts3.lm2", "parts3.beck.sex.lm", etc.
+
+1) Ajustar un modelo lineal en el que el enojo tenga a la escala "Beck" de depresión, el tipo de oferta, y su interacción como efectos fijos, y al sujeto como efecto aleatorio (intercepto variable).
+
+2) ¿Cómo dan los parámetros? Interpretar.
+
+3) ¿Vale la pena ajustar un modelo con efecto aleatorio? ¿Cuánto de varianza (desvío estándar) puede explicar un efecto aleatorio de sujeto?
+
+4) Comparar los resultados de un Anova tipo 3 en un modelo sin efecto aleatorio, y en un modelo con efecto aleatorio de sujeto. Discutir diferencias. Tip: usar `Anova(modelo,type=3,test="F")` para obtener pruebas F en vez de $\chi^2$.
+
+5) Mirar los efectos aleatorios con la función `ranef()` (usar `unlist(ranef(modelo))` para obtener un vector de valores, y no una lista). Calcular el promedio y el desvío estándar de estos efectos. ¿Dan los que se supone que tiene que dar?
+
+### Caso 2 - ANS (Panamath) y  nivel socieconómico: el caso Uruguay 2013.
+
+Usaremos parte de los datos de la intervención en escuelas primarias públicas de Uruguay realizada en 2013 (ver Odic _et al._, [2016](https://cibpsi.psico.edu.uy/sites/default/files/ucsf_profiles_publication/Odick_et%20al_2015.pdf) ValleLisboa  _et al._ [2017](https://www.researchgate.net/profile/Alejandro_Maiche2/publication/315309845_Cognitive_abilities_that_mediate_SES%27s_effect_on_elementary_mathematics_learning_The_Uruguayan_tablet-based_intervention/links/5964bde4aca2720a5ccdceec/Cognitive-abilities-that-mediate-SESs-effect-on-elementary-mathematics-learning-The-Uruguayan-tablet-based-intervention.pdf).) En la intervención, se colectaron datos de eficiencia en la tarea "Panamath" sobre el sistema numérico aproximado (ANS), en niños de primer año de varias escuelas, antes y después de una intevención. Los datos están en [este archivo RData](https://www.dropbox.com/s/dzxtxd401v1j5dd/datosANS.RData?dl=0).
+
+Las variables son: 
+
+* `w` - eficiencia o desempeño en tarea Panamath
+* `ses` - nivel socieconómico de la escuela
+* `dia` - momento en que se tomó la medida, puede ser "pre" o "post" intervención
+* `escuela`- escuela a la que atiende el niño
+* `id` - identificador de cada niño
+
+Usando estos datos:
+
+1) Graficar, usando boxplots, el nivel de `w`  según nivel socioeconómico y día.
+2) Ajustar un modelo lineal con efectos fijos, con `w` como variable de respuesta, y nivel socioeconómico y día como predictores.
+3) Ajustar un modelo lineal con efectos fijos igual que el anterior, pero agregar la interacción, si no la agregaste antes.
+4) Interpretar el modelo (se puede usar Anovas). ¿Hay efecto del nivel socieconómico? ¿Y del día? ¿Hay interacción?
+5) Ajustar un modelo lineal como el anterior pero con efectos mixtos. Agregar efecto aleatorio de sujeto. ¿Qué efectos se observan? Observar la varianza explicada por los efectos aleatorios.
+6) Ajustar un modelo lineal como el del punto 4, pero con efectos mixtos. Agregar efecto aleatorio de escuela. ¿Qué efectos se observan? Observar la varianza explicada por los efectos aleatorios.
+7) Ajustar un modelo lineal como el anterior pero con efectos mixtos. Agregar efecto aleatorio de sujeto, anidado dentro del efecto de escuela (Tip: usar `(1|escuela/id)` para indicar el anidamiento). ¿Qué efectos se observan? Observar la varianza explicada por los efectos aleatorios.
+8) Comparar los modelos del ítem 5, 6 y 7. ¿Cuál usarías tú?
+
+------------------------------------------------------------------------
+
+::: {.callout-tip .callout-solution collapse="true"}
+## Soluciones
+
+Desplegá esta sección cuando quieras comparar con un conjunto de soluciones posibles.
+
+> _Tip_: a cada modelo lineal que construyan, pónganle un nombre diferente. Sugiero que el nombre siempre comience con el nombre del data frame sobre el que hacen el modelo, seguido de ".lm" o "lmer", y luego algún tipo de indicador. Por ejemplo: "parts3.lm0", "parts3.lm2", "parts3.beck.sex.lm", etc.
+
+1) Ajustar un modelo lineal en el que el enojo tenga a la escala "Beck" de depresión, el tipo de oferta, y su interacción como efectos fijos, y al sujeto como efecto aleatorio (intercepto variable).
+
+```{r}
+#| label: e1.1
+
+library(tidyverse)
+library(lme4)
+library(car)
+
+load("input/parts3.RData")
+
+parts3.lmer0=lmer(enojo~Beck*tipo_oferta + (1 | sujeto), data=parts3) 
+summary(parts3.lmer0)
+
+```
+
+2) ¿Cómo dan los parámetros? Interpretar.
+
+3) ¿Vale la pena ajustar un modelo con efecto aleatorio? ¿Cuánto de varianza (desvío estándar) puede explicar un efecto aleatorio de sujeto?
+
+4) Comparar los resultados de un Anova tipo 3 en un modelo sin efecto aleatorio, y en un modelo con efecto aleatorio de sujeto. Discutir diferencias. Tip: usar `Anova(modelo,type=3,test="F")` para obtener pruebas F en vez de $\chi^2$.
+
+```{r}
+#| label: e1.4
+
+parts3.lm0=lm(enojo~Beck*tipo_oferta, data=parts3) 
+summary(parts3.lm0)
+
+Anova(parts3.lmer0,type=3,test="F")
+Anova(parts3.lm0,type=3,test="F")
+
+```
+
+5) Mirar los efectos aleatorios con la función `ranef()` (usar `unlist(ranef(modelo))` para obtener un vector de valores, y no una lista). Calcular el promedio y el desvío estándar de estos efectos. ¿Dan los que se supone que tiene que dar?
+
+
+```{r}
+#| label: e1.5
+
+ranef.sujeto=unlist(ranef(parts3.lmer0))
+
+ranef.sujeto.promedio = mean(ranef.sujeto)
+ranef.sujeto.sd = sd(ranef.sujeto)
+
+```
+
+
+### Caso 2 - ANS (Panamath) y  nivel socieconómico: el caso Uruguay 2013.
+
+Usaremos parte de los datos de la intervención en escuelas primarias públicas de Uruguay realizada en 2013 (ver Odic _et al._, [2016](https://cibpsi.psico.edu.uy/sites/default/files/ucsf_profiles_publication/Odick_et%20al_2015.pdf) ValleLisboa  _et al._ [2017](https://www.researchgate.net/profile/Alejandro_Maiche2/publication/315309845_Cognitive_abilities_that_mediate_SES%27s_effect_on_elementary_mathematics_learning_The_Uruguayan_tablet-based_intervention/links/5964bde4aca2720a5ccdceec/Cognitive-abilities-that-mediate-SESs-effect-on-elementary-mathematics-learning-The-Uruguayan-tablet-based-intervention.pdf).) En la intervención, se colectaron datos de eficiencia en la tarea "Panamath" sobre el sistema numérico aproximado (ANS), en niños de primer año de varias escuelas, antes y después de una intevención. Los datos están en [este archivo RData](https://www.dropbox.com/s/dzxtxd401v1j5dd/datosANS.RData?dl=0).
+
+
+Las variables son: 
+
+* `w` - eficiencia o desempeño en tarea Panamath
+* `ses` - nivel socieconómico de la escuela
+* `dia` - momento en que se tomó la medida, puede ser "pre" o "post" intervención
+* `escuela`- escuela a la que atiende el niño
+* `id` - identificador de cada niño
+
+Usando estos datos:
+
+1) Graficar, usando boxplots, el nivel de `w`  según nivel socioeconómico y día.
+
+```{r}
+#| label: e2.1
+
+load("input/datosANS.RData")
+
+ggplot(sesPan,aes(x=ses,y=w,fill=dia)) + geom_boxplot()
+
+```
+
+
+
+2) Ajustar un modelo lineal con efectos fijos, con `w` como variable de respuesta, y nivel socioeconómico y día como predictores.
+
+```{r}
+#| label: e2.2
+
+sesPan.lm0=lm(w~ses+dia,sesPan)
+summary(sesPan.lm0)
+
+```
+
+3) Ajustar un modelo lineal con efectos fijos igual que el anterior, pero agregar la interacción, si no la agregaste antes.
+
+
+```{r}
+#| label: e2.3
+
+sesPan.lm1=lm(w~ses*dia,sesPan)
+summary(sesPan.lm1)
+
+```
+4) Interpretar el modelo (se puede usar Anovas). ¿Hay efecto del nivel socieconómico? ¿Y del día? ¿Hay interacción?
+
+```{r}
+#| label: e2.4
+
+Anova(sesPan.lm1,type=3,test="F")
+
+```
+
+5) Ajustar un modelo lineal como el anterior pero con efectos mixtos. Agregar efecto aleatorio de sujeto. ¿Qué efectos se observan? Observar la varianza explicada por los efectos aleatorios.
+
+```{r}
+#| label: e2.5
+
+sesPan.lmer0=lmer(w~ses*dia+(1|id),sesPan)
+summary(sesPan.lmer0)
+
+```
+
+
+
+6) Ajustar un modelo lineal como el del punto 4, pero con efectos mixtos. Agregar efecto aleatorio de escuela. ¿Qué efectos se observan? Observar la varianza explicada por los efectos aleatorios.
+
+```{r}
+#| label: e2.6
+
+sesPan.lmer1=lmer(w~ses*dia+(1|escuela),sesPan)
+summary(sesPan.lmer1)
+
+```
+
+
+7) Ajustar un modelo lineal como el anterior pero con efectos mixtos. Agregar efecto aleatorio de sujeto, anidado dentro del efecto de escuela (Tip: usar `(1|escuela/id)` para indicar el anidamiento). ¿Qué efectos se observan? Observar la varianza explicada por los efectos aleatorios.
+
+```{r}
+#| label: e2.7
+
+sesPan.lmer2=lmer(w~ses*dia+(1|escuela/id),sesPan)
+summary(sesPan.lmer2)
+
+```
+
+
+8) Comparar los modelos del ítem 5, 6 y 7. ¿Cuál usarías tú?
+
+```{r}
+#| label: e2.8
+
+anova(sesPan.lmer0, sesPan.lmer1, sesPan.lmer2)
+
+
+```
+:::

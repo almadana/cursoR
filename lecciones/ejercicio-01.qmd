@@ -1,0 +1,170 @@
+---
+title: "Ejercicio 1"
+author:
+  - Camila Zugarramurdi
+  - Álvaro Cabana
+date: "2022"
+lang: es
+code-fold: false
+code-tools: true
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+------------------------------------------------------------------------
+
+## Ejercicio 1
+
+Para realizar el ejercicio, lo **primero** es comenzar un nuevo R Script con el nombre "ejercicio1" y guardarlo en un directorio o carpeta "cursoR" [File \> New File \> R Script, o Ctrl+Shift+N; File \> Save, o Ctrl+S ]. Si estás trabajando con un proyecto lo mejor es dejar el script en la carpeta del proyecto.
+
+Lo **segundo**, es decirle a R en qué directorio estamos trabajando [Session \> Set Working Directory \> To Source File Location] (podés ignorar este paso si estás trabajando en el proyecto).
+
+Lo **tercero**, es bajar los datos que vamos a usar (datosLimpios.RData) y guardarlos en una nueva carpeta llamada "input" dentro de la carpeta "cursoR". Los datos están en eva.
+
+Listo.
+
+------------------------------------------------------------------------
+
+El **objetivo** del ejercicio es cargar un set de datos experimentales y preprocesarlos para luego hacer análisis más avanzados. Los datos provienen de un estudio que busca evaluar relación ente características de personalidad y tamaño de la firma, basado en una muestra de estudiantes de Facultad De Psicología. Los datos muestran los puntajes de cuestionarios y escalas de:
+
+-   NPI: Narcisismo
+
+-   GSES: Autoestima
+
+-   AD: Dominancia agresiva
+
+-   SD: Dominancia social
+
+Y la medida del área de la firma (Sign.Area) y el área de la aclaración de la firma (Name.Area)
+
+Con el set de datos provistos, y usando los conceptos y funciones presentados en la guía de la sesión 1, completar las siguientes **tareas**:
+
+1)  Encontrar el número de participantes usando una sola línea de código
+
+2)  Encontrar la cantidad de datos faltantes para cada variable
+
+3)  Eliminar a los participantes con áreas de aclaración de la firma outliers (mayores a la media más 3 desvíos estándar). Indicar cuántos son. Seguir estos pasos:
+
+    a.  Calcular la media de aclaración de la firma
+
+    b.  Calcular el desvío estándar de aclaración de la firma
+
+    c.  Crear una variable "Out" que guarde el valor de la media más tres desvíos estándar
+
+    d.  Usar la variable "Out" para encontrar todos los participantes con valores de aclaración de la firma menores a Out (o sea, indexar). Guardar la salida en una variable "Out.logico"
+
+    e.   Usar la variable "Out.logico" para limpiar el data frame.
+
+4)  Calcular el ratio área de la firma / área de aclaración para hombres y para mujeres.
+
+5)  Calcular la correlación entre el ratio área de la firma / área de aclaración de la firma y el puntaje de narcisismo para hombres y mujeres. Tip: usar la función ***cor***.
+
+[Atención con valores NA, pueden dar problemas]
+
+------------------------------------------------------------------------
+
+Para cargar los datos en el entorno de trabajo (environment) de R Studio usar el siguiente comando:
+
+```{r}
+#| label: datos
+
+load("input/datosLimpios.RData")
+
+```
+------------------------------------------------------------------------
+
+**Referencias**:
+
+[Mailhos, Alvaro, Abraham P. Buunk, and Cabana, Alvaro. "Signature size signals sociable dominance and narcissism." Journal of Research in Personality (2016)](http://www.sciencedirect.com/science/article/pii/S0092656616301362).
+
+------------------------------------------------------------------------
+
+::: {.callout-tip .callout-solution collapse="true"}
+## Soluciones
+
+Desplegá esta sección cuando quieras comparar con un conjunto de soluciones posibles.
+
+
+1)  
+
+```{r}
+#El número de participantes es el número de filas
+
+nrow(datosLimpios)
+
+```
+
+2)  
+
+```{r}
+
+summary(datosLimpios)
+
+```
+
+3)  
+
+```{r}
+
+# calculo los límites de outliers
+mediaName = mean(datosLimpios$Name.Area) #la media
+desvName = sd(datosLimpios$Name.Area) #el desvío
+Out = mediaName + 3*desvName #guardo el umbral en una variable llamad Out
+
+# encuentro los no outliers
+Out.logi = datosLimpios$Name.Area <= Out
+# me quedo con los que no son outliers
+
+# y lo guardo en una variable temporal, por las dudas
+temp1 = datosLimpios[Out.logi,] 
+
+#chequeo que todo esté bien
+summary(temp1) 
+
+# si ok
+datosLimpios = temp1
+nrow(datosLimpios) # Eran 330, ahora son 323, eliminé 7 sujetos
+
+```
+
+4)  
+
+```{r}
+
+# separar el dataframe para hombres y mujeres 
+men = datosLimpios[datosLimpios$Sex=="M",]
+women = datosLimpios[datosLimpios$Sex=="F",]
+
+# me quedo solo con los casos que tiene ambos valores (firma y nombre)
+temp = complete.cases(men[,c(7,8)])
+men = men[temp,] # eliminé 2 participantes
+
+temp = complete.cases(women[,c(7,8)])
+women = women[temp,] # no tiré ninguna
+
+men$ratioMen=men$Sign.Area/men$Name.Area
+women$ratioWomen=women$Sign.Area/women$Name.Area
+```
+
+5)  
+
+```{r}
+
+cor(men$ratioMen,men$NPI16TOTAL)
+
+cor(women$ratioWomen,women$NPI16TOTAL)
+
+```
+
+Nota: en sesiones próximas veremos que hay formas más compactas y más elegantes de hacer esto mismo, pero es importante aprender a hacer las cosas "a pedal" en algún momento, cuando todo falla, siempre podemos volver a esto.
+
+------------------------------------------------------------------------
+
+**Referencias**:
+
+[Mailhos, Alvaro, Abraham P. Buunk, and Cabana, Alvaro. "Signature size signals sociable dominance and narcissism." Journal of Research in Personality (2016)](http://www.sciencedirect.com/science/article/pii/S0092656616301362).
+:::

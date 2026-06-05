@@ -1,0 +1,220 @@
+---
+title: "Sesión 2: funciones"
+author:
+  - Camila Zugarramurdi
+  - Álvaro Cabana
+date: "2022"
+lang: es
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+```{r}
+#| label: setup
+#| include: false
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Funciones 
+Una función es un conjunto de instrucciones o comandos que toma uno o más **argumentos de entrada**, y devuelve uno o más **argumentos de salida**.
+En la [sesión 1](https://eva-cursos.psico.edu.uy/mod/resource/view.php?id=31046) se utilizaron y definieron varias funciones: *combine (c)*, *data.frame*, *levels*,*colnames*, y toda la lista del inciso 0.5. Todas estas tenían un solo argumento de entrada, típicamente un vector o data.frame. 
+
+Por ejemplo, *mean* es una función cuya entrada es un vector y su salida es un número que corresponde a la media del vector. El conjunto de instrucciones o comandos contenidos en la función mean será algo así como: i) sumar todos los elementos del vector de entrada, ii) contar el número de elementos del vector de entrada, iii) dividir la suma de los elementos por el número de elementos, iv) devolver el valor obtenido en iii).
+
+Las funciones se llaman por un **nombre invariable** (siempre es el mismo), seguido de un paréntesis curvo y uno o más argumentos separados por comas. Para almacenar el argumento de salida debo asignarlo a una variable. Por ejemplo:
+
+```{r}
+
+# creo un vector 
+mivector = c(1,2,3,4,5,6,7,8,9,10)
+
+# o lo que es lo mismo
+mivector = 1:10
+
+# calculo la media, en este caso "mivector" es el argumento de entrada 
+media = mean(mivector) 
+media
+
+```
+
+
+### Argumentos de una función
+En las funciones hay al menos un argumento obligatorio de entrada y uno o más argumentos adicionales. El argumento obligatorio de entrada normalmente contiene el conjunto de datos sobre el que la función opera y se nombra como *x* o *data* (o *x* e *y* cuando opera sobre más de un conjunto de datos). El nombre del argumento puede ser usado dentro de la función para indicar a qué argumento corresponde la variable que estoy usando, pero no es obligatorio: 
+```{r}
+
+# ambas opciones son correctas
+media = mean(mivector)
+media = mean(x = mivector)
+
+```
+
+Cuando la función tiene solamente un argumento el nombre es irrelevante. Sin embargo, a medida que usamos funciones más complejas el número de argumentos aumenta y los nombres de los argumentos comienzan a ser fundamentales para mantener el orden. A modo de ejemplo, en la función *pivot_longer* del paquete tidyr (que veremos más adelante), que sirve para reorganizar filas y columnas de un data frame, tenemos muchos argumentos (data, cols, names_to, values_to, y otros):
+
+```{r}
+#| eval: false
+
+
+misDatos = pivot_longer(data = sample,
+                        cols = names(sample),
+                        names_to = "task",
+                        values_to = "zscore"))
+
+```
+
+### Argumentos adicionales
+Además del argumento principal de entrada de la función, existen argumentos adicionales que indican qué decisiones tomar en distintos casos. Por ejemplo, en *help(mean)* vemos que existe un argumento opcional **na.rm** (el nombre proviene de NA remove, o sea, quitar missing values) para manejar los valores faltantes. El argumento es: "un valor lógico que indica si los valores NA deben ser quitados antes de que proceda la computación". Veamos cómo funciona:
+
+```{r}
+
+# tengo un vector con números y un NA
+mivector2 = c(1:3,NA,5:10)
+mivector2
+
+# la función mean devuelve NA como la media
+mean(mivector2)
+
+# agrego el argumento "na.rm" a la función mean, ahora ignora el NA en el cómputo
+mean(mivector2, na.rm = TRUE)
+
+# si quiero almacenar la media debo asignarla a una variable
+media2 = mean(mivector2, na.rm = TRUE)
+
+```
+
+Los mismos argumentos adicionales se usan a menudo en más de una función, *na.rm* es un argumento común en funciones aritméticas en que es necesario ignorar los datos faltantes.
+
+Podemos ver otro ejemplo simple de argumentos adicionales en la función **round** que sirve para redonder un número decimal para disminuir la cantidad de valores decimales. El argumento adicional *digits* indica cuántos dígitos decimales quiero mantener en el redondeo.
+
+```{r}
+#| label: round
+
+a = pi
+a
+# paso de 6 decimales a 4 decimales en pi
+a = round(x = a, digits = 4)
+
+```
+
+Es importante notar que los argumentos adicionales tienen **valores por defecto**,y por lo tanto son opcionales, si no especifico el valor tomarán algún valor predefinido. Por ejemplo, el valor por defecto del argumento *na.rm* en la función *mean* es *FALSE*, si no especfico el argumento entonces la función no ignorará los datos faltantes, por eso devuelve NA cuando el argumento de entrada es un vector con NAs y no especifico el argumento *na.rm*. El valor por defecto del argumento *digits* en la función *round* es 0, si no lo especifico entonces redondeará a un número entero, sin nigún decimal.
+
+```{r}
+#| label: round2
+
+# por defecto, round redondea a 0 decimales (a un entero)
+a = round(x = a)
+a
+
+```
+
+### help!
+Todas las funciones poseen una documentación de ayuda, que explica cómo deben usarse. La documentación puede accederse en lína, o en la consola con el comando **help**(nombredelafuncion). El *help* muestra una descripción de la función, su uso, los argumentos principales y adicionales (y sus valores por defecto), los detalles del funcionamiento, funciones relacionadas y ejemplos. 
+
+```{r}
+
+help(mean)
+
+```
+
+Para poder usar cualquier función, es fundamental aprender a comprender la información provista en help (y a ignorar la información que no es relevante). Los puntos más importantes del help de una función, para usuarios ingenuos como nosotros, son **Usage **, **Arguments** y **Examples**. El *Usage* muestra cómo es la sintaxis de la función, o sea cómo se escribe. Los *Arguments* muestran los argumentos. Los *Examples* son muy útiles para ver la función en uso, y entender cómo se llama.
+
+En el primero de los *Arguments* puedo ver qué tipo de variable debe ser el argumento de entrada de la función *x*. Por ejemplo, en *help* de la función mean, vemos que el argumento x "*es un objeto de R. Actualmente estos métodos son para vectores numéricos o lógicos*". Si quiero usar la función mean con un data frame en lugar de con un vector, no funciona:
+
+```{r}
+# defino un data frame
+miDataFrame = data.frame(col1=c(1,2,3,4),col2=c(10,20,30,40))
+
+# hago el promedio
+mean(miDataFrame)
+
+```
+Devuelve una advertencia, "el argumento no es ni numérico ni lógico", y por lo tanto la función no puede operar sobre él, y da como resultado un NA [Nota: para promediar data frames existe el conjunto de funciones *colSums*].
+
+En el resto de los *Arguments* puedo ver el nombre de los argumentos adicionales y cómo utilizarlos.
+
+## Funciones definidas por el usuario
+La flexibilidad de R y otros lenguajes radica en la posibilidad de crear funciones definidas por el usuario, en que se agrupa un conjunto de comandos que se usa frecuentemente, y se almacena como una función. De este modo, se puede repetir el mismo conjunto de pasos para distintos conjuntos de datos simplemente cambiando el argumento de entrada.
+Para definir una función uso la función **function** (valga la redundancia) seguida del argumento de entrada entre paréntesis curvos, y el conjunto de comandos que operan sobre el argumento de entrada agrupados entre corchetes. Por ejemplo, si quisiera hacer mi propia función para calcular la media de un vector, el conjunto de comandos sería:
+
+(i) sumar los elementos del argumento de entrada,
+(ii) contar el número de elementos del argumento de entrada y,
+(iii) dividir la suma por el número de elementos.
+
+Veamos cómo se implementa:
+
+```{r}
+
+promedio = function(x) {
+  suma = sum(x)
+  totEl = length(x)
+  p = suma/totEl
+  return(p) }
+
+```
+
+* __promedio__ es el nombre de la función, definido por el usuario (podría ser cualquier otro nombre), es el que voy a usar luego para llamar a la función
+* __x__ es el argumento de entrada, uso la x para referirme al argumento de entrada en los comandos que están dentro de la función
+* __suma = sum(x)__ cumple el paso (i)
+* __totEl = length(x)__ cumple el paso (ii)
+* __p = suma/totEl__ cumple el paso (iii)
+* __return__ indica cuál es el argumento de salida, no quiero que devuelva por ejemplo lo que almacenó en la variable *suma*, lo que me interesa es el promedio, que almacenó en la variable *p*.
+
+
+
+```{r}
+# ya puedo usar la función para obtener la media del vector que creé en el paso anterior "mivector":
+mivector
+promedio(mivector)
+
+# si quiero almacenar la salida, debo almacenarla en una variable:
+mediaDeMiVector = promedio(mivector)
+mediaDeMiVector # miro lo que guardé
+```
+
+Ahora para cualquier vector, puedo usar *__promedio(nombredelavariable)__* y obtendré el promedio. Claramente definir una función para calcular el promedio es un sinsentido ya que esa función ya existe en R y se llama **mean** (y es más sofisticada que la nuestra ya que permite usar vectores que contengan NAs), pero a menudo queremos realizar conjuntos de pasos que no estén predefinidos en R como una función y entonces es necesario definir nuestras propias funciones.
+
+> En una **variable** almaceno un valor o conjunto de valores. La variable puede tomar cualquier nombre. Para acceder a los elementos de una variable uso paréntesis recto o símbolo de peso. 
+
+> En una **función** almaceno un conjunto de comandos que operan sobre un argumento de entrada, en general es un conjunto pequeño de comandos con un fin específico y usado frecuentemente. Una función tiene un nombre fijo. Para *llamar* a una función uso paréntesis curvos.  
+
+> En un **script** almaceno un conjunto de comandos que operan sobre distintas variables, con fines más disímiles, y variables menos estructuradas.
+
+# Paquetes de R
+
+Uno de los aspectos más destacables de R es la existencia de una gran comunidad de usuarios que realizan aportes para ampliar la funcionalidad del software. Así como vimos que se pueden escribir funciones nuevas, cualquier persona puede juntar un conjunto de funciones (y otras cositas) en un **paquete**, una pieza de software modular que puede cargarse para usarla cuando uno quiera. El **CRAN** (Compehensive R Archive Network) es una red de servidores públicos en los que se publican las diferentes versiones de R, y además sirve como repositorio oficial para los miles de paquetes de R disponibles.
+
+### Paquetes más usados (una lista personal, e incompleta)
+
+Éstos son algunos de los paquetes que más usamos, varios de ellos los veremos en este curso.
+
+-   **ggplot2** Mejora muchísimo las capacidades de ploteo. Lo veremos más adelante. Está incluido en el `tidyverse`.
+-   **dplyr** Una "pinza" para trabajar con los datos. Lo veremos hoy. Está incluido en el `tidyverse`.
+-   **corrplot** Útil para plotear correlaciones de forma "linda".
+-   **foreign** Sirve para importar datos de SPSS, entre otros formatos.
+-   **car** Sólo para hacer ANOVAs de tipo III.
+-   **emmeans** Permite calcular medias marginales y hacer pruebas post-hoc en regresiones lineales. Ya llegaremos ahí.
+-   **lubridate** Para que lidiar con datos de tiempo (segundos, minutos, horas, días, fechas) sea menos odioso.
+-   **stringr** (O su versión _power_ **stringi**) Para manejar cadenas de caracteres como un profesional.
+
+## Instalando y cargando paquetes
+
+Los paquetes de R no vienen instalados por defecto con R (actualmente son más de 9000), sino que hay que instalarlos una única vez. Para instalarlos, hay que ir al menú **Tools-\>Install Packages** y escribir la lisa de paquetes a instlar, o simplemente ir a una consola y ejecutar:
+
+```{r}
+#| label: inst0
+#| eval: false
+# install.packages(c("ggplot2","corrplot"))  #instalemos ggplot2 y corrplot
+```
+
+Luego de instalado, para poderlo usar, hay que "cargarlo" en memoria. Esto hay que hacerlo cada vez que abramos `R` y querramos usarlo. Basta con ejecutar:
+
+```{r}
+#| label: inst1
+#| eval: false
+library("corrplot")  #cargamos "corrplot" en memoria y lo podemos usar
+library(corrplot) #es lo mismo
+```
+

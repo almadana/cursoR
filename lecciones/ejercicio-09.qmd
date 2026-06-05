@@ -1,0 +1,92 @@
+---
+title: "Ejercicio 9"
+author:
+  - Camila Zugarramurdi
+  - Álvaro Cabana
+date: "2022"
+lang: es
+code-fold: false
+code-tools: true
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+
+```{r}
+#| label: setup
+#| include: false
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Ejercicio 9: Modelo lineal general, parte 2.!
+
+
+El **objetivo** del ejercicio 9 es lograr enfrentarse a la situación de elegir un modelo lineal, poder ajustarlo a los datos, revisarlo, y sacar conclusiones interpretando sus parámetros y los diversos análisis que se pueden hacer.
+
+
+### Caso 1 - Enojo, tipo de ofertas, sexo y depresión
+
+Primero vamos a trabajar con los datos del estudio de Valentina Paz _et al._, de la tarea del Ultimatum Game que usamos en el [ejercicio 6](https://eva-cursos.psico.edu.uy/pluginfile.php/144346/mod_resource/content/4/curso-R---ejercicio-6_csol_2022.pdf).
+
+Si no tienen en su entorno de trabajo un data frame llamado `parts3`, sigan el ejercicio 6 hasta lograr el paso 4 (de la sección "datos anchos").
+
+> _Tip_: a cada modelo lineal que construyan, pónganle un nombre diferente. Sugiero que el nombre siempre comience con el nombre del data frame sobre el que hacen el modelo, seguido de ".lm", y luego algún tipo de indicador. Por ejemplo: "parts3.lm0", "parts3.lm2", "parts3.beck.sex.lm", etc.
+
+1) Ajustar un modelo lineal en el que el enojo tenga a la escala "Beck" de depresión como predictor.
+2) Evaluar los parámetros del modelo. ¿Qué parámetros son significativamente diferentes de 0? ¿Cómo se interpretan estos resultados?
+3) Ajustar otro modelo lineal con la escala "Beck" y el tipo de oferta como predictores. Ponerle a este modelo un nombre diferente.
+4) Examinar los parámetros del modelo. ¿Hay efectos de la escala de depresión sobre el enojo? Contrastar con el punto 2.
+5) Evaluar el ajuste del modelo. ¿Cómo lucen los residuos?
+6) Hacer un ANOVA de tipo 3 sobre este modelo. (Recordar usar la librería `car`, y la función `Anova()`).
+7) Usando la función `anova()`, comparar el primer y el segundo modelo. Revisar el F y el p-valor. ¿El segundo modelo ajusta significativamente mejor que el primero?
+8) Comparar los resultados de los puntos 6 y 7 (Fs y ps). ¿Qué está sucediendo?
+9) Usar el paquete `emmeans` (ver diapos [clase 1](https://eva-cursos.psico.edu.uy/pluginfile.php/145664/mod_resource/content/1/curso-R---sesion-8---modelosLineales1.pdf) y  [clase 2](LINK) de modelos lineales.
+10) Ajustar otro modelo con "Beck", tipo de oferta, y su interacción como predictores. ¿Vale la pena incluir la interacción (es decir, ajusta mejor el modelo)?
+11) Ajustar otro modelo con "Beck", tipo de oferta, sexo, y sus interacciones como predictores. Interpretar los parámetros del modelo.
+12) La segunda parte del punto 11 era una broma ;). Mejor hagan un ANOVA tipo 3 y evalúen qué está sucediendo. ¿Qué interacciones resultan significativas? Comparar con lo obtenido en el punto 10.
+
+
+### Caso 2 - Efecto Simpson
+
+Para el siguiente truco, precisaremos instalar (y cargar) el paquete `UsingR`. Usaremos los datos de la prueba `SAT`(Scholastic Assessment Test), es una prueba estandarizada cuyo objetivo es evaluar la aptitud de un estudiante para ingresar a la educación terciaria. Fue concebida en los Estados Unidos, donde se aplica masivamente a estudiantes egresados de secundaria. Los resultados de la prueba suelen utilizarse en la admisión a los Colleges.
+
+En el data frame `SAT`, usaremos el puntaje promedio (`total`), el gasto en educación (`expend`), y el porcentaje de estudiantes egresados de secundaria que toma la prueba (`perc`), para cada uno de los estados de la unión.
+
+1) Cargar los datos:
+```{r}
+#| label: simp0
+#| eval: false
+
+library(UsingR)
+data(SAT)
+
+```
+Esto crea un data frame que se llama `SAT`. 
+
+2) Ajustar un modelo lineal con el puntaje promedio como la variable respuesta, y el gasto promedio en educación como la predictora. ¿Hay relación entre las variables? Interpretar.
+3) Graficar (usando `ggplot2`) el puntaje promedio vs. el gasto en educación. Agregar la recta de regresión.
+4) Ajustar un modelo lineal con el puntaje promedio como la variable respuesta, y el porcentaje de estudiantes que da la prueba como la predictora. ¿Hay relación entre las variables? Interpretar.
+5) Graficar las varibles del modelo anterior.
+6) Ajustar un modelo lineal con el porcentaje de estudiantes que da la prueba como la variable respuesta, y el gasto en educación como la predictora. ¿Hay relación entre las variables? Interpretar.
+7) Ajustar un modelo lineal con el puntaje promedio como la variable respuesta, y el porcentaje de estudiantes que da la prueba y el gasto en educación como la predictora. ¿Hay relación entre las variables? Interpretar.
+8) ¿Difieren los parámetros para la variable `expend` entre el primer modelo y el último? ¿Qué cornos está pasando?
+9) Ploteen esto:
+```{r}
+#| label: simpLAst
+#| eval: false
+
+SAT %>% 
+ggplot(aes(x = expend, y = total, col = perc, size = perc)) +
+  geom_point(size=4) +
+  labs(x="Gasto en educación", y = "Puntaje SAT", col = "% da prueba") +
+  theme(text=element_text(size = 24)) +
+  geom_smooth(method="lm",se = FALSE)
+
+```
+>  En este link se pueden encontrar  [las soluciones]() 
+
+*** 

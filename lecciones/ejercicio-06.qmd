@@ -1,0 +1,328 @@
+---
+title: "Ejercicio 6"
+author:
+  - Camila Zugarramurdi
+  - Álvaro Cabana
+date: "2022"
+lang: es
+code-fold: false
+code-tools: true
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+
+```{r}
+#| label: setup
+#| include: false
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Ejercicio 6: data-massage ancho vs largo
+
+
+El **objetivo** del ejercicio 6 es familiarizarse con una de las partes más aburridas del data-massage, el llevar los datos de un formato a otro, sólo para poder hacer tal o cual análisis.
+
+Vamos a trabajar con unos datos en formao SPSS, en formato ancho, y la ideas es convertirlos a formato largo, ya verán para qué.
+
+En un segundo caso, tomaremos unos datos en formato largo, y los convertiremos en formato ancho para poder calcular correlaciones.
+
+
+## Empezamos
+
+Vamos a trabajar con 2 archivos de datos; descárguenlos aquí: [archivo participantes1.sav](https://www.dropbox.com/s/7g8su4gh14o4j8s/participantes1.sav?dl=0), [animales.csv ](https://www.dropbox.com/s/p0volia7hdc6hpe/animales.csv?dl=0). Y guárdenlos en la carpeta _input_
+
+
+# Datos anchos
+
+Los datos provienen de un estudio enmarcado en el programa de investigación estudiantil PAIE, liderado por Valentina Paz y un grupo de estudiantes de grado e investigadores del CIBPsi, bajo la supervisión de Victoria Gradin. El estudio consistía en un hacer jugar a los participantes al _juego del ultimátum_. En este juego, una persona le ofrece al participante para compartir una determinada suma de dinero. La clave del asunto es que las ofertas pueden ser "justas" (del estilo $5 para ti, $5 para mi), "injustas" ($9 para mi, \$1 para ti), o "medias" ($7 para mi, $3 para ti). Para trabajar en este ejemplo, vamos a ver las respuestas emocionales de los participantes ante cada tipo de oferta. Trabajaremos con la emoción "enojo", es decir, con las respuestas de los participantes, en una escala del 0 al 10, de qué tan enojados se sintieron ante ofertas justas, medias, e injustas. 
+
+
+1) Cargar los contenidos del archivo _participante1.sav_, en un __data frame__ que se llame `parts`. 
+```{r}
+#| label: e1
+#| eval: false
+#si el paquete haven no está instalado, instalarlo con install.package("haven")
+library(haven) #por las dudas si no está cargado
+parts=read_sav("input/participantes1.sav")
+```
+
+El data frame obtenido es muy grande, por eso nos vamos a detener en algunas pocas variables. A saber:
+
+```{r}
+#| label: foreign2
+#| eval: false
+
+library(tidyverse)
+
+parts2 = parts %>% 
+  select(codigo, sexo, edad, Beck, contains("Enojo"))
+
+str(parts2)
+```
+
+2) Pasar el data frame al formato largo. Llamar a la variable categórica nueva "tipo_oferta", y a la numérica "enojo". Llamarle a ese data frame "parts3".
+
+
+3) Nombrar los niveles de la variable "tipo_oferta": "justas", "injustas", "medias".
+
+
+3) Yapa: ejecutar lo siguiente. Intentar averiguar qué hace. Prestar atención al ñoqui `~`.
+
+```{r}
+#| label: aov1
+#| eval: false
+# aquí se ajusta un modelo lineal, donde la variable de respuesta (dependiente) es el enojo, 
+# y la predictora (independiente) es el tipo de oferta.
+modelo1=lm(enojo~tipo_oferta,data=parts3)
+# aquí se resume información variada relevante al modelo, como los valores de los parámetros,
+# pruebas de significancia sobre ellos, etc. Mirar estadístico t y p-valor (columna Pr(>|t|)).
+summary(modelo1)
+# y aquí se hace un ANOVA con el modelo. En este caso, es de un factor (tipo de oferta), 
+# con 3 niveles. Miren qué lindos el F y el p :)
+anova(modelo1)
+```
+
+
+4) Ensanchar el data frame largo al formato original.
+
+Hermoso no?
+
+***
+
+#Datos largos
+
+Estos datos están tomados de la Norma de Producción de Rasgos Semánticos para el español rioplatense, de [Vivas et al., 2016](https://link.springer.com/article/10.3758/s13428-016-0777-2).
+A un buen número de hablantes nativos del español rioplatense, se les pidió que indicaran qué rasgos semánticos tiene cada palabra, para un total de 400 palabras. Aquí tenemos un resumen de palabras, todos nombres de animales, y algunos de los rasgos semánticos más relevantes.
+
+## Empecemos
+
+1) Cargar los datos del archivo "animales.csv" en un data frame llamado "animales".
+
+2) Eliminar la primera columna "X.1" del data frame.
+
+3) Nombrar la (ahora) primera columna "X" del data frame como "nombre".
+
+4) Llevar el data frame al formato ancho, con una fila por nombre, una columna por cada rasgo semántico. Nombrar a ese data frame "animales2".
+
+
+5) Llevar el data frame al formato ancho, con una fila por rasgo, una columna por cada nombre. Nombrar a ese data frame "animales3".
+
+
+6) Yapa: puedo calcular la correlación entre animales o rasgos semánticos usando los data frames anchos.
+```{r}
+#| label: yapa
+#| eval: false
+
+cor(animales2[,-1]) # Correlaciones entre todos los rasgos semánticos
+cor(animales3[,-1]) # Correlaciones entre todos los animales
+
+``` 
+
+***
+
+
+------------------------------------------------------------------------
+
+::: {.callout-tip .callout-solution collapse="true"}
+## Soluciones
+
+Desplegá esta sección cuando quieras comparar con un conjunto de soluciones posibles.
+
+Vamos a trabajar con unos datos en formato SPSS, en formato ancho, y la ideas es convertirlos a formato largo, ya verán para qué.
+
+En un segundo caso, tomaremos unos datos en formato largo, y los convertiremos en formato ancho para poder calcular correlaciones.
+
+
+## Empezamos
+
+Vamos a trabajar con 2 archivos de datos; descárguenlos aquí: [archivo participantes1.sav](https://www.dropbox.com/s/7g8su4gh14o4j8s/participantes1.sav?dl=0), [animales.csv ](https://www.dropbox.com/s/p0volia7hdc6hpe/animales.csv?dl=0). Y guárdenlos en la carpeta _input_
+
+
+# Datos anchos
+
+Los datos provienen de un estudio enmarcado en el programa de investigación estudiantil PAIE, liderado por Valentina Paz y un grupo de estudiantes de grado e investigadores del CIBPsi, bajo la supervisión de Victoria Gradin. El estudio consistía en un hacer jugar a los participantes al _juego del ultimátum_. En este juego, una persona le ofrece al participante para compartir una determinada suma de dinero. La clave del asunto es que las ofertas pueden ser "justas" (del estilo $5 para ti, $5 para mi), "injustas" ($9 para mi, \$1 para ti), o "medias" ($7 para mi, $3 para ti). Para trabajar en este ejemplo, vamos a ver las respuestas emocionales de los participantes ante cada tipo de oferta. Trabajaremos con la emoción "enojo", es decir, con las respuestas de los participantes, en una escala del 0 al 10, de qué tan enojados se sintieron ante ofertas justas, medias, e injustas. 
+
+
+1) Cargar los contenidos del archivo _participante1.sav_, en un __data frame__ que se llame `parts`. 
+```{r}
+#| label: e1
+#| eval: false
+#si el paquete haven no está instalado, instalarlo con install.package("haven")
+library(haven) #por las dudas si no está cargado
+parts=read_sav("input/participantes1.sav")
+```
+
+El data frame obtenido es muy grande, por eso nos vamos a detener en algunas pocas variables. A saber:
+
+```{r}
+#| label: foreign2
+#| eval: false
+
+library(tidyverse)
+
+parts2 = parts %>% 
+  select(codigo, sexo, edad, Beck, contains("Enojo"))
+
+str(parts2)
+```
+2) Pasar el data frame al formato largo. Llamar a la variable categórica nueva "tipo_oferta", y a la numérica "enojo". Llamarle a ese data frame "parts3".
+
+```{r}
+#| label: e2
+#| eval: false
+
+parts3 = parts2 %>% 
+  pivot_longer(cols = c(Feedback_Justas_Enojo,
+                        Feedback_Medias_Enojo,
+                        Feedback_Injustas_Enojo),
+               names_to = "tipo_oferta",
+               values_to = "enojo")
+
+# también podría haberlo hecho más elegantemente como:
+parts3 = parts2 %>% 
+  pivot_longer(cols = contains("Enojo"),
+               names_to = "tipo_oferta",
+               values_to = "enojo")
+head(parts3)
+
+```
+
+
+3) Nombrar los niveles de la variable "tipo_oferta": "justas", "injustas", "medias".
+
+```{r}
+#| label: e3
+#| eval: false
+
+# lo convierto en factor
+parts3$tipo_oferta=factor(parts3$tipo_oferta)
+# miro los niveles
+levels(parts3$tipo_oferta)
+# los renombro EN EL MISMO ORDEN
+levels(parts3$tipo_oferta) = c("injustas", "justas", "medias")
+# corroboro que no rompí nada
+head(parts3)
+
+# podría haber hecho todo lo anterior en una sola línea como 
+#(attenti que estoy usando el argumento LABELS, no el argumento LEVELS):
+
+parts3$tipo_oferta = factor(parts3$tipo_oferta, labels = c("injustas", "justas", "medias"))
+
+```
+
+
+3) Yapa: ejecutar lo siguiente. Intentar averiguar qué hace. Prestar atención al ñoqui `~`.
+```{r}
+#| label: aov1
+#| eval: false
+# aquí se ajusta un modelo lineal, donde la variable de respuesta (dependiente) es el enojo, 
+# y la predictora (independiente) es el tipo de oferta.
+modelo1=lm(enojo~tipo_oferta,data=parts3)
+# aquí se resume información variada relevante al modelo, como los valores de los parámetros,
+# pruebas de significancia sobre ellos, etc. Mirar estadístico t y p-valor (columna Pr(>|t|))
+summary(modelo1)
+# y aquí se hace un ANOVA con el modelo. En este caso, es de un factor (tipo de oferta), 
+# con 3 niveles. Miren qué lindos el F y el p :)
+anova(modelo1)
+```
+
+4) Ensanchar el data frame largo al formato original.
+```{r}
+#| label: e4
+#| eval: false
+
+parts3 %>% 
+  pivot_wider(names_from = "tipo_oferta",
+              values_from = "enojo")
+
+
+```
+
+
+Hermoso no?
+
+***
+
+#Datos largos
+
+Estos datos están tomados de la Norma de Producción de Rasgos Semánticos para el español rioplatense, de [Vivas et al., 2016](https://link.springer.com/article/10.3758/s13428-016-0777-2).
+A un buen número de hablantes nativos del español rioplatense, se les pidió que indicaran qué rasgos semánticos tiene cada palabra, para un total de 400 palabras. Aquí tenemos un resumen de palabras, todos nombres de animales, y algunos de los rasgos semánticos más relevantes.
+
+## Empecemos
+
+1) Cargar los datos del archivo "animales.csv" en un data frame llamado "animales".
+```{r}
+#| label: d1
+animales = read.csv('input/animales.csv',
+                    encoding = "UTF-8") # ojo con las carpetas
+```
+2) Eliminar la primera columna "X.1" del data frame.
+```{r}
+#| label: d2
+
+library(tidyverse)
+animales = animales %>% 
+  select(-X.1)
+         
+# hay varias formas de hacer esto, ésta es una de las más compactas. 
+# Al poner un signo de menos delante de la columna, se quiere decir 
+# "todas las columnas MENOS ésta". También se puede usar delante de c(). 
+# Por ejemplo  [,-c(3,5)] selecciona todas las columnas MENOS la 3 y la 5. 
+# También, [-c(8,9),-2] saca las filas 8 y 9 (enteras) y la columna 2 (entera).
+```
+
+3) Nombrar la (ahora) primera columna "X" del data frame como "nombre".
+```{r}
+#| label: d3
+
+animales = animales %>% 
+  rename(nombre = X)
+
+```
+
+4) Llevar el data frame al formato ancho, con una fila por nombre, una columna por cada rasgo semántico. Nombrar a ese data frame "animales2".
+
+```{r}
+#| label: d4
+#| eval: false
+
+animales2 = animales %>% 
+  pivot_wider(names_from = rasgo,
+              values_from = frecuencia)
+
+head(animales2)
+
+```
+
+5) Llevar el data frame al formato ancho, con una fila por rasgo, una columna por cada nombre. Nombrar a ese data frame "animales3".
+
+```{r}
+#| label: d5
+#| eval: false
+
+animales3 = animales %>% 
+  pivot_wider(names_from = nombre,
+              values_from = frecuencia)
+
+head(animales3)
+
+```
+
+6) Yapa: puedo calcular la correlación entre animales o rasgos semánticos usando los data frames anchos.
+```{r}
+#| label: yapa
+#| eval: false
+
+cor(animales2[,-1]) # Correlaciones entre todos los rasgos semánticos
+cor(animales3[,-1]) # Correlaciones entre todos los animales
+
+``` 
+
+***
+
+:::

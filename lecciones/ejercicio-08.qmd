@@ -1,0 +1,235 @@
+---
+title: "Ejercicio 8"
+author:
+  - Camila Zugarramurdi
+  - Álvaro Cabana
+date: "2022"
+lang: es
+code-fold: false
+code-tools: true
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+```{r}
+#| label: setup
+#| include: false
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Modelos lineales
+
+En la sesión 8 vimos modelos lineales generales, para variables numéricas y para variables categóricas, y la interpretación de la salida de ajustes a varios modelos lineales generales.
+
+
+Ahora vamos a ver el detalle del ajuste e interpretación de modelos.
+ 
+## 1.  Dos variables numéricas
+
+#### Visualización
+
+Veamos los datos primero gráficamente con `ggplot2`:
+
+0. Cargar los datos "DatosLimpios.RData"
+1. Hacer un gráfico de puntos de narcisismo (y) vs dominancia social (x)  usando `ggplot`.
+2. Agregar una recta de ajuste de regresión lineal sumando una capa al gráfico con esta línea de código: `stat_smooth(method = "lm")`
+
+
+#### Ajuste de un modelo lineal
+
+3. Ajustar un modelo lineal general para narcisismo (y) vs. dominancia social (x) usando la función `lm`, asignarlo a una variable con el nombre de "npi.lm" y mirar la salida con la función `summary`
+
+
+#### Interpretación
+
+4. Calcular el valor estimado de narcisismo para un valor de dominancia social de 30. Tip: usando la función `coef` puedo obtener los coeficientes del modelo sin tener que copiarlos a mano.
+
+5. Calcular el coeficiente de correlación de Pearson para las dos variables del modelo ajustado y testear la significancia de la correlación con la función `cor.test`(atentos al argumento *use*, buscar en la ayuda). Comparar los estadísticos t y r obtenidos con los obtenidos en el modelo anterior.
+
+ 
+## 2.  Una variable numérica y una categórica
+
+Vamos a trabajar con el mismo dataframe, pero ahora vamos a evaluar diferencias en el puntaje de narcisismo entre hombres y mujeres.
+
+#### Visualización
+
+1. Hacer un gráfico de barras para el promedio de narcisismo (y) para hombres y mujeres (x), que cada color corresponda a un sexo (*Tip*: recordar el [ejercicio 7](https://eva-cursos.psico.edu.uy/pluginfile.php/144818/mod_resource/content/3/curso-R---ejercicio-7_csol_2022.pdf), uso summarise antes para calcular las medias).
+
+Ya que estamos, probar este código para ver los datos en diagrama de cajas en lugar de barras: 
+`datosLimpios %>% ggplot(aes(x=Sex, y=NPI16TOTAL, fill=Sex)) + geom_boxplot(notch = T)`. La cintura muestra la mediana, los límites de las cajas el rango intercuartil, los bigotes el máximo y el mínimo, los puntos muestran los outliers y la cuña (*notch*) muestra el intervalo de confianza al 95%. Mirando esto, y comparando ambas cajas, soy capaz de saber si hay una diferencia significativa entre los sexos. Pero ajustemos un modelo para testearlo.
+
+
+#### Ajuste de un modelo lineal
+
+2. Ajustar un modelo lineal general para narcisismo (y) vs. sexo (x).
+
+
+#### Interpretación
+
+
+3. ¿Hay una diferencia significativa entre los sexos?
+
+4. Dijimos que cuando tenemos variables categóricas como predictores, entonces el parámetro de intercepto (b) corresponde a la media del nivel de base. ¿Cuál es el nivel de base? ¿Por qué? ¿Coincide con la media? Corroborarlo.
+
+5. ¿Y cómo se interpreta la pendiente? 
+
+------------------------------------------------------------------------
+
+::: {.callout-tip .callout-solution collapse="true"}
+## Soluciones
+
+Desplegá esta sección cuando quieras comparar con un conjunto de soluciones posibles.
+
+```{r}
+#| label: plot
+
+library(tidyverse)
+load("input/datosLimpios.RData")
+
+```
+
+
+0. Cargar los datos "DatosLimpios.RData"
+
+1. Hacer un gráfico de puntos de narcisismo (y) vs dominancia social (x)  usando `ggplot`.
+
+2. Agregar una recta de ajuste de regresión lineal sumando una capa al gráfico con esta línea de código: `stat_smooth(method = "lm")`
+
+```{r}
+#| label: plot1
+#| warning: false
+
+datosLimpios %>% 
+  ggplot(aes(x = SDTOTAL, y = NPI16TOTAL)) + 
+  geom_point() +
+  stat_smooth(method = "lm")
+
+```
+
+La versión gráfica nos da una idea del modelo que estamos tratando de ajustar. Si miramos el código vemos que usa el método 'lm', vemos que tiene pendiente positiva, vemos que la recta parece ser el ajuste apropiado (versus una exponencial por ejemplo) pero no nos devuelve los parámetros. Hagamos ahora el ajuste.
+
+#### Ajuste de un modelo lineal
+
+3. Ajustar un modelo lineal general para narcisismo (y) vs. dominancia social (x) usando la función `lm`, asignarlo a una variable con el nombre de "npi.lm" y mirar la salida con la función `summary`.
+
+
+```{r}
+#| label: lm1
+
+npi.lm = lm(NPI16TOTAL~SDTOTAL,
+            data = datosLimpios)
+
+summary(npi.lm)
+
+```
+
+#### Interpretación
+
+Lo primero que vemos en el resumen es la **fórmula**, para recordarnos qué es lo que estamos tratando de ajustar.
+
+En segundo lugar vemos los **residuos** (la diferencia entre cada valor real y el valor "predicho" por el modelo, se acuerdan?), recuerden que esperamos que la mediana se acerque a 0, y que tengan poca variabilidad. Lo mejor es explorarlos en mayor detalle con la función genérica `plot` pero lo vamos a dejar para más adelante.
+
+Lo tercero, y de mayor interés, son los **coeficientes**.
+Como vimos, los parámetros aparecen en la columna *Estimate*: el intercepto (b) en la fila  *(Intercept)* y la pendiente (a) en la fila *SDTOTAL*. Estos parámetros son los que vimos en la ecuación de la recta: `y = ax + b`. Ahora que tenemos los parámetros del ajuste, sabiendo un valor de dominancia social podemos predecir el valor esperado de narcisimo cierto?
+
+
+4. Calcular el valor estimado de narcisismo para un valor de dominancia social de 30. Tip: usando la función `coef` puedo obtener los coeficientes del modelo sin tener que copiarlos a mano.
+
+```{r}
+
+a = coef(npi.lm)[2]
+b = coef(npi.lm)[1]
+x = 30
+
+narc = a*x + b
+```
+
+Por último, vimos que una regresión lineal como esta (con una sola variable predictora) es equivalente a una correlación. Vamos a compararlas:
+
+5. Calcular el coeficiente de correlación de Pearson para las dos variables del modelo ajustado y testear la significancia de la correlación con la función `cor.test`(atentos al argumento *use*, buscar en la ayuda). Comparar los estadísticos t y r obtenidos con los obtenidos en el modelo anterior.
+
+```{r}
+
+cor.test(datosLimpios$NPI16TOTAL,
+         datosLimpios$SDTOTAL,
+         use = "pairwise.complete.obs")
+
+```
+
+ 
+## 2.  Una variable numérica y una categórica
+
+Vamos a trabajar con el mismo dataframe, pero ahora vamos a evaluar diferencias en el puntaje de narcisismo entre hombres y mujeres.
+
+#### Visualización
+
+1. Hacer un gráfico de barras para el promedio de narcisismo (y) para hombres y mujeres (x), que cada color corresponda a un sexo (*Tip*: recordar el [ejercicio 7](https://eva-cursos.psico.edu.uy/pluginfile.php/144818/mod_resource/content/3/curso-R---ejercicio-7_csol_2022.pdf), uso summarise antes para calcular las medias).
+
+```{r}
+
+medias = datosLimpios %>% 
+  group_by(Sex) %>% 
+  summarise(media_narc = mean(NPI16TOTAL, na.rm = T))
+
+medias %>% 
+  ggplot(aes(x = Sex, y = media_narc, fill = Sex)) + 
+  geom_bar(stat="identity") 
+
+```
+ 
+Ya que estamos, probar este código para ver los datos en diagrama de cajas en lugar de barras: 
+`datosLimpios %>% ggplot(aes(x=Sex, y=NPI16TOTAL, fill=Sex)) + geom_boxplot(notch = T)`. La cintura muestra la mediana, los límites de las cajas el rango intercuartil, los bigotes el máximo y el mínimo, los puntos muestran los outliers y la cuña (*notch*) muestra el intervalo de confianza al 95%. Mirando esto, y comparando ambas cajas, soy capaz de saber si hay una diferencia significativa entre los sexos. Pero ajustemos un modelo para testearlo.
+
+```{r}
+#| echo: false
+
+datosLimpios %>% 
+  ggplot(aes(x = Sex, y = NPI16TOTAL, fill = Sex)) +
+  geom_boxplot(notch = T)
+
+```
+
+
+#### Ajuste de un modelo lineal
+
+2. Ajustar un modelo lineal general para narcisismo (y) vs. sexo (x).
+
+```{r}
+
+npi.lm2 = lm(NPI16TOTAL ~ Sex,
+             data = datosLimpios) 
+
+summary(npi.lm2)
+
+```
+
+#### Interpretación
+
+
+3. ¿Hay una diferencia significativa entre los sexos?
+
+4. Dijimos que cuando tenemos variables categóricas como predictores, entonces el parámetro de intercepto (b) corresponde a la media del nivel de base. ¿Cuál es el nivel de base? ¿Por qué? ¿Coincide con la media? Corroborarlo.
+
+5. ¿Y cómo se interpreta la pendiente? 
+
+```{r}
+# Ya calculé las medias para el gráfico de barras, lo guardé en la variable medias
+
+medias
+
+# la pendiente ("a" o SexF en los coeficientes) corresponde a la diferencia entre medias, 
+# por lo tanto, la suma de los coeficientes me da la media del segundo nivel. 
+# Lo compruebo:
+
+media_m = coef(npi.lm2)[1]
+a = coef(npi.lm2)[2]
+
+media_f = media_m + a
+
+
+```
+:::

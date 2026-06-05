@@ -1,0 +1,13 @@
+/.quarto/
+/_site/
+/docs/
+*.knit.md
+*.utf8.md
+
+# R
+.Rhistory
+.RData
+.Rproj.user
+
+# entregas de alumnos (no publicar en el sitio)
+entregas/

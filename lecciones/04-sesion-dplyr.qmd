@@ -1,0 +1,466 @@
+---
+title: "Sesión 4: dplyr"
+author:
+  - Camila Zugarramurdi
+  - Álvaro Cabana
+date: "2022"
+lang: es
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+```{r}
+#| label: setup
+#| include: false
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Intro: factores
+
+Hasta ahora hemos trabajado con diferentes tipos de variable: numéricas,lógicas, caracteres o "strings", y diferentes clases de vectores, elementos numéricos y factores. Los **factores** son una forma "avanzada" para representar variables categóricas, donde cada categoría (o nivel) puede ser representado por un string. La utilidad de que exista un tipo especial de variable para representar a los factores *no puede exagerarse*. Los factores son extramadamente útiles para:
+
+-   Plotear, en particular al hacer gráficos de barras o boxplots (ya lo veremos)
+-   Sumarizar, es decir, obtener estadísticas agrupadas para cada nivel de variable
+-   En general, para hacer operaciones de "data jiu-jitsu" o "data-massage"
+
+## Funciones para trabajar con factores
+
+Bueno pero, ¿de dónde salen los factores? Cualquier vector de cualquier tipo puede ser *coercionado* en un factor (lo convertís a prepo en un factor), a través de la función **factor()**. Veamos entonces cómo crear un factor a partir de una lista de strings:
+
+```{r}
+condicion=c("congruente","congruente","congruente","incongruente",
+            "incongruente","neutro","neutro")
+condicion.f=factor(condicion) # la función devuelve una copia de "condición", 
+#convertida en factor. Me gusta volcar esta copia en una variable que se llame igual 
+#pero a la que se le agrega ".f", para denotar que es un factor. 
+condicion.f
+```
+
+Nótese que ahora aparece, en la descripción aparece una línea extra que dice **"Levels:"** seguida de un listado de los niveles de la variable. En ese listado aparecen todos los niveles de la variable, *haya o no* observaciones de esos niveles. Por ejemplo, quizás en el experimento hay otra condición, "mixta". Quizás en la observaciones con las que estoy trabajando, no tengo ninguna instancia de la variable. De cualquier manera, al crear el factor puedo especificar la lista de niveles de la variable:
+
+```{r}
+#| label: fact0b
+condicion.f2=factor(condicion,levels=c("congruente","incongruente","neutro","mixta"))
+condicion.f2
+```
+
+Sin embargo, lo mas frecuente es que suceda la situación contraria: es decir, tenemos un nivel de la variable para el cual *no* tenemos observaciones, y queremos eliminarlo. La función **droplevels()** nos ayuda:
+
+```{r}
+#| label: fact0c
+
+condicion.f2=droplevels(condicion.f2)
+condicion.f2
+```
+
+### Niveles del factor
+
+Podemos ver los **niveles** de una variable mediante la función **levels()**
+
+```{r}
+#| label: fact01
+levels(condicion.f)
+```
+
+Esta función no sólo permite *ver* los niveles, sino cambiarle las etiquetas a los niveles:
+
+```{r}
+#| label: fact02
+levels(condicion.f)=c("cond1","cond2","cond3")
+condicion.f
+```
+
+No siempre los factores provienen de variables que tienen *strings* de caracteres. Algunas veces, hay valores "numéricos" que en realidad son etiquetas de variables categóricas, como por ejemplo, cuando se usan indicadores numéricos para identificar a los sujetos. Típica situación: importamos un archivo de datos en el que tenemos una variable "sujeto", que toma valores 1, 2, 3, etc. Bien podríamos poner "Sujeto1", "Sujeto2", etc. Por tanto, estamos ante una variable categórica. En este caso, conviene convertir la variable a factor:
+
+```{r}
+#| label: fact03
+sujetos=c(1,2,3,4,5,6)
+sujetos.f=factor(sujetos)
+#ya que estamos le cambiamos los niveles a algo más informativo
+levels(sujetos.f)=c("s1","s2","s3","s4","s5","s6")
+```
+
+# Los datos ordenados: el universo ordenado
+
+Para empezar a trabajar con datos,el primer paso siempre es *ordenarlos*. Para esto, existe el *tidyverse*, algo así como un universo en orden :). El concepto de *tidy data* fue presentado por Hadley Wickham en el Journal of Statistical Software en 2014. La idea es que, si bien todos partimos de datos desordenados, todos lleguemos a datos ordenados *de la misma manera*. En los datos ordenados, o tidy, *cada variables tiene su propia columna y cada observación tiene su propia fila, y cada valor tiene su propia celda*. Una vez que los datos están así organizados, podemos usar todas las funciones del *tidyverse* y nuestra vida será más sencilla. Instalando el paquete *tidyverse* ya podré cargar todo el universo tidyverse y sus planetas, estrellas y agujeros negros.
+
+```{r}
+#| label: tidyverse
+
+# install.packages("tidyverse")
+library(tidyverse)
+
+```
+
+# Un jugador clave: el pipe
+
+R es un lenguaje, y como tal tiene una sintaxis. Hasta ahora hemos trabajado con la sintaxis clásica, sin embargo, el *tidyverse* usa una sintaxis un poco distinta, cuyo jugador clave es el *pipe %\>%*. Podemos tipear *porcentaje mayor-que porcentaje* con el teclado, o usar un atajo de teclado, *Ctrl+Shift+M*. El pipe permite escribir código amigable con nosotros los humanos. Cuando tenemos una serie de pasos consecutivos, el pipe dice "usa la salida del paso anterior como entrada del paso siguiente" o algo así. Ahora veremos ejemplos.
+
+```{r}
+load('input/datosLimpios.RData') #datos de narcicismo y firmas, se acuerdan?
+# calculo los límites de outliers
+```
+
+Una forma un poco tonta de hacer un summary de datosLimpios, con el pipe:
+
+```{r}
+datosLimpios %>%  # meto los datos en la tubería... 
+  #(se los paso como primer argumento a la función que venga después)
+  summary() #recibe como argumento lo que viene en la tubería
+```
+
+La tubería puede tener un largo arbitrario, pero eso sí, después de cada paso (función) se tiene que volver a usar el símbolo de la tubería:
+
+```{r}
+datosLimpios %>%  # meto los datos en la tubería... 
+  # (se los paso como primer argumento a la función que venga después)
+  head(n=100) %>% # me quedo con los 100 primeros casos, y lo paso a la tubería
+  summary() # recibe como argumento lo que viene en la tubería 
+  # (a esta altura sólo los primeros 100 casos)
+```
+
+
+# 'dplyr': la pinza multiuso.
+
+Dplyr es un paquete dentro del tidyverse que nos hará la vida __muuuucho__ más fácil en R.
+
+Dplyr tiene cinco verbos principales:
+
+-   *filter*: para elegir observaciones
+-   *arrange*: para reordenar filas
+-   *select*: para agarrar variables
+-   *mutate*: para crear variables nuevas
+-   *summarise*: para sumarizar ;)
+
+¿Vieron todo lo que hicimos para filtrar outliers, y ordenar filas en un data frame? Bueno, con `dplyr` esas tareas se vuelven _mucho_ más fáciles y elegantes. Por ejemplo, revisitemos algunos ejemplos de filtrado de filas de la sesión 1.
+
+
+Cómo hacer para quedarme sólo con los varones? Usando `filter` es una forma:
+
+```{r}
+datosHombre = filter(datosLimpios,Sex == "M") 
+# Me filtra todas las filas que cumplan la conedición de que Sex == es igual a == "M"
+```
+O, podemos usar el pipe:
+
+```{r}
+datosHombre = 
+  datosLimpios %>% # agarro datosLimpio, y lo meto en la tubería... 
+                   # o sea, pasa a la siguiente línea
+  filter(Sex == "M") # filtro por Sexo=="M lo que viene en la tubería
+```
+
+La función `filter` recibe un data.frame como primer argumento, y una (o varias) condiciones lógicas. En el ejemplo anterior, `Sex == "M"` va a dar `TRUE` en unas filas, y `FALSE` en otras. Por lo tanto, `filter` va a __devolver__ las filas para las que sea `TRUE`. Eso sí, devuelve siempre _todas_ las columnas, `filter` se usa para filtrar filas.
+
+¿Qué pasa si quiero sólo los varones que tengan más de 20 años? Pues hago esto:
+
+```{r}
+datosHombre = filter(datosLimpios,Sex == "M", Age >20) 
+# Me filtra todas las filas que cumplan ambas condiciones
+```
+
+
+¿Se acuerdan lo de quitar los outliers de la variable `Name.Area`? Primero había que calcular el límite de los outliers...
+
+```{r}
+mediaName = mean(datosLimpios$Name.Area) #la media
+desvName = sd(datosLimpios$Name.Area) #el desvío
+limite.Outlier = mediaName + 3*desvName 
+#guardo el umbral en una variable llamado limite.Outlier
+```
+
+Una vez que calculamos el límite de los outliers, podemos filtrar usando la función `filter`:
+
+```{r}
+datos.sin.outliers = filter(datosLimpios,Name.Area<limite.Outlier)
+#me fijo el número de filas
+nrow(datos.sin.outliers)  
+#debería ser 323, me filtró 7 filas cuyo Name.Area era mayor o igual a limite.Outlier
+```
+
+Queda más fácil no? Acá no hay que andar creando índices lógicos, lo que es un quebradero de cabeza, realmente. Oh si, esta es la vía fácil de filtrar filas, pero el camino es la recompensa, o no?  
+
+La función `select` permite seleccionar columnas de un data.frame, luego lo veremos más adelante en detalle. Por ahora sólo alcanza con mostrar un par de ejemplos:
+
+```{r}
+#| eval: false
+datosLimpios %>% select("Age")
+```
+
+```{r}
+#| eval: false
+datosLimpios %>% select(c("Age","Sex"))
+```
+
+Y lo de ordenar _todo_ el dataframe por la columna `NPI16TOTAL`? Adivinaron, es más fácil con `arrange`:
+
+```{r}
+#| eval: false
+datosOrdenaditos = datosLimpios %>% 
+  arrange(NPI16TOTAL)
+datosOrdenaditos
+```
+OOPS! Eso me los ordena en orden ascendente. Para pedirle orden descendente hay que usar la función `desc` (no es muy intuitivo que sea una función y no un argumento de `arrange` hasta en el `tidyverse` hay "caprichos")
+
+```{r}
+#| eval: false
+datosOrdenaditos = datosLimpios %>% 
+  arrange(desc(NPI16TOTAL))
+datosOrdenaditos
+```
+
+## "Sumarizar"" por factores
+
+Una de las operaciones más comunes cuando trabajamos por datos, es obtener estadísticos descriptivos (número de datos, media, desvío, o cualquier otra cuenta con los datos) sumarizados para cada nivel de algún factor (por sujeto, por tarea, por condición), o por alguna combinación de factores (para cada sujeto, por condición).
+
+Pongamos como ejemplo un experimento Stroop con 3 condiciones, congruente, incongruente y neutro. Tenemos además datos para dos sujetos, "s1" y "s2". Si uno quisiera calcular por ejemplo, la media de tiempos de reacción para cada condición, podríamos hacer lo que vimos en las clases anteriores. Indexar las líneas que corresponden a cada tarea, y luego tomar la media de la columna de los tiempos de reacción. ¿Qué pasa si ahora quisiéramos tener la media *de cada sujeto* para cada condición? ¿Y si en realidad me interesa conocer el **z-score** de cada TR?
+
+Para hacer todo esto de una manera relativamente sencilla, podemos usar las otras funciones de `dplyr`. Primero usaremos *group_by* que me permitirá agrupar las observaciones por algún factor (sujeto, tarea, condición). En mi experiencia, por lejos, la función más usada de `dplyr` es *summarise* en conjunto con *group_by*.
+
+Veamos a **summarise** en acción. Para eso, nos inventaremos unos datos de la tarea Stroop. Nada como una línea de `R` para generarlos. Copien, peguen, y ejecuten:
+
+```{r}
+#| label: stroop1
+stroop=data.frame(
+  rt=exp(rnorm(60,-0.4,.1)),
+  condicion=rep(rep(c("congruente","incongruente","neutro"),
+                    times=c(15,10,5)),2),
+  sujeto=rep(c("s1","s2"),each=30),
+  nItem=rep(1:30,2))  
+
+# la magia de R... 1 línea, 1 experimento inventado
+```
+
+Para ver el data frame creado, usemos `View()`. Para ver su estructura, `str()`. Copiad, pegad, ejecutad.
+
+```{r}
+#| label: stroop2
+#| eval: false
+View(stroop)
+str(stroop)
+```
+
+La combinación de *group_by* con *summarise*, pegadas con un *pipe*, nos permite obtener las medias, los desvíos, o lo que uno quiera. Veamos cómo calcular las medias por condición:
+
+```{r}
+#| label: dply0
+#| eval: false
+
+stroop %>% 
+  group_by(condicion) %>% 
+  summarise(media = mean(rt))
+
+```
+
+Veamos la sintaxis. La primera línea indica con qué data frame vamos a trabajar (stroop). La segunda línea dice: "agrupá al dataframe por condición". La tercer línea dice "haceme el promedio de los tiempos de reacción". Los pipes que conectan las líneas dicen: usa la salida de esta función como entrada de la siguiente. El equivalente en sintaxis tradicional es:
+
+```{r}
+#| label: dply0clasic
+#| eval: false
+
+df0 = group_by(stroop, condicion)
+df1 = summarise(df0, media = mean(rt))
+
+```
+
+El pipe nos ahorra el trabajo de guardar variables intermedias (df0, df1) y hace que sea más fácil leer el código.
+
+Ahora veamos los detalles de la función *summarise*. Usamos *summarise(media = mean(rt))*. Esto es: crea una variable nueva que se llama media, poné en esta variable el promedio de los tiempos de reacción almacenados en la variable rt. En el dataframe de salida vemos que tenemos una tabla de 3 filas y dos columnas. La primera columna indica la condición, la segunda columna tiene los valores de los promedios de tiempo de reacción para cada condición. Esta columna se llama *media* porque ese es el nombre que le puse, pero lo podría haber puesto *amo_esto* y daría lo mismo:
+
+```{r}
+#| label: dply0b
+#| eval: false
+
+stroop %>% 
+  group_by(condicion) %>% 
+  summarise(amo_esto = mean(rt))
+```
+
+¿Cómo hago entonces para calcular las medias por condición *para cada sujeto* por separado? Simplemente agregamos otra variable de grupo:
+
+```{r}
+#| label: dply1
+#| eval: false
+
+stroop %>% 
+  group_by(condicion, sujeto) %>% 
+  summarise(media = mean(rt))
+
+```
+
+Ahora la salida es una table de 6 filas y 3 columnas. La primera columna indica la condición, la segunda columna indica el sujeto, y la tercera las medias de tiempo de reacción *para cada sujeto en cada condición*. Fácil ¿no?
+
+Ya que estamos, podríamos calcular también los desvíos...
+
+```{r}
+#| label: dply2
+#| eval: false
+
+stroop %>% 
+  group_by(condicion, sujeto) %>% 
+  summarise(media = mean(rt),
+            desv = sd(rt))
+
+
+```
+
+Ahora en la salida se suma una columna con los valores de desvío por sujeto y por condición. ¿Qué está pasando tras bambalinas? Bueno, lo primero que hace es *cortar* el data frame en pedazos, según los niveles de las variables indicadas. Para cada combinación entonces tenemos un data frame que tiene las mismas columnas y valores, sólo que menos filas. En el ejemplo anterior, primero crea un data frame donde están sólo las filas de sujeto "s1" y condición "congruente", luego otro con "s1" y la condición "incongruente", etc. Para cada data frame, calcula la operación que se le indique sobre cualquiers de las columnas, para todas las filas. El resultado de las operaciones va a parar a una sola fila del data frame resultante.
+
+Otro ejemplo: calcular el número de ensayos. Podemos hacerlo así:
+
+```{r}
+#| label: dply3
+#| eval: false
+
+stroop %>% 
+  group_by(condicion, sujeto) %>% 
+  summarise(nEnsayos = n())
+
+```
+
+La función *n* es un poco rara, vean que entre los paréntesis no indico el nombre de ninguna columna sino que lo dejo vacío. La función devuelve el número de observaciones por grupo, ya sabe cuál es el grupo (porque lo especifiqué con *group_by*), y no necesita que le indique ninguna columna.
+
+Veamos ahora un ejemplo un poco más complejo, vamos a crear nuestra propia función.
+
+```{r}
+#| label: dply5
+#| eval: false
+
+stroop %>% 
+  group_by(condicion) %>% 
+  summarise(media = mean(rt),
+            desv = sd(rt),
+            umbralOutlier = media + 3*desv)
+
+```
+
+Aquí estamos operando no sólo sobre las columnas que estaban antes en el data frame origial, sino que además estamos operando sobre **las columnas que acabo de crear**. Esto resulta *extremadamente* útil, ya lo verán.
+
+## Summarize *vs* Mutate
+
+Mientras que `summarize` nos devuelve un data frame "sumarizado", es decir, resumido, con menos filas que el data frame original, `mutate` nos devuelve un data frame con el **mismo** número de filas. Es más, nos devuelve *una copia* de nuestro data frame, con columnas agregadas. ¿Para qué puede servir? Para muchísimas cosas, por supuesto. Veamos un ejemplo:
+
+Supónganse que quiero tener el z-score de cada tiempo de reacción. Pero quiero el z-score calculado para cada sujeto por separado. Y para cada condición. Es más, quiero el z-score para cada *combinación* de sujeto y condición. Piensen en cómo lo harían en SPSS. Ahora admiren el simpleza de la pinza todopoderosa:
+
+```{r}
+#| label: dply6
+#| eval: false
+
+stroop %>% 
+  group_by(sujeto, condicion) %>% 
+  mutate(media = mean(rt),
+         desv = sd(rt),
+         zscore = (rt - media) / desv)
+
+
+```
+
+Tadaaa!!
+
+Este es un lindo ejercicio, en la vida real, si quiero calcular el z score, puedo simplemente usar la función *scale*. Comprobemos que da lo mismo:
+
+```{r}
+#| label: dply7
+#| eval: false
+
+stroop %>% 
+  group_by(sujeto, condicion) %>% 
+  mutate(media = mean(rt),
+         desv = sd(rt),
+         zscore1 = (rt - media) / desv,
+         zscore2 = scale(rt))
+
+```
+
+Podemos comparamos los valores de las columnas *zscore1* y *zscore2* para ver si son iguales. Ups!,primero tenemos que *asignar* la salida del código anterior para guardarlo en un dataframe:
+
+```{r}
+#| label: dply8
+#| eval: false
+
+midf = stroop %>% 
+  group_by(sujeto, condicion) %>% 
+  mutate(media = mean(rt),
+         desv = sd(rt),
+         zscore1 = (rt - media) / desv,
+         zscore2 = scale(rt))
+
+```
+
+Ahora sí podemos comparar las columnas de z scores:
+
+```{r}
+#| label: dply9
+#| eval: false
+
+head(midf$zscore1)
+head(midf$zscore2)
+
+```
+
+
+# NIVEL EXTRA (I'm feeling lucky): factores pero `tidy`
+
+El paquete `forcats`, que forma parte del `tidyverse`nos proporciona unas funciones que resultan muy útiles para trabajar con factores. Proporcionan una alternativa `tidy` (se pusen usarn con el *pipe* `%>%`). Eso sí, muchas funciones sólo funcionan correctamente en el marco de un `dataframe`.
+
+```{r}
+# puede ser útil crear una variable que sea una "copia" 
+#de otra pero convertida a factor...
+stroop$condicion.f = as_factor(stroop$condicion) 
+```
+
+```{r}
+#cambiemos los niveles al inglés, porque vamos a escribir el peiper!
+fct_recode(stroop$condicion.f,congruent="congruente",  incongruent="incongruente",neutral="neutro")
+```
+```{r}
+# podemos usarlo con pipes, en un mutate !
+stroop %>% 
+  mutate(condicion.f = fct_recode(condicion.f,
+                                  congruent="congruente",
+                                  incongruent="incongruente",
+                                  neutral="neutro")) %>% 
+  head() #sólo para que no me tire TODO el data.frame
+
+#nótese que ahora dentro de fct_recode NO hacemos referencia a stroop,
+#porque ya empezamos, al principio de la línea, "volcando" stroop al pipe.
+```
+
+Para cambiar el nivel "base" del factor:
+```{r}
+fct_relevel(stroop$condicion.f,"neutro")
+```
+
+Para agregar un nuevo nivel:
+```{r}
+#agrega un nuevo nivel
+stroop$condicion.f = fct_expand(stroop$condicion.f,"otro") 
+# lo mismo que arriba, pero con pipe + mutate
+stroop = stroop %>% 
+  mutate(condicion.f = fct_expand(condicion.f,"otroMas")) 
+stroop$condicion.f
+```
+
+Para quitar niveles que no se usan:
+```{r}
+fct_drop(stroop$condicion.f)
+```
+
+
+------------------------------------------------------------------------
+
+## Ayuda
+
+-   **?nombreFuncion**: en la Consola, muestra la información de ayuda o uso de la función. Por ejemplo: `?group_by`
+
+-   **help(nombreFuncion)**: idem
+
+-   [Aggregating and analyzing data with dplyr: Data Carpentry](https://datacarpentry.org/R-genomics/04-dplyr.html)
+
+-   [A begginer's guide to dplyr: R bloggers](https://www.r-bloggers.com/2021/01/how-to-analyze-data-with-r-a-complete-beginner-guide-to-dplyr/)
+
+- [dplyr Cheatsheet](https://eva-cursos.psico.edu.uy/pluginfile.php/142285/mod_resource/content/1/cheatsheet_dplyr.pdf)

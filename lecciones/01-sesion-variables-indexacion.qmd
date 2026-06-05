@@ -1,0 +1,359 @@
+---
+title: "Sesión 1: variables e indexación"
+author:
+  - Camila Zugarramurdi
+  - Álvaro Cabana
+date: "2022"
+lang: es
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+```{r}
+#| label: setup
+#| include: false
+
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+## Intro
+
+Esta es una mini guía de introducción de los conceptos y funciones más útiles para empezar a manejar el entorno de R con fines de procesamiento de datos de estudios experimentales.
+Se acompaña de un ejercicio (ejercicio 1) que utiliza los conceptos y funciones presentados aquí.
+
+## Variables
+
+Las variables son *etiquetas* que permiten guardar información.
+Las etiquetas pueden tener cualquier nombre, *a*, *pepito*, *myVariable*, *stroop*, o el nombre que prefiera.
+Las variables se definen a través de la asignación con alguno de los operadores **=** o **\<-** o **-\>**, son iguales, y el espacio no importa.
+Por ejemplo:
+
+```{r}
+#| label: variables1
+#estas líneas hacen lo mismo
+a=1
+a = 1
+a <- 1
+1 -> a
+```
+
+[Tip: el símbolo \# me permite hacer comentarios en el código sin que R los interprete]
+
+Si queremos chequear qué está guardado bajo la etiqueta de a, entonces tipeamos "a" y vemos la respuesta:
+
+```{r}
+#| label: variables2
+#| echo: false
+a
+
+```
+
+[Nota: El símbolo \## muestra que es la respuesta en la consola, el [1] indica el número de fila (por ahora no importa)]
+
+### Tipos de variables: num, char y logical
+
+"a" es una variable numérica o **num**.
+Hay otros dos tipos de variables muy comunes: las llamadas **char**, que toman cualquier valor de texto y cuyos valores se escriben siempre entre comillas; y variables lógicas llamados **logical** que toman solo dos valores, TRUE o FALSE.
+Por ejemplo:
+
+```{r}
+#| label: variables3
+a = "hello world"
+b = TRUE
+
+```
+
+miro lo que guardé:
+
+```{r}
+#| label: variables3out
+a
+b
+```
+
+```{r}
+# esto no funciona porque faltan las comillas
+a = hello world
+a
+
+```
+
+Hay un tipo de variable especial para indicar el vacío o la ausencia de valor, el **NA**, que sigifica *not available*.
+Esto es útil para indicar datos faltantes en un experimento, por ejemplo la edad de un participante.
+
+```{r}
+#| label: na
+
+c = NA
+c
+
+```
+
+### Variables de múltiples elementos: vectores y data frames
+
+Podemos almacenar muchos elementos en una sola variable, a una variable de muchos elementos le llamamos **vector**.
+Para crear un vector usamos la función ***combine***, que se llama con la letra *c* [La sintaxis de las funciones es siempre con paréntesis curvo: *nombredelafunción(argumentos)*, ampliaremos en sesión 2...].
+Los vectores pueden contener elementos num, char, o logical, pero siempre elementos de un solo tipo.
+Por ejemplo:
+
+```{r}
+#| label: vectors1
+a = c(47,74,44,52)
+
+b = c("José","Pepe","Juan","Martín")
+
+```
+
+```{r}
+#| label: vectors2
+a 
+
+b
+
+```
+
+Para combinar distintos tipos de elementos en una sola variable, usamos un **data frame**.
+El data frame es el tipo de variable más común para almacenar datos experimentales porque permite combinar datos numéricos y datos de texto en una misma variable.
+El data frame es un conjunto de filas y columnas, las filas frecuentemente corresponden a **observaciones** (por ejemplo, participantes) y las columnas a **variables (experimentales)** (por ejemplo, el tiempo de reacción, la tasa de aciertos, el sexo, la edad, etc...).
+Para crear un data frame usamos la función ***data.frame***:
+
+```{r}
+#| label: df
+
+# Unimos los dos vectores anteriores para crear data frame
+miPrimerDataFrame = data.frame(a,b)
+  
+# o creamos un data frame de novo
+miSegundoDataFrame = data.frame(participante=c("S1","S2","S3","S4","S5"),
+                                sexo=c("F","M","M","M","F"),
+                                edad=c(18,25,22,18,20))
+
+```
+
+```{r}
+#| label: df2
+
+miPrimerDataFrame
+  
+
+miSegundoDataFrame
+```
+
+En nuestro caso, no es muy común *crear* un dataframe, lo más común es *importar* datos de un archivo de Excel, de SPSS, o separado por comas, pero eso lo veremos más adelante.
+
+------------------------------------------------------------------------
+
+## Indexación
+
+Hay diversas maneras de acceder a los elementos de un data frame, a esto le llamamos indexación.
+El paréntesis recto **"[ , ]"** es la més ampliamente utilizada (se usa también en Matlab y en Python y tiene origen en el lenguaje C), permite indicar el número de fila y el número de columna del elemento de interés, **en ese orden, primero fila, después columna**, separados por una coma.
+Para acceder a todos los elementos de una columna, en el paréntesis recto dejo vacío el espacio correspondiente al número de columna, lo mismo para acceder a todos los elementos de una fila.
+
+En R, también puedo acceder a todos los elementos de una columna con el símbolo de **"\$"** y el nombre de la columna de interés.
+Esta forma tiene la ventaja de que no necesito acordarme la posición de la columna para llamarla, y los nombres son más fáciles de recordar.
+Combinando el símbolo de pesos y el paréntesis recto puedo indicar columna y fila respectivamente.
+
+```{r}
+
+# el elemento almacenado en la fila 2 y la columna 1 de miPrimerDataFrame
+miPrimerDataFrame[2,1]
+
+# todos los elementos de la columna 1 (que se llama "a") de miPrimerDataFrame
+# estas dos líneas hacen lo mismo
+miPrimerDataFrame[,1]
+miPrimerDataFrame$a
+
+# todos los elementos de la fila 2 de miPrimerDataFrame
+miPrimerDataFrame[2,]
+
+# se pueden combinar ambos tipos de indexación, por ejemplo:
+# el elemento almacenado en la fila 2 y la columna 1 ("a") de mi PrimerDataFrame
+miPrimerDataFrame$a[2]
+
+  
+```
+
+También puedo acceder a un subconjunto de los elementos de un vector o data frame, a través del uso de **":"**.
+Los dos puntos generan una secuencia de números *desde* y *hasta*:
+
+```{r}
+
+# Una secuencia del 1 al 3
+misecuencia1 = 1:3
+misecuencia1
+
+# Una secuencia de 100 a 1000
+misecuencia2 = 100:1000
+
+# Aplicado a un data frame:
+#Los primeros 3 elementos de la columna a
+miPrimerDataFrame$a[1:3]
+
+# Desde la tercera hasta la quinta fila, todas las columnas 
+miSegundoDataFrame[3:5,]
+```
+
+### Indexación por lógicos
+
+A veces quiero acceder solamente a algunos elementos del data frame, los que cumplan con una determinada condición.
+Para eso es muy útil **indexar por lógicos**.
+En la sección de *Tipos de variables* definimos un lógico como una variable que puede tomar solamente dos valores: TRUE o FALSE.
+Si en *miSegundoDataFrame* quiero saber qué participantes son mayores a 21 años, puedo crear un vector lógico que tome el valor de TRUE en los elementos en que esta condición se cumple (mayor a 18), y FALSE en el resto.
+Para eso necesito un nuevo tipo de operadores, los operadores lógicos o **booleanos**:
+
+| operador |     uso     |
+|----------|:-----------:|
+| **\>**   |    mayor    |
+| **\<**   |    menor    |
+| **=\>**  | mayor igual |
+| **\<=**  | menor igual |
+| **&**    |     AND     |
+| **\|**   |     OR      |
+| **==**   |   igual a   |
+| **!=**   | no igual a  |
+
+-   Atención! Diferencia entre **=** y **==**: + **= (igual)** se usa para asignar variables, como definimos al principio; + **== (igual a)** se usa para **evaluar** si dos variables son iguales, y la respuesta es un lógico TRUE o FALSE.
+
+Veamos cómo funcionan:
+
+```{r}
+
+# creo un vector lógico y lo asigno a la variable "mayores"
+mayores = miSegundoDataFrame$edad > 18
+
+#miro qué guardé
+mayores
+```
+
+El vector *mayores* tiene tantos elementos como el número de filas de *miSegundoDataFrame* (o sea, en este caso, tantos como número de participantes).
+Para cada elemento, indica si la condición "mayor a 18" se cumple (TRUE) o no se cumple (FALSE).
+Puedo usar este vector entonces como un **índice** de los elementos a los que quiero acceder para cualquier otro vector de las mismas dimensiones (tamaño), por ejemplo, el vector *miSegundoDataFrame\$participantes*:
+
+```{r}
+
+# busco a los participantes mayores de 18
+miSegundoDataFrame$participante[mayores]
+
+# esto es equivalente a indicar una por una las filas
+miSegundoDataFrame$participante[c(2,3,5)]
+
+# si quiero combinar dos condiciones, mayores a 18 y menores a 21, uso &
+entre = miSegundoDataFrame$edad > 18 & miSegundoDataFrame$edad < 21
+miSegundoDataFrame$participante[entre]
+
+# otro ejemplo, busco la edad de Juan en miPrimerDataFrame:
+edadJuan = miPrimerDataFrame$b == "Juan"
+miPrimerDataFrame$a[edadJuan]
+
+```
+
+## Cuarto tipo de variable: el factor
+
+Si miramos la salida de este último bloque de líneas, vemos que aparece un elemento nuevo *Levels* que no aparecía antes.
+Esto se debe a que la columna *participante* de *miSegundoDataFrame* es de un tipo de variable llamado **factor**.
+Los factores se usan para variables *nominales* o *categóricas*, esto es, variables que toman un conjunto de valores no numéricos sin ningún tipo de orden en particular, por ejemplo, nombre, sexo, condición experimental, etc.
+Los factores tienen niveles o **levels**, que son todos los valores únicos posibles que puede tomar el factor.
+Por ejemplo, si el factor es *sexo* los niveles son *femenino* o *masculino*.
+Para acceder a los niveles de una variable uso la función ***levels***.
+
+```{r}
+#| label: factor
+
+levels(miSegundoDataFrame$participante)
+levels(miPrimerDataFrame$b)
+levels(miSegundoDataFrame$sexo)
+
+```
+
+------------------------------------------------------------------------
+
+## Funciones útiles
+
+A menudo queremos (debemos!) cambiar los nombres de las columnas de un data frame para tener nombres informativos y fáciles de recordar.
+Por ejemplo, los nombres de las columnas de miPrimerDataFrame son poco informativos (a y b), lo podemos ver y cambiar usando la función ***colnames***.
+Para asignar los nuevos nombres, los agrupamos con la función *combine*.
+También podemos cambiar el nombre de una sola columna, indicando la posición de la columna con paréntesis recto luego de colnames.
+
+```{r}
+
+# ver nombres de columnas
+colnames(miPrimerDataFrame)
+
+# asignar nuevos nombres a todas las columnas
+colnames(miPrimerDataFrame) = c("edad","nombre")
+colnames(miPrimerDataFrame) #los miro
+
+# asignar nuevo nombre solamente a la primera columna
+colnames(miPrimerDataFrame)[1] = "años"
+colnames(miPrimerDataFrame) #los miro
+  
+```
+
+Es frecuente que los data frames tengan dimensiones que no permitan explorarlo a simple vista, algunas funciones básicas para explorar un **data frame** son:
+
+-   ***View***: para explorarlo a simple vista
+
+-   ***head***: primeras 6 filas
+
+-   ***tail***: últimas 6 filas
+
+-   ***nrow***: número de filas
+
+-   ***ncol***: número de columnas
+
+-   ***dim***: número de filas y columnas
+
+-   **class**: indica el tipo de variable
+
+-   ***str***: estructura, indica las dimensiones y el nombre y tipo de variable de cada columna en un data frame
+
+-   ***summary***: resumen, estadística descriptiva de cada columna en un data frame
+
+-   ***complete.cases*** : indica casos completos, devuelve un vector lógico con TRUE en filas sin NA
+
+Algunas funciones básicas de estadística descriptiva para **vectores** son:
+
+-   ***length***: largo o número de elementos
+
+-   ***sum***: suma
+
+-   ***max***: máximo
+
+-   ***min***: mínimo
+
+-   ***mean***: promedio
+
+-   ***sd***: desvío estándar
+
+-   ***is.na***: lógico de la posición de los valores NA
+
+------------------------------------------------------------------------
+
+## Shortcuts de teclado útiles
+
+-   **Tab** : completa el texto con las variables almacenadas en el environment o las funciones de las librerías cargadas
+
+-   **Up**: en la Consola, recorre los comandos escritos anteriormente
+
+-   **Ctrl + Up**: en la Consola, recorre los comandos escritos anteriormente que coinciden parcialmente con el texto escrito
+
+-   **Ctrl + Enter**: en la Fuente (Source), ejecuta una selección de código o el código de la línea donde está parado el cursor
+
+------------------------------------------------------------------------
+
+## Ayuda
+
+-   **?(functionname)**: en la Consola, muestra la información de ayuda o uso de la función
+
+-   **help(functionname)**: idem
+
+-   [Quick R](http://www.statmethods.net/)
+
+-   [R bloggers](https://www.r-bloggers.com/)
+
+-   [Cheat sheet](https://eva-cursos.psico.edu.uy/pluginfile.php/141325/mod_resource/content/1/base-r.pdf)

@@ -1,0 +1,205 @@
+---
+title: "Sesión 6: pivot"
+author:
+  - Camila Zugarramurdi
+  - Álvaro Cabana
+date: "2022"
+lang: es
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+```{r}
+#| label: setup
+#| include: false
+
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+library(foreign)
+library(tidyverse)
+
+```
+
+# Datos a lo largo y a lo ancho
+
+Un objetivo del curso es que puedan lograr usar `R` para todos sus análisis de datos, y en el mejor de los casos, se convierta en su herramienta de cabecera para estos fines.
+
+## Importando datos de SPSS
+
+Muchos de ustedes seguramente usan o han usado SPSS para trabajar sus datos, así que lo más probable es que quieran importar los datos que tienen guardados en formato `.sav` de SPSS. Para lograr eso, pueden usar el paquete `haven`. Este paquete provee una función para eso, `read_sav()`.
+
+```{r}
+#| label: foreign0
+library(haven)
+stroopdf = read_sav('input/stroop.sav')
+```
+Siempre hay que revisar que todo esté bien, echando un vistazo a la estructura con `str()` y mirando los datos con `View()`. Prueben. Mmmm, uno pensaría que la función `read_sav()` importa los datos en un data frame. Veamos:
+
+
+```{r}
+#| label: foreign1
+
+class(stroopdf)
+
+```
+
+Ok, todo en orden doctor!
+
+## Formato ancho *vs* formato largo
+
+Veamos en qué consisten los datos que he cargado:
+
+```{r}
+#| label: molt0
+
+stroopdf
+
+```
+
+Bueno, aparecen las clásicas variables de un stroop: una columna para identificar el sujeto, otra para el ítem (o sea, la palabra), otra para el tiempo de reacción, y otra que designa la condición a la que corresponde.
+
+¿Cómo que no hay columna de tiempo de reacción? ¿No hay columna RT? Ah, esperen, hay 3 columnas que dicen, congruente, incongruente, y neutro. Ah, esos deben ser los TR. Ok, en tres columnas, got it. Cada fila entonces corresponde a una combinación **de sujeto X ítem**, y en vez de tener **una columna** para los TR, tenemos **tres**. A esta forma de guardar los datos se le llama **formato ancho**, o **wide format** en inglish.
+
+### Formato ancho
+
+El formato ancho es el formato típico con el que se trabaja en SPSS, y adivinen, exacto, *NO* es el formato típico de trabajo en R. Por varias razones.
+
+Para resumirlas, digamos que siempre conviene que *cada columna corresponda a una variable*, y *cada fila a una observación*. Cuando veamos cómo graficar con `ggplot2` y cómo ajustar y analizar modelos lineales verán que esta disposición tiene muchas ventajas.
+
+El formato ancho no respeta esta máxima. Veamos: la variable "tiempo de reacción" está "cruzada" por los 3 niveles del factor "condición", para cada sujeto y cada ítem. Cada fila, por tanto, no representa una observación, sino 3: tres tiempos de reacción medidos para cada una de las 3 condiciones, para un sujeto y un ítem.
+
+### Formato largo
+
+En contraste, se le denomina *formato largo* al formato que respeta la máxima: *cada columna corresponda a una variable*, y *cada fila a una observación*. En la sesión 4, habíamos creado un data frame de stroop con este formato: una varible de sujeto, otra de ítem, otra de condición, y otra de RT. Cada columna, una variable. Cada fila, en tanto, es una observación, una medida: un único TR para una condición, para un sujeto, para un ítem.
+
+# Pivotear
+
+Entonces, ¿cómo puedo convertir los datos de un formato al otro? A través de las funciones *pivot* del paquete `tidyr`. Este paquete provee, entre otras, dos funciones clave: una para pasar de ancho a largo: **pivot_longer**, y otra para pasar de ancho a largo: **pivot_wider**
+
+## Pivot_longer: pivoteame a largo
+
+La función se llama `pivot_longer()`, y admite varios argumentos. Pasemos nuestro `stroopdf` a formato largo:
+
+```{r}
+#| label: tolong1
+#| warning: false
+
+pivot_longer(stroopdf)
+
+```
+
+Hmm, no es tan simple. Veamos el mensaje de error: *`cols` must select at least one column.*. Cierto, hay que avisarle a `pivot_longer` cuáles son las variables que queremos pasar de ancho a largo, o sea, las que están cruzadas. En nuestro data frame, el tiempo de reacción está cruzado por los niveles de condición, pero cada combinación de sujeto y número de ítem ya están "en formato largo", por lo tanto estas últimas no las quiero pasar a largo. Indico entonces cuáles son las columnas que quiero pasar a largo:
+
+A ver ahora...
+
+```{r}
+#| label: tolong2
+pivot_longer(stroopdf,
+             cols = c(congruente, incongruente, neutro))
+```
+
+Excelente! O casi. La salida es un data frame largo, sí, pero faltan los nombres de las variables "condición" y "rt". En vez de esos nombres aparecen unos genéricos "name", y "value". Los podemos cambiar usando los argumentos de la función *names_to* y *values_to*, veamos:
+
+```{r}
+#| label: tolong3
+pivot_longer(stroopdf,
+             cols = c(congruente, incongruente, neutro),
+             names_to = "condición",
+             values_to = "rt")
+```
+
+Perfecto! El data frame ya está en formato largo! En el código anterior no guardé la salida, la guardo ahora en una variable llamado *stroopLong* porque la voy a necesitar más adelante:
+
+```{r}
+#| label: tolong4
+stroopLong = pivot_longer(stroopdf,
+             cols = c(congruente, incongruente, neutro),
+             names_to = "condicion",
+             values_to = "rt")
+```
+
+## Pivot_wider: pivoteame a ancho
+
+A veces necesitamos los datos en formato ancho, sí, c'est la vie, todo depende, de según como se mire todo depende. Por ejemplo, para hacer correlaciones a menudo necesitamos el formato ancho, o para hacer pruebas t, o para hacer un gráfico de dispersión. Veamos entonces cómo se pasa de formato largo a formato ancho, o sea, cómo funciona la función *pivot_wider*:
+
+```{r}
+#| label: pivot_wider
+
+pivot_wider(stroopLong,
+            id_cols = c(sujeto, nItem),
+            names_from = condicion,
+            values_from = rt)
+             
+             
+```
+
+Simple no? Primero le digo cuáles son los datos, como siempre. Luego le digo cuáles son las columnas que sirven como identificadores, es decir, que no quiero ensanchar, en este caso son "sujeto" y "nItem", y luego le digo de qué variable va a obtener los *nombres* de las nuevas columnas ( *names_from* ) y de qué variable va a obtener los *valores* de las nuevas columnas ( *values_from*). O sea, el procedimiento inverso al que vimos en pivot_longe\> r.
+
+# Joinear (unir)
+
+Además de dar vuelta los datos para un lado y para otro, a menudo queremos **unir dos bases de datos** a partir de un identificador común. Por ejemplo, tomé parte de los datos en una computadora en una encuesta, o experimento de tiempo de reacción, y parte de los datos vienen de otra fuente, por ejemplo de información demográfica que el participante llenó en un formulario. Luego quiero tener una sola base de datos donde estén las respuestas de los participantes de la prueba computarizada y también sus datos demográficos cierto? Si ambas bases tuvieran exactamente el mismo número de filas en exactamente el mismo orden, fácil, las pego una y otra con la función `cbind` y listo (cbind = column bind = unir filas). Pero, *the truth is rarely pure and never simple*[^1]. Para eso existe en el paquete *dplyr* la función `join`, que es una maravilla. Más que una función es una *familia* de funciones: `left_join`, `right_join`, `inner_join` y `full_join`, pero son sabores del mismo tema. Veamos cómo funciona.
+
+[^1]: The importance of being Ernest, Oscar Wilde
+
+Vamoa a usar un ejemplo *dummy* agregando la edad de los sujetos en la base. Como no lo tengo en un archivo, solo con el fin de mostrar cómo funciona me voy a armar un dataframe con datos demográficos de los sujetos del stroopdf. Como el stroopdf tiene solo dos sujetos (s1 y s2), voy a hacer un dataframe con dos filas, una para cada sujetos, y una columna para sujeto, una para edad y una para lugar de nacimiento.
+
+```{r}
+#| label: demo
+
+demograficos = data.frame(sujeto = c("s1", "s2"),
+                    edad = c(25, 30),
+                    lugar.nac = c("Montevideo", "Maldonado"))  
+View(demograficos)
+             
+```
+
+Listo. Ahora quiero agregar en el stroopdf agregar estas columnas. Cómo lo hago?
+
+```{r}
+#| label: join
+
+stroopdf.demo = right_join(x = stroopdf,
+                           y = demograficos,
+                           by = "sujeto")
+             
+```
+
+En *x* puse el dataframe con los datos experimentales, en *y* el dataframe con los datos demográficos, y en *by* le indico qué columna debe usar como identificador para unir las dos bases.
+
+Qué opciones de *by* tengo? Varias:
+
+-   si no pongo nada, y los dos dataframes tienen una (o más) columnas con exactamente el mismo nombre, automáticamente va a usar estas. En el ejemplo anterior, pueden probar qué pasa cuando no ponen nada en *by.*
+
+-   si las columnas de identificador tienen distinto nombre en uno y otro dataframe, entonces le digo cuáles son:
+
+    ```{r join by}
+    
+    demograficos = data.frame(ID = c("s1", "s2"),
+                    edad = c(25, 30),
+                    lugar.nac = c("Montevideo", "Maldonado"))  
+    # nótese que ahora a la columna de sujeto le llamé ID, para mostrar
+    
+    stroopdf.demo = right_join(x = stroopdf,
+                               y = demograficos,
+                               by = c("sujeto" = "ID")) # en el dataframe x la columna
+                                                        # se llama sujeto, en el dataframe
+                                                        # y se llama ID
+                 
+    ```
+
+Perfecto! Un segundo punto importante para las funciones `join` es esto de left, right, inner y full. Básicamente indican qué hacer con los datos de identificadores que no coinciden (o sea, la yuxtaposición de dos conjuntos). Puede pasar que haya más identificadores en x que en y, más identificadores en y que en x, o distintos identificadores en x e y. Entonces:
+
+- `left_join` dice: quedate solamente con todos los identificadores que existan en lo que pongo a la izquierda (o sea, x). 
+- `right_join` dice: quedate solamente con todos los identificadores que existan en lo que pongo a la derecha (o sea, y). 
+- `inner_join` dice: quedate solamente con todos los identificadores que existan en x **y también** en y.
+- `full_join` dice: quedate con todos los identificadores que existan tanto en x como en y (o sea, en x **o** en y).
+
+En resumen: 
+
+- pasamos los datos de ancho a largo, casi siempre queremos usarlos en largo.
+- pasamos los datos de largo a ancho, útil para hacer gráficos de dispersión
+- unimos dos dataframes en función de identificadores
+

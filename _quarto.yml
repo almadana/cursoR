@@ -1,0 +1,110 @@
+project:
+  type: website
+  output-dir: docs
+  preview:
+    port: 4242
+    browser: false
+
+website:
+  title: "Curso de R"
+  description: "Programación y estadística en R — Facultad de Psicología"
+  site-url: https://almadana.github.io/cursoR/  # ajustar al repo de GitHub Pages
+  repo-url: https://github.com/almadana/cursoR
+  repo-actions: [edit, issue]
+  navbar:
+    left:
+      - href: index.qmd
+        text: Inicio
+      - text: Lecciones
+        menu:
+          - text: "1 · Variables e indexación"
+            href: lecciones/01-sesion-variables-indexacion.qmd
+          - text: "2 · Funciones"
+            href: lecciones/02-sesion-funciones.qmd
+          - text: "3 · Importación y directorios"
+            href: lecciones/03-sesion-importacion-directorios.qmd
+          - text: "4 · dplyr"
+            href: lecciones/04-sesion-dplyr.qmd
+          - text: "5 · tidyselect"
+            href: lecciones/05-sesion-tidyselect.qmd
+          - text: "6 · pivot"
+            href: lecciones/06-sesion-pivot.qmd
+          - text: "7 · ggplot2"
+            href: lecciones/07-sesion-ggplot2.qmd
+          - text: "8 · Modelos lineales I"
+            href: lecciones/08-sesion-modelos-lineales-1.qmd
+          - text: "9 · Medias marginales"
+            href: lecciones/09-sesion-medias-marginales.qmd
+      - text: Ejercicios
+        menu:
+          - text: "Ejercicio 1"
+            href: lecciones/ejercicio-01.qmd
+          - text: "Ejercicio 2"
+            href: lecciones/ejercicio-02.qmd
+          - text: "Ejercicio 3"
+            href: lecciones/ejercicio-03.qmd
+          - text: "Ejercicio 4"
+            href: lecciones/ejercicio-04.qmd
+          - text: "Ejercicio 5"
+            href: lecciones/ejercicio-05.qmd
+          - text: "Ejercicio 6"
+            href: lecciones/ejercicio-06.qmd
+          - text: "Ejercicio 7"
+            href: lecciones/ejercicio-07.qmd
+          - text: "Ejercicio 8"
+            href: lecciones/ejercicio-08.qmd
+          - text: "Ejercicio 9"
+            href: lecciones/ejercicio-09.qmd
+          - text: "Ejercicio 10"
+            href: lecciones/ejercicio-10.qmd
+    right:
+      - icon: github
+        href: https://github.com/almadana/cursoR
+  sidebar:
+    style: floating
+    search: true
+    contents:
+      - section: "Material"
+        contents:
+          - index.qmd
+      - section: "Sesiones"
+        contents:
+          - lecciones/01-sesion-variables-indexacion.qmd
+          - lecciones/02-sesion-funciones.qmd
+          - lecciones/03-sesion-importacion-directorios.qmd
+          - lecciones/04-sesion-dplyr.qmd
+          - lecciones/05-sesion-tidyselect.qmd
+          - lecciones/06-sesion-pivot.qmd
+          - lecciones/07-sesion-ggplot2.qmd
+          - lecciones/08-sesion-modelos-lineales-1.qmd
+          - lecciones/09-sesion-medias-marginales.qmd
+      - section: "Ejercicios"
+        contents:
+          - lecciones/ejercicio-01.qmd
+          - lecciones/ejercicio-02.qmd
+          - lecciones/ejercicio-03.qmd
+          - lecciones/ejercicio-04.qmd
+          - lecciones/ejercicio-05.qmd
+          - lecciones/ejercicio-06.qmd
+          - lecciones/ejercicio-07.qmd
+          - lecciones/ejercicio-08.qmd
+          - lecciones/ejercicio-09.qmd
+          - lecciones/ejercicio-10.qmd
+
+format:
+  html:
+    theme:
+      - cosmo
+      - styles/custom.scss
+    lang: es
+    toc: true
+    toc-depth: 3
+    code-copy: true
+    code-overflow: wrap
+    smooth-scroll: true
+
+execute:
+  freeze: auto
+  dir: project
+
+lang: es

@@ -1,0 +1,138 @@
+---
+title: "Ejercicio 3"
+author:
+  - Camila Zugarramurdi
+  - Álvaro Cabana
+date: "2022"
+lang: es
+code-fold: false
+code-tools: true
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+```{r}
+#| label: setup
+#| include: false
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Este ejercicio acompaña a la guía de la sesión 3 sobre pipeline, importación y guardado e integra los contenidos de las sesiones 1 y 2.
+
+El **objetivo** del ejercicio 3 es obtener el promedio de tiempos de reacción y la tasa de aciertos en un conjunto de tareas de un participante (normalmente esto se repetiría para cada participante). Para ello comenzamos con el procesamiento de datos desde los datos crudos y terminamos con el guardado del entorno de trabajo.
+
+El data set proviene de un estudio sobre adquisición de la lectura, con las siguientes tareas:
+
+* conocimiento del nombre y sonido de las letras (lettersN y lettersS respectivamente)
+* segmentación de una palabra en sílabas y en fonemas (segmentationS y segmentationP respectivamente)
+* unión de sílabas y fonemas para formar una palabra (blendingS y blendingP respectivamente)
+* rima de palabras y pseudopalabras (rhymeW y rhymePW respectivamente)
+* vocabulario
+
+**Cada fila corresponde a un ensayo, y cada columna a una variable.** Para cada ensayo se muestra a qué tarea corresponde en la columna **task**, el tiempo de respuesta  en la columna **RT** (en segundos, el separador decimal es el punto) y el acierto en la columna **acierto**. Los datos del archivo corresponden a un solo participante.
+
+Completar las siguientes tareas:
+
+*Previo: Descargar el archivo [datos045177.csv](https://www.dropbox.com/s/1lmzdkso6axmdf8/datos045177.csv?dl=0) en la carpeta cursoR > input*
+
+1) Cambiar el path a la carpeta cursoR con la función **setwd**. 
+
+2) Leer el archivo en R con la función **read.table** y guardarlo en una variable llamada datosCrudos.
+
+3) Limpiar outliers de tiempo de reacción en los datos, esto es, quitar aquellos ensayos en que el tiempo de reacción es mayor a la media de todos los ensayos más 3 desvíos estándar, o menor a 200 ms (ver [ejercicio 1](https://eva-cursos.psico.edu.uy/pluginfile.php/140322/mod_resource/content/2/curso-R---ejercicio-1-csol_2022.pdf))
+
+4) Calcular el promedio de tiempos de reacción y la tasa de aciertos para cada tarea, una opción es:
+i) separar los datos por tarea
+ii) calcular ambos promedios para una tarea
+iii) escribir una función que lo haga para cualquier tarea (ver [guía](https://eva-cursos.psico.edu.uy/pluginfile.php/140329/mod_resource/content/2/curso-R---sesion-2_2022_funciones.pdf) y [ejercicio 2](https://eva-cursos.psico.edu.uy/pluginfile.php/140328/mod_resource/content/1/curso-R---ejercicio-2-csol_2022.pdf))
+
+5) Almacenar las variables del entorno de trabajo en una carpeta "output"" con la función **save.image**.
+
+6) Guardar todos los comandos en un script.
+
+
+------------------------------------------------------------------------
+
+::: {.callout-tip .callout-solution collapse="true"}
+## Soluciones
+
+Desplegá esta sección cuando quieras comparar con un conjunto de soluciones posibles.
+
+```{r}
+#| eval: false
+# 1) 
+
+setwd("C:/Users/Camila/Dropbox/09 R/curso R psico")
+
+```
+
+```{r}
+# 2) 
+datosCrudos = read.table("input/datos045177.csv",
+                         header = T,
+                         dec = ".",
+                         sep = ",",
+                         encoding = "UTF-8" )
+```
+
+```{r}
+# 3)
+media = mean(datosCrudos$RT, na.rm = T)
+desv = sd(datosCrudos$RT, na.rm = T)
+umbralUp = media+3*desv
+umbralDown = 0.200
+
+# uso el operador or (|) para evaluar ambos umbrales al mismo tiempo
+temp = datosCrudos$RT > umbralUp | datosCrudos$RT < umbralDown
+# veo cuántos ensayos tiraría con estos umbrales
+sum(temp, na.rm=T)
+# los tiro
+datosCrudos2 = datosCrudos[!temp,]
+
+```
+
+```{r}
+# 4)
+
+# i) 
+# veo los nombres de las tareas
+datosCrudos2$task = as.factor(datosCrudos2$task)
+levels(datosCrudos2$task)
+
+
+# empiezo por la primera
+tarea = "blendingP"
+# o podría evitar errores de escritura haciendo:
+tarea = levels(datosCrudos2$task)[1]
+datosBlendingP=datosCrudos2[datosCrudos2$task==tarea,]
+# corroboro que hayan quedado solo los ensayos de Blending
+View(datosBlendingP)
+
+# ii)
+mediaBP.RT = mean(datosBlendingP$RT, na.rm = T)
+mediaBP.ac = mean(datosBlendingP$acierto, na.rm = T)
+
+# iii)
+# La entrada de la función es el nombre de la tarea de la que quiero obtener las medias
+mediasTareas = function(x) {
+  tarea = x
+  datosX=datosCrudos2[datosCrudos2$task==tarea,]
+  mediaX.RT = mean(datosX$RT, na.rm = T)
+  mediaX.ac = mean(datosX$acierto, na.rm = T)
+  return(c(mediaX.RT,mediaX.ac))
+}
+
+```
+
+``` {r 5, eval=T}
+
+# 5) #creo a mano la carpeta output primero
+save.image("./output/Medias045177.RData")
+```
+
+:::

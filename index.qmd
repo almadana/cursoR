@@ -1,0 +1,53 @@
+---
+title: "Curso de programación y estadística en R"
+subtitle: "Facultad de Psicología — Universidad de la República"
+author:
+  - Camila Zugarramurdi
+  - Álvaro Cabana
+date: "2022–2025"
+---
+
+## Bienvenida
+
+Este sitio reúne el material del curso de **R** para análisis de datos en psicología: guías de cada sesión y ejercicios prácticos. Está pensado para usarse en el navegador; los ejercicios incluyen **soluciones ocultas** que podés desplegar cuando quieras comparar tu trabajo.
+
+## Cómo está organizado
+
+| Bloque | Contenido |
+|--------|-----------|
+| **Sesiones 1–7** | R base, importación, `dplyr`, `tidyr`, `ggplot2` |
+| **Sesiones 8–9** | Modelos lineales, contrastes y medias marginales |
+| **Ejercicios 1–10** | Práctica guiada con datos del curso |
+
+Cada lección tiene dos entradas en el menú: la **sesión** (explicación) y el **ejercicio** (tareas). En los ejercicios, tocá *Mostrar solución* para ver el código de referencia.
+
+## Requisitos locales
+
+Para compilar el sitio en tu máquina:
+
+1. [R](https://cran.r-project.org/) (≥ 4.2) y paquetes que usan las lecciones (`tidyverse`, `lme4`, `emmeans`, etc.).
+2. [Quarto](https://quarto.org/docs/get-started/) ≥ 1.4.
+
+```bash
+cd ruta/al/proyecto/2025
+quarto render
+quarto preview   # vista previa con recarga
+```
+
+Los datos están en `input/` (enlazado al material original en `clases/curso2.0/input`).
+
+## Publicar en GitHub Pages
+
+Tras `quarto render`, la carpeta `docs/` contiene el sitio estático. En el repositorio de GitHub: **Settings → Pages → Source: Deploy from branch**, carpeta `/docs` en `main` (o usar la acción en `.github/workflows/publicar.yml`).
+
+Ajustá `site-url` en `_quarto.yml` a la URL real del sitio (p. ej. `https://usuario.github.io/cursoR/`).
+
+## Regenerar desde R Markdown
+
+Si editás los `.Rmd` originales en `clases/curso2.0/`:
+
+```r
+source("scripts/convertir_curso.R")
+```
+
+Eso vuelve a generar los `.qmd` en `lecciones/` fusionando enunciados (`*_ssol_*`) y soluciones (`*_csol_*`).

@@ -1,0 +1,185 @@
+---
+title: "Ejercicio 5"
+author:
+  - Camila Zugarramurdi
+  - Álvaro Cabana
+date: "2022"
+lang: es
+code-fold: false
+code-tools: true
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+
+```{r}
+#| label: setup
+#| include: false
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Ejercicio 5: (Tidy)select y across
+
+
+El **objetivo** del ejercicio 5 familiarizarse con los verbos de `tidy`, las estrategias `tidyselect`, y profundizar en el uso de  `summarise` y  `mutate`, aplicándolos en varias columnas a la vez con `across`.
+
+Vamos a trabajar con un nuevo conjunto de datos. Se trata de una composición proveniente de la plataforma de datos de escuelas públicas `GURÍ`, que detalla la trayectoria de 5000 niños y niñas entre los años 2013 y 2018. La base está anonimizada, desde luego. Les compartimos esta muestra para su uso exclusivo en este curso.
+
+## Empezamos
+
+Primero debemos [descargar la base de datos haciendo click aquí](https://www.dropbox.com/s/99axoeg4l1x37an/notas5000.RData?dl=0) o descargando el archivo `notas5000.RData` disponible en EVA.
+
+Recomiendo guardarlo en una carpeta 'input/'. Como es un archivo de datos de `R`, podemos cargarlo con `load`:
+
+```{r}
+library(tidyverse) # primero lo primero
+load("input/notas5000.RData")
+str(notas)
+```
+Oh... 113 variables, 5000 filas...
+
+## Calentando motores
+
+1) Seleccionar todas las columnas correspondientes al año 2018.
+
+2) Seleccionar las columnas que corresponden a la nota del estudiante, en cada año.
+
+3) Seleccionar todas las columnas que contengan "nivel" en su nombre.
+
+4) _Avanzado_: Seleccionar todas las columnas de nivel (`nivel_2016`,`nivel_2017`,`nivel_2018`), entre 2016 y 2018.
+
+## Encuentre el error
+
+Las siguientes líneas de código dan error, o no hacen lo que se supone que tienen que hacer. Copialas, pegalas, ejecutalas, y corregilas.
+
+1) `datos %>% select(datos$sujeto)` #suponemos que los datos están en el data frame llamado "datos"
+
+2) `notas %>% select(starts_with(Zona))`  #notas es el dataframe que usamos en los puntos anteriores, y se pretende elegir las columnas de Zona.
+
+3) `notas=notas %>% mutate(across(starts_with("edad0_nivel_")),as.numeric)` 
+
+4) Ésta tiene un error y una omisión importante. Busca calcular la media y el desvío para las columnas de edad del docente y del "nivel_n". Detectar el error y la omisión, y corregirlos.
+
+`notas %>% summarize(across(starts_with(c("edadDoc_","nivel_n")),media=mean,desv=sd))`
+
+## Usando `across`
+
+Vamos a usar `across` para sumarizar o mutar muchas columnas a la vez, usando `tidyselect`.
+
+1a) Convertir las columnas "nota" y "faltas", de todos los años, a valor numérico, usando la función `as.numeric()`. Sobreescribir los nombres de columnas (no darles un "nombre" diferente, vamos a sustituir los valores originales por números). 
+
+1b) Funcionó? No te olvides asignar la salida del pipe al dataframe "notas", así lo "actualizamos". (Esto es: `notas =  notas %>% ...` Pero sólo hazlo cuando estés segura de que esté funcionando bien!)
+
+2) Calcular el promedio de notas, para todos los años. (No te olvides del `na.rm` !)
+
+3) Calcular el promedio de notas, para todos los años, según sexo.
+
+4) Calcular el promedio de faltas, para todos los años, según sexo.
+
+5) Hacer 3) y 4) de una sola vez :P . Observar, si no lo hiciste, que 1) también se puede hacer de una sola vez.
+
+
+***
+
+
+------------------------------------------------------------------------
+
+::: {.callout-tip .callout-solution collapse="true"}
+## Soluciones
+
+Desplegá esta sección cuando quieras comparar con un conjunto de soluciones posibles.
+
+`notas %>% select(ends_with("2018"))`
+
+_También se puede usar `contains()`_
+
+`notas %>% select(contains("2018"))`
+
+
+2) Seleccionar las columnas que corresponden a la nota del estudiante, en cada año.
+
+`notas %>% select(starts_with("nota_"))`
+
+_También se puede usar `contains()`_
+
+`notas %>% select(contains("nota_"))`
+
+
+3) Seleccionar todas las columnas que contengan "nivel" en su nombre.
+
+`notas %>% select(contains("nivel"))`
+
+4) _Avanzado_: Seleccionar todas las columnas de nivel (`nivel_2016`,`nivel_2017`,`nivel_2018`), entre 2016 y 2018.
+
+`notas %>% select(num_range(prefix="nivel_",range=2016:2018))`
+
+## Encuentre el error
+
+Las siguientes líneas de código dan error, o no hacen lo que se supone que tienen que hacer. Copialas, pegalas, ejecutalas, y corregilas.
+
+1) `datos %>% select(datos$sujeto)` #suponemos que los datos están en el data frame llamado "datos"
+_Para elegir la columna `sujeto`, hay que dejarle afuera del argumento la parte de `datos$`. La forma correcta sería_  `datos %>% select(sujeto)`
+
+2) `notas %>% select(starts_with(Zona))`  #notas es el dataframe que usamos en los puntos anteriores, y se pretende elegir las columnas de Zona.
+_Si la intención es elegir las columnas de Zona, y no hay una columna que se llame `Zona`, hay que usar comillas. Sería:_ `notas %>% select(starts_with("Zona"))`
+
+3) `notas=notas %>% mutate(across(starts_with("edad0_nivel_")),as.numeric)` 
+_Ésta es sutil, pero puede pasar a menudo. La función de transformación, en este caso `as.numeric`, es un argumento para `across`, y por tanto debe ir adentro del paréntesis que se abre en esa función. Acá está dentro de los paréntesis de `mutate`, como si fuera un argumento esta última. Pifiarle a dónde va el argumento, y donde va el paréntesis es uno de los errores más comunes! Sería:_  
+`notas=notas %>% mutate(across(starts_with("edad0_nivel_"),as.numeric))`
+
+4) Ésta tiene un error y una omisión importante. Busca calcular la media y el desvío para las columnas de edad del docente y del "nivel_n". Detectar el error y la omisión, y corregirlos.
+
+`notas %>% summarize(across(starts_with(c("edadDoc_","nivel_n")),media=mean,desv=sd))`
+
+
+_El error es que están mal expresadas las columnas de media y desvío. Hay que ponerlas en una lista (usando `combine` o `list`)_
+
+`notas %>% summarize(across(starts_with(c("edadDoc_","nivel_n")),c(media=mean,desv=sd)))`
+
+_La omisión importante queda evidente ahora. Hay que agregar el argumento `na.rm=T`:_
+
+`notas %>% summarize(across(starts_with(c("edadDoc_","nivel_n")),list(media=mean,desv=sd),na.rm=T))`
+
+
+## Usando `across`
+
+Vamos a usar `across` para sumarizar o mutar muchas columnas a la vez, usando `tidyselect`.
+
+1a) Convertir las columnas "nota" y "faltas", de todos los años, a valor numérico, usando la función `as.numeric()`. Sobreescribir los nombres de columnas (no darles un "nombre" diferente, vamos a sustituir los valores originales por números). 
+
+1b) Funcionó? No te olvides asignar la salida del pipe al dataframe "notas", así lo "actualizamos". (Esto es: `notas =  notas %>% ...` Pero sólo hazlo cuando estés segura de que esté funcionando bien!)
+
+`notas=notas %>% mutate(across(starts_with(c("nota_","faltas_")),as.numeric))`
+
+2) Calcular el promedio de notas, para todos los años. (No te olvides del `na.rm` !)
+
+`notas %>% summarize(across(starts_with("nota_"),mean,na.rm=T))`
+
+3) Calcular el promedio de notas, para todos los años, según sexo.
+
+`notas %>% `
+`  group_by(sexo) %>% `
+`summarize(across(starts_with("nota_"),mean,na.rm=T))`
+
+4) Calcular el promedio de faltas, para todos los años, según sexo.
+
+`notas %>% `
+`  group_by(sexo) %>% `
+`summarize(across(starts_with("faltas_"),mean,na.rm=T))`
+
+5) Hacer 3) y 4) de una sola vez :P . Observar, si no lo hiciste, que 1) también se puede hacer de una sola vez.
+
+`notas %>% `
+`  group_by(sexo) %>% `
+`summarize(across(starts_with(c("faltas_","nota_")),mean,na.rm=T))`
+
+
+
+
+***
+
+:::

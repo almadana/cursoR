@@ -1,0 +1,10 @@
+/* Soluciones colapsables en ejercicios */
+.callout-solution {
+  --bs-callout-color: var(--bs-info);
+  --bs-callout-bg: rgba(var(--bs-info-rgb), 0.08);
+  --bs-callout-border: rgba(var(--bs-info-rgb), 0.35);
+}
+
+.callout-solution .callout-title {
+  font-weight: 600;
+}
