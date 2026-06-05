@@ -1,5 +1,8 @@
-# Publica el sitio Quarto en GitHub Pages (carpeta docs/).
-# Requiere: Settings → Pages → Source: GitHub Actions (o rama main /docs).
+# Publica el sitio Quarto en GitHub Pages (rama gh-pages).
+#
+# Configuración en GitHub: Settings → Pages → Source: Deploy from branch
+#   Branch: gh-pages   Folder: / (root)
+# NO usar "main /docs" — Jekyll rompe el HTML de Quarto.
 
 name: Publicar sitio Quarto
 
@@ -10,6 +13,12 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -35,9 +44,13 @@ jobs:
       - name: Render sitio
         run: quarto render
 
+      - name: Desactivar Jekyll en la salida
+        run: touch docs/.nojekyll
+
       - name: Desplegar a GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         if: github.event_name == 'push'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: docs
+          publish_branch: gh-pages

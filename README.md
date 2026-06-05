@@ -38,17 +38,18 @@ Luego `quarto render`.
 
 ## Publicar en GitHub Pages
 
-**Opción A — carpeta `docs/` en el mismo repo**
+1. En `_quarto.yml`, ajustar `site-url` y `repo-url` a tu usuario/repositorio.
+2. Subir el proyecto y dejar que corra `.github/workflows/publicar.yml` (push a `main`).
+3. En GitHub: **Settings → Pages →**
+   - **Source:** Deploy from a branch
+   - **Branch:** `gh-pages`
+   - **Folder:** `/ (root)`
 
-1. Subir este proyecto a GitHub (la raíz del repo puede ser esta carpeta `2025/` o el monorepo `cursoR/`; si es monorepo, ajustá el workflow).
-2. En `_quarto.yml`, cambiar `site-url` y `repo-url` a tu usuario/repositorio.
-3. `quarto render` y commitear la carpeta `docs/`, **o** usar la acción `.github/workflows/publicar.yml`.
-4. En GitHub: **Settings → Pages →** publicar desde la rama que contenga `docs/` (o desde la acción `gh-pages`).
+No uses **main / docs**: GitHub activa Jekyll y falla con el HTML de Quarto. El archivo `.nojekyll` en la salida evita Jekyll; la acción lo genera y publica en `gh-pages`.
 
-**Opción B — sitio de proyecto** (`usuario.github.io/nombre-repo/`)
+La carpeta local `docs/` está en `.gitignore` (se genera con `quarto render`); no hace falta commitearla si usás la acción.
 
-- `site-url` debe terminar en `/nombre-repo/` (con barra final).
-- Si el repo se llama `cursoR`, la URL típica es `https://usuario.github.io/cursoR/`.
+**Sitio de proyecto** (`https://usuario.github.io/cursoR/`): `site-url` debe terminar en `/cursoR/` (con barra final).
 
 ## Notas
 

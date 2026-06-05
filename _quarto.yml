@@ -9,6 +9,9 @@ project:
   render:
     - index.qmd
     - lecciones/*.qmd
+  # Evita que GitHub Pages intente procesar el sitio con Jekyll
+  resources:
+    - .nojekyll
 
 website:
   title: "Curso de R"
