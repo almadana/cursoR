@@ -2,15 +2,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Camila Zugarramurdi">
 <meta name="author" content="Álvaro Cabana">
 
-<title>Sesión 4: dplyr – Curso de R</title>
+<title>Sesión 4: dplyr – Introducción al análisis de datos en la plataforma R</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -73,10 +76,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-7f257b5e78b96e17e6422cbf4f6352ae.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-2c6714fe627e2e72ebea18868a6073fd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -91,7 +94,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   ],
   "show-item-context": false,
   "language": {
-    "search-no-results-text": "Sin resultados",
+    "search-no-results-text": "No se han encontrado resultados",
     "search-matching-documents-text": "documentos encontrados",
     "search-copy-link-title": "Copiar el enlace en la búsqueda",
     "search-hide-matches-text": "Ocultar resultados adicionales",
@@ -117,7 +120,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">Curso de R</span>
+    <span class="navbar-title">Introducción al análisis de datos en la plataforma R</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Buscar"></div>
@@ -270,7 +273,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Curso de programación y estadística en R</span></a>
+ <span class="menu-text">Curso: Introducción al análisis de datos en la plataforma R</span></a>
   </div>
 </li>
       </ul>
@@ -440,7 +443,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#ayuda" id="toc-ayuda" class="nav-link" data-scroll-target="#ayuda">Ayuda</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/almadana/cursoR/edit/main/lecciones/04-sesion-dplyr.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li><li><a href="https://github.com/almadana/cursoR/issues/new" class="toc-action"><i class="bi empty"></i>Informar de un problema</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/almadana/cursoR/edit/main/lecciones/04-sesion-dplyr.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li><li><a href="https://github.com/almadana/cursoR/issues/new" class="toc-action"><i class="bi empty"></i>Informar sobre problema</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -477,6 +480,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/W9gBr_83I6o?si=mtkJABevCmGYBkE-" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/OhnZzbl-Y4g?si=jNB5vlTdcdAmJGes" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/PpMY2Kz-ThY?si=EeTDvurfAtoizdDW" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/mIQu9cB9xcY?si=Eodxs8RKI42VD398" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
 <section id="intro-factores" class="level1">
 <h1>Intro: factores</h1>
 <p>Hasta ahora hemos trabajado con diferentes tipos de variable: numéricas,lógicas, caracteres o “strings”, y diferentes clases de vectores, elementos numéricos y factores. Los <strong>factores</strong> son una forma “avanzada” para representar variables categóricas, donde cada categoría (o nivel) puede ser representado por un string. La utilidad de que exista un tipo especial de variable para representar a los factores <em>no puede exagerarse</em>. Los factores son extramadamente útiles para:</p>
@@ -489,12 +496,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="funciones-para-trabajar-con-factores">Funciones para trabajar con factores</h2>
 <p>Bueno pero, ¿de dónde salen los factores? Cualquier vector de cualquier tipo puede ser <em>coercionado</em> en un factor (lo convertís a prepo en un factor), a través de la función <strong>factor()</strong>. Veamos entonces cómo crear un factor a partir de una lista de strings:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>condicion<span class="ot">=</span><span class="fu">c</span>(<span class="st">"congruente"</span>,<span class="st">"congruente"</span>,<span class="st">"congruente"</span>,<span class="st">"incongruente"</span>,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>condicion<span class="ot">=</span><span class="fu">c</span>(<span class="st">"congruente"</span>,<span class="st">"congruente"</span>,<span class="st">"congruente"</span>,<span class="st">"incongruente"</span>,</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>            <span class="st">"incongruente"</span>,<span class="st">"neutro"</span>,<span class="st">"neutro"</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>condicion.f<span class="ot">=</span><span class="fu">factor</span>(condicion) <span class="co"># la función devuelve una copia de "condición", </span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co">#convertida en factor. Me gusta volcar esta copia en una variable que se llame igual </span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#pero a la que se le agrega ".f", para denotar que es un factor. </span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>condicion.f</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>condicion.f</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] congruente   congruente   congruente   incongruente incongruente
 [6] neutro       neutro      
@@ -503,8 +510,8 @@ Levels: congruente incongruente neutro</code></pre>
 </div>
 <p>Nótese que ahora aparece, en la descripción aparece una línea extra que dice <strong>“Levels:”</strong> seguida de un listado de los niveles de la variable. En ese listado aparecen todos los niveles de la variable, <em>haya o no</em> observaciones de esos niveles. Por ejemplo, quizás en el experimento hay otra condición, “mixta”. Quizás en la observaciones con las que estoy trabajando, no tengo ninguna instancia de la variable. De cualquier manera, al crear el factor puedo especificar la lista de niveles de la variable:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>condicion.f2<span class="ot">=</span><span class="fu">factor</span>(condicion,<span class="at">levels=</span><span class="fu">c</span>(<span class="st">"congruente"</span>,<span class="st">"incongruente"</span>,<span class="st">"neutro"</span>,<span class="st">"mixta"</span>))</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>condicion.f2</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>condicion.f2<span class="ot">=</span><span class="fu">factor</span>(condicion,<span class="at">levels=</span><span class="fu">c</span>(<span class="st">"congruente"</span>,<span class="st">"incongruente"</span>,<span class="st">"neutro"</span>,<span class="st">"mixta"</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>condicion.f2</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] congruente   congruente   congruente   incongruente incongruente
 [6] neutro       neutro      
@@ -513,8 +520,8 @@ Levels: congruente incongruente neutro mixta</code></pre>
 </div>
 <p>Sin embargo, lo mas frecuente es que suceda la situación contraria: es decir, tenemos un nivel de la variable para el cual <em>no</em> tenemos observaciones, y queremos eliminarlo. La función <strong>droplevels()</strong> nos ayuda:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>condicion.f2<span class="ot">=</span><span class="fu">droplevels</span>(condicion.f2)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>condicion.f2</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>condicion.f2<span class="ot">=</span><span class="fu">droplevels</span>(condicion.f2)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>condicion.f2</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] congruente   congruente   congruente   incongruente incongruente
 [6] neutro       neutro      
@@ -525,15 +532,15 @@ Levels: congruente incongruente neutro</code></pre>
 <h3 class="anchored" data-anchor-id="niveles-del-factor">Niveles del factor</h3>
 <p>Podemos ver los <strong>niveles</strong> de una variable mediante la función <strong>levels()</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(condicion.f)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(condicion.f)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "congruente"   "incongruente" "neutro"      </code></pre>
 </div>
 </div>
 <p>Esta función no sólo permite <em>ver</em> los niveles, sino cambiarle las etiquetas a los niveles:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(condicion.f)<span class="ot">=</span><span class="fu">c</span>(<span class="st">"cond1"</span>,<span class="st">"cond2"</span>,<span class="st">"cond3"</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>condicion.f</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(condicion.f)<span class="ot">=</span><span class="fu">c</span>(<span class="st">"cond1"</span>,<span class="st">"cond2"</span>,<span class="st">"cond3"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>condicion.f</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] cond1 cond1 cond1 cond2 cond2 cond3 cond3
 Levels: cond1 cond2 cond3</code></pre>
@@ -541,10 +548,10 @@ Levels: cond1 cond2 cond3</code></pre>
 </div>
 <p>No siempre los factores provienen de variables que tienen <em>strings</em> de caracteres. Algunas veces, hay valores “numéricos” que en realidad son etiquetas de variables categóricas, como por ejemplo, cuando se usan indicadores numéricos para identificar a los sujetos. Típica situación: importamos un archivo de datos en el que tenemos una variable “sujeto”, que toma valores 1, 2, 3, etc. Bien podríamos poner “Sujeto1”, “Sujeto2”, etc. Por tanto, estamos ante una variable categórica. En este caso, conviene convertir la variable a factor:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>sujetos<span class="ot">=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>sujetos<span class="ot">=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>,<span class="dv">6</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>sujetos.f<span class="ot">=</span><span class="fu">factor</span>(sujetos)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#ya que estamos le cambiamos los niveles a algo más informativo</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(sujetos.f)<span class="ot">=</span><span class="fu">c</span>(<span class="st">"s1"</span>,<span class="st">"s2"</span>,<span class="st">"s3"</span>,<span class="st">"s4"</span>,<span class="st">"s5"</span>,<span class="st">"s6"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(sujetos.f)<span class="ot">=</span><span class="fu">c</span>(<span class="st">"s1"</span>,<span class="st">"s2"</span>,<span class="st">"s3"</span>,<span class="st">"s4"</span>,<span class="st">"s5"</span>,<span class="st">"s6"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
@@ -553,22 +560,22 @@ Levels: cond1 cond2 cond3</code></pre>
 <h1>Los datos ordenados: el universo ordenado</h1>
 <p>Para empezar a trabajar con datos,el primer paso siempre es <em>ordenarlos</em>. Para esto, existe el <em>tidyverse</em>, algo así como un universo en orden :). El concepto de <em>tidy data</em> fue presentado por Hadley Wickham en el Journal of Statistical Software en 2014. La idea es que, si bien todos partimos de datos desordenados, todos lleguemos a datos ordenados <em>de la misma manera</em>. En los datos ordenados, o tidy, <em>cada variables tiene su propia columna y cada observación tiene su propia fila, y cada valor tiene su propia celda</em>. Una vez que los datos están así organizados, podemos usar todas las funciones del <em>tidyverse</em> y nuestra vida será más sencilla. Instalando el paquete <em>tidyverse</em> ya podré cargar todo el universo tidyverse y sus planetas, estrellas y agujeros negros.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("tidyverse")</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("tidyverse")</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="un-jugador-clave-el-pipe" class="level1">
 <h1>Un jugador clave: el pipe</h1>
 <p>R es un lenguaje, y como tal tiene una sintaxis. Hasta ahora hemos trabajado con la sintaxis clásica, sin embargo, el <em>tidyverse</em> usa una sintaxis un poco distinta, cuyo jugador clave es el <em>pipe %&gt;%</em>. Podemos tipear <em>porcentaje mayor-que porcentaje</em> con el teclado, o usar un atajo de teclado, <em>Ctrl+Shift+M</em>. El pipe permite escribir código amigable con nosotros los humanos. Cuando tenemos una serie de pasos consecutivos, el pipe dice “usa la salida del paso anterior como entrada del paso siguiente” o algo así. Ahora veremos ejemplos.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">'input/datosLimpios.RData'</span>) <span class="co">#datos de narcicismo y firmas, se acuerdan?</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># calculo los límites de outliers</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">'input/datosLimpios.RData'</span>) <span class="co">#datos de narcicismo y firmas, se acuerdan?</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># calculo los límites de outliers</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Una forma un poco tonta de hacer un summary de datosLimpios, con el pipe:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span>  <span class="co"># meto los datos en la tubería... </span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span>  <span class="co"># meto los datos en la tubería... </span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="co">#(se los paso como primer argumento a la función que venga después)</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>() <span class="co">#recibe como argumento lo que viene en la tubería</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>() <span class="co">#recibe como argumento lo que viene en la tubería</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> Sex          Age          NPI16TOTAL       GSESTOTAL        ADTOTAL     
  M:142   Min.   :17.00   Min.   : 0.000   Min.   :20.00   Min.   : 7.00  
@@ -590,10 +597,10 @@ Levels: cond1 cond2 cond3</code></pre>
 </div>
 <p>La tubería puede tener un largo arbitrario, pero eso sí, después de cada paso (función) se tiene que volver a usar el símbolo de la tubería:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span>  <span class="co"># meto los datos en la tubería... </span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span>  <span class="co"># meto los datos en la tubería... </span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (se los paso como primer argumento a la función que venga después)</span></span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="at">n=</span><span class="dv">100</span>) <span class="sc">%&gt;%</span> <span class="co"># me quedo con los 100 primeros casos, y lo paso a la tubería</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>() <span class="co"># recibe como argumento lo que viene en la tubería </span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summary</span>() <span class="co"># recibe como argumento lo que viene en la tubería </span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> Sex          Age          NPI16TOTAL      GSESTOTAL        ADTOTAL     
  M:  0   Min.   :17.00   Min.   : 0.00   Min.   :20.00   Min.   : 7.00  
@@ -612,7 +619,7 @@ Levels: cond1 cond2 cond3</code></pre>
  Max.   :38.00   Max.   :49.148   Max.   :55.455  
  NA's   :7                                        </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (a esta altura sólo los primeros 100 casos)</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>  <span class="co"># (a esta altura sólo los primeros 100 casos)</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="dplyr-la-pinza-multiuso." class="level1">
@@ -629,58 +636,58 @@ Levels: cond1 cond2 cond3</code></pre>
 <p>¿Vieron todo lo que hicimos para filtrar outliers, y ordenar filas en un data frame? Bueno, con <code>dplyr</code> esas tareas se vuelven <em>mucho</em> más fáciles y elegantes. Por ejemplo, revisitemos algunos ejemplos de filtrado de filas de la sesión 1.</p>
 <p>Cómo hacer para quedarme sólo con los varones? Usando <code>filter</code> es una forma:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>datosHombre <span class="ot">=</span> <span class="fu">filter</span>(datosLimpios,Sex <span class="sc">==</span> <span class="st">"M"</span>) </span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Me filtra todas las filas que cumplan la conedición de que Sex == es igual a == "M"</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>datosHombre <span class="ot">=</span> <span class="fu">filter</span>(datosLimpios,Sex <span class="sc">==</span> <span class="st">"M"</span>) </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Me filtra todas las filas que cumplan la conedición de que Sex == es igual a == "M"</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>O, podemos usar el pipe:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>datosHombre <span class="ot">=</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>datosHombre <span class="ot">=</span> </span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  datosLimpios <span class="sc">%&gt;%</span> <span class="co"># agarro datosLimpio, y lo meto en la tubería... </span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                   <span class="co"># o sea, pasa a la siguiente línea</span></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Sex <span class="sc">==</span> <span class="st">"M"</span>) <span class="co"># filtro por Sexo=="M lo que viene en la tubería</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Sex <span class="sc">==</span> <span class="st">"M"</span>) <span class="co"># filtro por Sexo=="M lo que viene en la tubería</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>La función <code>filter</code> recibe un data.frame como primer argumento, y una (o varias) condiciones lógicas. En el ejemplo anterior, <code>Sex == "M"</code> va a dar <code>TRUE</code> en unas filas, y <code>FALSE</code> en otras. Por lo tanto, <code>filter</code> va a <strong>devolver</strong> las filas para las que sea <code>TRUE</code>. Eso sí, devuelve siempre <em>todas</em> las columnas, <code>filter</code> se usa para filtrar filas.</p>
 <p>¿Qué pasa si quiero sólo los varones que tengan más de 20 años? Pues hago esto:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>datosHombre <span class="ot">=</span> <span class="fu">filter</span>(datosLimpios,Sex <span class="sc">==</span> <span class="st">"M"</span>, Age <span class="sc">&gt;</span><span class="dv">20</span>) </span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Me filtra todas las filas que cumplan ambas condiciones</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>datosHombre <span class="ot">=</span> <span class="fu">filter</span>(datosLimpios,Sex <span class="sc">==</span> <span class="st">"M"</span>, Age <span class="sc">&gt;</span><span class="dv">20</span>) </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Me filtra todas las filas que cumplan ambas condiciones</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>¿Se acuerdan lo de quitar los outliers de la variable <code>Name.Area</code>? Primero había que calcular el límite de los outliers…</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>mediaName <span class="ot">=</span> <span class="fu">mean</span>(datosLimpios<span class="sc">$</span>Name.Area) <span class="co">#la media</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>mediaName <span class="ot">=</span> <span class="fu">mean</span>(datosLimpios<span class="sc">$</span>Name.Area) <span class="co">#la media</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>desvName <span class="ot">=</span> <span class="fu">sd</span>(datosLimpios<span class="sc">$</span>Name.Area) <span class="co">#el desvío</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>limite.Outlier <span class="ot">=</span> mediaName <span class="sc">+</span> <span class="dv">3</span><span class="sc">*</span>desvName </span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co">#guardo el umbral en una variable llamado limite.Outlier</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co">#guardo el umbral en una variable llamado limite.Outlier</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Una vez que calculamos el límite de los outliers, podemos filtrar usando la función <code>filter</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>datos.sin.outliers <span class="ot">=</span> <span class="fu">filter</span>(datosLimpios,Name.Area<span class="sc">&lt;</span>limite.Outlier)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>datos.sin.outliers <span class="ot">=</span> <span class="fu">filter</span>(datosLimpios,Name.Area<span class="sc">&lt;</span>limite.Outlier)</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co">#me fijo el número de filas</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(datos.sin.outliers)  </span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(datos.sin.outliers)  </span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 323</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#debería ser 323, me filtró 7 filas cuyo Name.Area era mayor o igual a limite.Outlier</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#debería ser 323, me filtró 7 filas cuyo Name.Area era mayor o igual a limite.Outlier</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Queda más fácil no? Acá no hay que andar creando índices lógicos, lo que es un quebradero de cabeza, realmente. Oh si, esta es la vía fácil de filtrar filas, pero el camino es la recompensa, o no?</p>
 <p>La función <code>select</code> permite seleccionar columnas de un data.frame, luego lo veremos más adelante en detalle. Por ahora sólo alcanza con mostrar un par de ejemplos:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="st">"Age"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="st">"Age"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">c</span>(<span class="st">"Age"</span>,<span class="st">"Sex"</span>))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>datosLimpios <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="fu">c</span>(<span class="st">"Age"</span>,<span class="st">"Sex"</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Y lo de ordenar <em>todo</em> el dataframe por la columna <code>NPI16TOTAL</code>? Adivinaron, es más fácil con <code>arrange</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>datosOrdenaditos <span class="ot">=</span> datosLimpios <span class="sc">%&gt;%</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>datosOrdenaditos <span class="ot">=</span> datosLimpios <span class="sc">%&gt;%</span> </span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(NPI16TOTAL)</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>datosOrdenaditos</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>datosOrdenaditos</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>OOPS! Eso me los ordena en orden ascendente. Para pedirle orden descendente hay que usar la función <code>desc</code> (no es muy intuitivo que sea una función y no un argumento de <code>arrange</code> hasta en el <code>tidyverse</code> hay “caprichos”)</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>datosOrdenaditos <span class="ot">=</span> datosLimpios <span class="sc">%&gt;%</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>datosOrdenaditos <span class="ot">=</span> datosLimpios <span class="sc">%&gt;%</span> </span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(NPI16TOTAL))</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>datosOrdenaditos</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>datosOrdenaditos</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="sumarizar-por-factores" class="level2">
 <h2 class="anchored" data-anchor-id="sumarizar-por-factores">“Sumarizar”” por factores</h2>
@@ -689,67 +696,67 @@ Levels: cond1 cond2 cond3</code></pre>
 <p>Para hacer todo esto de una manera relativamente sencilla, podemos usar las otras funciones de <code>dplyr</code>. Primero usaremos <em>group_by</em> que me permitirá agrupar las observaciones por algún factor (sujeto, tarea, condición). En mi experiencia, por lejos, la función más usada de <code>dplyr</code> es <em>summarise</em> en conjunto con <em>group_by</em>.</p>
 <p>Veamos a <strong>summarise</strong> en acción. Para eso, nos inventaremos unos datos de la tarea Stroop. Nada como una línea de <code>R</code> para generarlos. Copien, peguen, y ejecuten:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>stroop<span class="ot">=</span><span class="fu">data.frame</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>stroop<span class="ot">=</span><span class="fu">data.frame</span>(</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">rt=</span><span class="fu">exp</span>(<span class="fu">rnorm</span>(<span class="dv">60</span>,<span class="sc">-</span><span class="fl">0.4</span>,.<span class="dv">1</span>)),</span>
 <span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">condicion=</span><span class="fu">rep</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"congruente"</span>,<span class="st">"incongruente"</span>,<span class="st">"neutro"</span>),</span>
 <span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">times=</span><span class="fu">c</span>(<span class="dv">15</span>,<span class="dv">10</span>,<span class="dv">5</span>)),<span class="dv">2</span>),</span>
 <span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">sujeto=</span><span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"s1"</span>,<span class="st">"s2"</span>),<span class="at">each=</span><span class="dv">30</span>),</span>
 <span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">nItem=</span><span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>,<span class="dv">2</span>))  </span>
 <span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="co"># la magia de R... 1 línea, 1 experimento inventado</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="co"># la magia de R... 1 línea, 1 experimento inventado</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Para ver el data frame creado, usemos <code>View()</code>. Para ver su estructura, <code>str()</code>. Copiad, pegad, ejecutad.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(stroop)</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(stroop)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(stroop)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(stroop)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>La combinación de <em>group_by</em> con <em>summarise</em>, pegadas con un <em>pipe</em>, nos permite obtener las medias, los desvíos, o lo que uno quiera. Veamos cómo calcular las medias por condición:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>stroop <span class="sc">%&gt;%</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>stroop <span class="sc">%&gt;%</span> </span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(condicion) <span class="sc">%&gt;%</span> </span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">media =</span> <span class="fu">mean</span>(rt))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">media =</span> <span class="fu">mean</span>(rt))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Veamos la sintaxis. La primera línea indica con qué data frame vamos a trabajar (stroop). La segunda línea dice: “agrupá al dataframe por condición”. La tercer línea dice “haceme el promedio de los tiempos de reacción”. Los pipes que conectan las líneas dicen: usa la salida de esta función como entrada de la siguiente. El equivalente en sintaxis tradicional es:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>df0 <span class="ot">=</span> <span class="fu">group_by</span>(stroop, condicion)</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>df1 <span class="ot">=</span> <span class="fu">summarise</span>(df0, <span class="at">media =</span> <span class="fu">mean</span>(rt))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>df0 <span class="ot">=</span> <span class="fu">group_by</span>(stroop, condicion)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>df1 <span class="ot">=</span> <span class="fu">summarise</span>(df0, <span class="at">media =</span> <span class="fu">mean</span>(rt))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>El pipe nos ahorra el trabajo de guardar variables intermedias (df0, df1) y hace que sea más fácil leer el código.</p>
 <p>Ahora veamos los detalles de la función <em>summarise</em>. Usamos <em>summarise(media = mean(rt))</em>. Esto es: crea una variable nueva que se llama media, poné en esta variable el promedio de los tiempos de reacción almacenados en la variable rt. En el dataframe de salida vemos que tenemos una tabla de 3 filas y dos columnas. La primera columna indica la condición, la segunda columna tiene los valores de los promedios de tiempo de reacción para cada condición. Esta columna se llama <em>media</em> porque ese es el nombre que le puse, pero lo podría haber puesto <em>amo_esto</em> y daría lo mismo:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>stroop <span class="sc">%&gt;%</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>stroop <span class="sc">%&gt;%</span> </span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(condicion) <span class="sc">%&gt;%</span> </span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">amo_esto =</span> <span class="fu">mean</span>(rt))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">amo_esto =</span> <span class="fu">mean</span>(rt))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>¿Cómo hago entonces para calcular las medias por condición <em>para cada sujeto</em> por separado? Simplemente agregamos otra variable de grupo:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>stroop <span class="sc">%&gt;%</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>stroop <span class="sc">%&gt;%</span> </span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(condicion, sujeto) <span class="sc">%&gt;%</span> </span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">media =</span> <span class="fu">mean</span>(rt))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">media =</span> <span class="fu">mean</span>(rt))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Ahora la salida es una table de 6 filas y 3 columnas. La primera columna indica la condición, la segunda columna indica el sujeto, y la tercera las medias de tiempo de reacción <em>para cada sujeto en cada condición</em>. Fácil ¿no?</p>
 <p>Ya que estamos, podríamos calcular también los desvíos…</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>stroop <span class="sc">%&gt;%</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>stroop <span class="sc">%&gt;%</span> </span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(condicion, sujeto) <span class="sc">%&gt;%</span> </span>
 <span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">media =</span> <span class="fu">mean</span>(rt),</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">desv =</span> <span class="fu">sd</span>(rt))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">desv =</span> <span class="fu">sd</span>(rt))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Ahora en la salida se suma una columna con los valores de desvío por sujeto y por condición. ¿Qué está pasando tras bambalinas? Bueno, lo primero que hace es <em>cortar</em> el data frame en pedazos, según los niveles de las variables indicadas. Para cada combinación entonces tenemos un data frame que tiene las mismas columnas y valores, sólo que menos filas. En el ejemplo anterior, primero crea un data frame donde están sólo las filas de sujeto “s1” y condición “congruente”, luego otro con “s1” y la condición “incongruente”, etc. Para cada data frame, calcula la operación que se le indique sobre cualquiers de las columnas, para todas las filas. El resultado de las operaciones va a parar a una sola fila del data frame resultante.</p>
 <p>Otro ejemplo: calcular el número de ensayos. Podemos hacerlo así:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>stroop <span class="sc">%&gt;%</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>stroop <span class="sc">%&gt;%</span> </span>
 <span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(condicion, sujeto) <span class="sc">%&gt;%</span> </span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">nEnsayos =</span> <span class="fu">n</span>())</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">nEnsayos =</span> <span class="fu">n</span>())</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>La función <em>n</em> es un poco rara, vean que entre los paréntesis no indico el nombre de ninguna columna sino que lo dejo vacío. La función devuelve el número de observaciones por grupo, ya sabe cuál es el grupo (porque lo especifiqué con <em>group_by</em>), y no necesita que le indique ninguna columna.</p>
 <p>Veamos ahora un ejemplo un poco más complejo, vamos a crear nuestra propia función.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>stroop <span class="sc">%&gt;%</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>stroop <span class="sc">%&gt;%</span> </span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(condicion) <span class="sc">%&gt;%</span> </span>
 <span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">media =</span> <span class="fu">mean</span>(rt),</span>
 <span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">desv =</span> <span class="fu">sd</span>(rt),</span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">umbralOutlier =</span> media <span class="sc">+</span> <span class="dv">3</span><span class="sc">*</span>desv)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">umbralOutlier =</span> media <span class="sc">+</span> <span class="dv">3</span><span class="sc">*</span>desv)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Aquí estamos operando no sólo sobre las columnas que estaban antes en el data frame origial, sino que además estamos operando sobre <strong>las columnas que acabo de crear</strong>. Esto resulta <em>extremadamente</em> útil, ya lo verán.</p>
 </section>
@@ -758,35 +765,35 @@ Levels: cond1 cond2 cond3</code></pre>
 <p>Mientras que <code>summarize</code> nos devuelve un data frame “sumarizado”, es decir, resumido, con menos filas que el data frame original, <code>mutate</code> nos devuelve un data frame con el <strong>mismo</strong> número de filas. Es más, nos devuelve <em>una copia</em> de nuestro data frame, con columnas agregadas. ¿Para qué puede servir? Para muchísimas cosas, por supuesto. Veamos un ejemplo:</p>
 <p>Supónganse que quiero tener el z-score de cada tiempo de reacción. Pero quiero el z-score calculado para cada sujeto por separado. Y para cada condición. Es más, quiero el z-score para cada <em>combinación</em> de sujeto y condición. Piensen en cómo lo harían en SPSS. Ahora admiren el simpleza de la pinza todopoderosa:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>stroop <span class="sc">%&gt;%</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>stroop <span class="sc">%&gt;%</span> </span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sujeto, condicion) <span class="sc">%&gt;%</span> </span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">media =</span> <span class="fu">mean</span>(rt),</span>
 <span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">desv =</span> <span class="fu">sd</span>(rt),</span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">zscore =</span> (rt <span class="sc">-</span> media) <span class="sc">/</span> desv)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">zscore =</span> (rt <span class="sc">-</span> media) <span class="sc">/</span> desv)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Tadaaa!!</p>
 <p>Este es un lindo ejercicio, en la vida real, si quiero calcular el z score, puedo simplemente usar la función <em>scale</em>. Comprobemos que da lo mismo:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>stroop <span class="sc">%&gt;%</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>stroop <span class="sc">%&gt;%</span> </span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sujeto, condicion) <span class="sc">%&gt;%</span> </span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">media =</span> <span class="fu">mean</span>(rt),</span>
 <span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">desv =</span> <span class="fu">sd</span>(rt),</span>
 <span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">zscore1 =</span> (rt <span class="sc">-</span> media) <span class="sc">/</span> desv,</span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">zscore2 =</span> <span class="fu">scale</span>(rt))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">zscore2 =</span> <span class="fu">scale</span>(rt))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Podemos comparamos los valores de las columnas <em>zscore1</em> y <em>zscore2</em> para ver si son iguales. Ups!,primero tenemos que <em>asignar</em> la salida del código anterior para guardarlo en un dataframe:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>midf <span class="ot">=</span> stroop <span class="sc">%&gt;%</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>midf <span class="ot">=</span> stroop <span class="sc">%&gt;%</span> </span>
 <span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(sujeto, condicion) <span class="sc">%&gt;%</span> </span>
 <span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">media =</span> <span class="fu">mean</span>(rt),</span>
 <span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>         <span class="at">desv =</span> <span class="fu">sd</span>(rt),</span>
 <span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>         <span class="at">zscore1 =</span> (rt <span class="sc">-</span> media) <span class="sc">/</span> desv,</span>
-<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">zscore2 =</span> <span class="fu">scale</span>(rt))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">zscore2 =</span> <span class="fu">scale</span>(rt))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Ahora sí podemos comparar las columnas de z scores:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(midf<span class="sc">$</span>zscore1)</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(midf<span class="sc">$</span>zscore2)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(midf<span class="sc">$</span>zscore1)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(midf<span class="sc">$</span>zscore2)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
@@ -794,13 +801,13 @@ Levels: cond1 cond2 cond3</code></pre>
 <h1>NIVEL EXTRA (I’m feeling lucky): factores pero <code>tidy</code></h1>
 <p>El paquete <code>forcats</code>, que forma parte del <code>tidyverse</code>nos proporciona unas funciones que resultan muy útiles para trabajar con factores. Proporcionan una alternativa <code>tidy</code> (se pusen usarn con el <em>pipe</em> <code>%&gt;%</code>). Eso sí, muchas funciones sólo funcionan correctamente en el marco de un <code>dataframe</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># puede ser útil crear una variable que sea una "copia" </span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># puede ser útil crear una variable que sea una "copia" </span></span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="co">#de otra pero convertida a factor...</span></span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>stroop<span class="sc">$</span>condicion.f <span class="ot">=</span> <span class="fu">as_factor</span>(stroop<span class="sc">$</span>condicion) </span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>stroop<span class="sc">$</span>condicion.f <span class="ot">=</span> <span class="fu">as_factor</span>(stroop<span class="sc">$</span>condicion) </span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co">#cambiemos los niveles al inglés, porque vamos a escribir el peiper!</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fct_recode</span>(stroop<span class="sc">$</span>condicion.f,<span class="at">congruent=</span><span class="st">"congruente"</span>,  <span class="at">incongruent=</span><span class="st">"incongruente"</span>,<span class="at">neutral=</span><span class="st">"neutro"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co">#cambiemos los niveles al inglés, porque vamos a escribir el peiper!</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fct_recode</span>(stroop<span class="sc">$</span>condicion.f,<span class="at">congruent=</span><span class="st">"congruente"</span>,  <span class="at">incongruent=</span><span class="st">"incongruente"</span>,<span class="at">neutral=</span><span class="st">"neutro"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] congruent   congruent   congruent   congruent   congruent   congruent  
  [7] congruent   congruent   congruent   congruent   congruent   congruent  
@@ -816,28 +823,28 @@ Levels: congruent incongruent neutral</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># podemos usarlo con pipes, en un mutate !</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># podemos usarlo con pipes, en un mutate !</span></span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>stroop <span class="sc">%&gt;%</span> </span>
 <span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">condicion.f =</span> <span class="fu">fct_recode</span>(condicion.f,</span>
 <span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">congruent=</span><span class="st">"congruente"</span>,</span>
 <span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">incongruent=</span><span class="st">"incongruente"</span>,</span>
 <span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>                                  <span class="at">neutral=</span><span class="st">"neutro"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="co">#sólo para que no me tire </span><span class="al">TODO</span><span class="co"> el data.frame</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="co">#sólo para que no me tire </span><span class="al">TODO</span><span class="co"> el data.frame</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         rt  condicion sujeto nItem condicion.f
-1 0.5796718 congruente     s1     1   congruent
-2 0.6139863 congruente     s1     2   congruent
-3 0.7532933 congruente     s1     3   congruent
-4 0.6609123 congruente     s1     4   congruent
-5 0.6099174 congruente     s1     5   congruent
-6 0.6846066 congruente     s1     6   congruent</code></pre>
+1 0.7182079 congruente     s1     1   congruent
+2 0.6914470 congruente     s1     2   congruent
+3 0.5613363 congruente     s1     3   congruent
+4 0.6713373 congruente     s1     4   congruent
+5 0.5678880 congruente     s1     5   congruent
+6 0.6818779 congruente     s1     6   congruent</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co">#nótese que ahora dentro de fct_recode NO hacemos referencia a stroop,</span></span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="co">#porque ya empezamos, al principio de la línea, "volcando" stroop al pipe.</span></span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co">#nótese que ahora dentro de fct_recode NO hacemos referencia a stroop,</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="co">#porque ya empezamos, al principio de la línea, "volcando" stroop al pipe.</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Para cambiar el nivel “base” del factor:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fct_relevel</span>(stroop<span class="sc">$</span>condicion.f,<span class="st">"neutro"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fct_relevel</span>(stroop<span class="sc">$</span>condicion.f,<span class="st">"neutro"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] congruente   congruente   congruente   congruente   congruente  
  [6] congruente   congruente   congruente   congruente   congruente  
@@ -856,12 +863,12 @@ Levels: neutro congruente incongruente</code></pre>
 </div>
 <p>Para agregar un nuevo nivel:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co">#agrega un nuevo nivel</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co">#agrega un nuevo nivel</span></span>
 <span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>stroop<span class="sc">$</span>condicion.f <span class="ot">=</span> <span class="fu">fct_expand</span>(stroop<span class="sc">$</span>condicion.f,<span class="st">"otro"</span>) </span>
 <span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="co"># lo mismo que arriba, pero con pipe + mutate</span></span>
 <span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>stroop <span class="ot">=</span> stroop <span class="sc">%&gt;%</span> </span>
 <span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">condicion.f =</span> <span class="fu">fct_expand</span>(condicion.f,<span class="st">"otroMas"</span>)) </span>
-<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>stroop<span class="sc">$</span>condicion.f</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>stroop<span class="sc">$</span>condicion.f</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] congruente   congruente   congruente   congruente   congruente  
  [6] congruente   congruente   congruente   congruente   congruente  
@@ -880,7 +887,7 @@ Levels: congruente incongruente neutro otro otroMas</code></pre>
 </div>
 <p>Para quitar niveles que no se usan:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fct_drop</span>(stroop<span class="sc">$</span>condicion.f)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fct_drop</span>(stroop<span class="sc">$</span>condicion.f)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] congruente   congruente   congruente   congruente   congruente  
  [6] congruente   congruente   congruente   congruente   congruente  
@@ -964,13 +971,14 @@ Levels: congruente incongruente neutro</code></pre>
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
@@ -1317,5 +1325,5 @@ Levels: congruente incongruente neutro</code></pre>
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/almadana/cursoR/edit/main/lecciones/04-sesion-dplyr.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li><li><a href="https://github.com/almadana/cursoR/issues/new" class="toc-action"><i class="bi empty"></i>Informar de un problema</a></li></ul></div></div></div></footer><script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/almadana/cursoR/edit/main/lecciones/04-sesion-dplyr.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li><li><a href="https://github.com/almadana/cursoR/issues/new" class="toc-action"><i class="bi empty"></i>Informar sobre problema</a></li></ul></div></div></div></footer><script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

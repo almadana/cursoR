@@ -2,15 +2,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.9.37">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Camila Zugarramurdi">
 <meta name="author" content="Álvaro Cabana">
 
-<title>Sesión 9: medias marginales y contrastes – Curso de R</title>
+<title>Sesión 9: medias marginales y contrastes – Introducción al análisis de datos en la plataforma R</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -73,10 +76,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-7f257b5e78b96e17e6422cbf4f6352ae.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-2c6714fe627e2e72ebea18868a6073fd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -91,7 +94,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   ],
   "show-item-context": false,
   "language": {
-    "search-no-results-text": "Sin resultados",
+    "search-no-results-text": "No se han encontrado resultados",
     "search-matching-documents-text": "documentos encontrados",
     "search-copy-link-title": "Copiar el enlace en la búsqueda",
     "search-hide-matches-text": "Ocultar resultados adicionales",
@@ -117,7 +120,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">Curso de R</span>
+    <span class="navbar-title">Introducción al análisis de datos en la plataforma R</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Buscar"></div>
@@ -270,7 +273,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Curso de programación y estadística en R</span></a>
+ <span class="menu-text">Curso: Introducción al análisis de datos en la plataforma R</span></a>
   </div>
 </li>
       </ul>
@@ -431,7 +434,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#contraste-de-contrastes-tumba-de-campeones" id="toc-contraste-de-contrastes-tumba-de-campeones" class="nav-link" data-scroll-target="#contraste-de-contrastes-tumba-de-campeones">Contraste de contrastes (tumba de campeones)</a></li>
   </ul></li>
   </ul>
-<div class="toc-actions"><ul><li><a href="https://github.com/almadana/cursoR/edit/main/lecciones/09-sesion-medias-marginales.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li><li><a href="https://github.com/almadana/cursoR/issues/new" class="toc-action"><i class="bi empty"></i>Informar de un problema</a></li></ul></div></nav>
+<div class="toc-actions"><ul><li><a href="https://github.com/almadana/cursoR/edit/main/lecciones/09-sesion-medias-marginales.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li><li><a href="https://github.com/almadana/cursoR/issues/new" class="toc-action"><i class="bi empty"></i>Informar sobre problema</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -477,8 +480,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>El paquete <code>emmmeans</code> (antes conocido como) <code>lsmeans</code> permite, entre otras cosas, calcular “medias marginales”, esto es, los promedios de la variable dependiente según diferentes niveles de una o más variables predictoras categóricas.</p>
 <p>¿Qué? ¿Que qué cornos quiero decir con esto? Ok, basta de cháchara, pongamos un ejemplo. Eso sí, necesitaremos volver los datos de Valentina Paz <em>et al</em> que usamos en el <a href="https://eva-cursos.psico.edu.uy/pluginfile.php/144346/mod_resource/content/4/curso-R---ejercicio-6_csol_2022.pdf">ejercicio 6</a> y en la <a href="https://eva-cursos.psico.edu.uy/pluginfile.php/144816/mod_resource/content/3/curso-R---sesion-7_2022_ggplot2.pdf">sesión 7</a>. Porque reusar, reciclar, reparar, es un gran mantra. En particular, necesitaremos el data frame largo <code>parts3</code> que luce así:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(parts3)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(parts3)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>'data.frame':   336 obs. of  6 variables:
  $ codigo     : Factor w/ 112 levels "v001                ",..: 1 2 3 4 5 6 7 8 9 10 ...
@@ -491,9 +494,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>En sesiones pasadas vimos cómo usando paquetes como <code>dplyr</code> podíamos obtener los promedios para los valores de enojo según, sexo, tipo de oferta, o un para la combinación de los niveles de ambas. Algo así como:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mediasEnojo<span class="ot">=</span>parts3 <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(sexo,tipo_oferta) <span class="sc">%&gt;%</span> </span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mediasEnojo<span class="ot">=</span>parts3 <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(sexo,tipo_oferta) <span class="sc">%&gt;%</span> </span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mediaEnojo =</span> <span class="fu">mean</span>(enojo,<span class="at">na.rm=</span>T))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>mediasEnojo</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>mediasEnojo</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 3
 # Groups:   sexo [2]
@@ -510,8 +513,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Ahora, ¿qué pasa si quieren <strong>comparar</strong> las medias de, digamos, ofertas justas e injustas, para los participantes hombres? Un ejemplo típico de comparación pareada, que cuando se calcula <em>a posteriori</em> (cuando no se “planifica” de antemano, o se realiza mansalva todos contra todos, ver más adelante), se suele llamar <em>post-hoc</em>.</p>
 <p>En tal caso, podemos utilizar el paquete <code>emmeans</code> para calcular estimaciones un poco más “prolijas” y menos caseras de las medias. Primero, debemos ajustar un modelo lineal relevante: en este caso, queremos el enojo según sexo y tipo de oferta.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>enojo.lm1 <span class="ot">=</span> <span class="fu">lm</span>(enojo<span class="sc">~</span>sexo <span class="sc">+</span> tipo_oferta,<span class="at">data=</span>parts3)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(enojo.lm1)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>enojo.lm1 <span class="ot">=</span> <span class="fu">lm</span>(enojo<span class="sc">~</span>sexo <span class="sc">+</span> tipo_oferta,<span class="at">data=</span>parts3)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(enojo.lm1)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -538,18 +541,18 @@ F-statistic: 72.15 on 3 and 329 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <p>Primero que nada, calculemos una “grilla de referencia” con <code>ref_grid</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Primer paso, calcular la "grilla de referencia". Esto no es siempre necesario, </span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># pero es un buen hábito.</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>enojo.lm1.rg <span class="ot">=</span> <span class="fu">ref_grid</span>(enojo.lm1)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>enojo.lm1.rg <span class="ot">=</span> <span class="fu">ref_grid</span>(enojo.lm1)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Luego, calculemos las medias marginales para la variable <code>sexo</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>enojo.lm1.emm.sexo <span class="ot">=</span> <span class="fu">emmeans</span>(enojo.lm1.rg,<span class="st">"sexo"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>enojo.lm1.emm.sexo <span class="ot">=</span> <span class="fu">emmeans</span>(enojo.lm1.rg,<span class="st">"sexo"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Hacemos el summary</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(enojo.lm1.emm.sexo)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(enojo.lm1.emm.sexo)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> sexo emmean    SE  df lower.CL upper.CL
  H      2.35 0.166 329     2.03     2.68
@@ -562,8 +565,8 @@ Confidence level used: 0.95 </code></pre>
 <p>Bien! En promedio, los hombres tienen 2.35 de enojo, y las mujeres 2.04. Eso es lo que informa la columna <code>emmean</code>. La gracia es que ahora sabemos el error estándar de la estimación, los grados de libertad, y el inervalo de confianza (<code>lower.CL</code> y <code>upper.CL</code> son los límites inferior y superior del intervalo).</p>
 <p>Ahora, ¿cómo hago para incluir el “desglose” del nivel de enojo según sexo y tipo de oferta?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>enojo.lm1.emm.sexo.tipoOferta <span class="ot">=</span> <span class="fu">emmeans</span>(enojo.lm1.rg,<span class="fu">c</span>(<span class="st">"sexo"</span>,<span class="st">"tipo_oferta"</span>))</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(enojo.lm1.emm.sexo.tipoOferta)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>enojo.lm1.emm.sexo.tipoOferta <span class="ot">=</span> <span class="fu">emmeans</span>(enojo.lm1.rg,<span class="fu">c</span>(<span class="st">"sexo"</span>,<span class="st">"tipo_oferta"</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(enojo.lm1.emm.sexo.tipoOferta)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> sexo tipo_oferta emmean    SE  df lower.CL upper.CL
  H    justas       0.656 0.218 329   0.2263    1.085
@@ -578,8 +581,8 @@ Confidence level used: 0.95 </code></pre>
 </div>
 <p>Comparemos estos resultados a los que dió el <code>summarize</code>…</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#según emmeans</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(enojo.lm1.emm.sexo.tipoOferta)[<span class="dv">1</span>,]</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#según emmeans</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(enojo.lm1.emm.sexo.tipoOferta)[<span class="dv">1</span>,]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> sexo tipo_oferta emmean    SE  df lower.CL upper.CL
  H    justas       0.656 0.218 329    0.226     1.08
@@ -588,8 +591,8 @@ Confidence level used: 0.95 </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#según ddply</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>mediasEnojo[<span class="dv">1</span>,]</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co">#según ddply</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>mediasEnojo[<span class="dv">1</span>,]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 3
 # Groups:   sexo [1]
@@ -611,7 +614,7 @@ Confidence level used: 0.95 </code></pre>
 <h2 class="anchored" data-anchor-id="contrastes">Contrastes</h2>
 <p>OK, dejemos por un momento esa discrepancia… Sigamos adelante, porque, porqué no? Digamos que nos interesa comparar los niveles de enojo, para cada nivel de oferta, <strong>entre</strong> hombres y mujeres… Una de las tantas formas de hacerlo, es con la función <code>contrast</code></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">contrast</span>(enojo.lm1.emm.sexo.tipoOferta,<span class="st">"pairwise"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">contrast</span>(enojo.lm1.emm.sexo.tipoOferta,<span class="st">"pairwise"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> contrast                estimate    SE  df t.ratio p.value
  H justas - M justas        0.309 0.208 329   1.485  0.6739
@@ -636,8 +639,8 @@ P value adjustment: tukey method for comparing a family of 6 estimates </code></
 <p>Bueno, es como mucho no? Esto compara TODO CONTRA TODO (el argumento “pairwise” hace que se hagan comparaciones de a pares… más sobre esto pronto). La verdad que no me interesa compara H,medias contra M,injustas…</p>
 <p>Entonces, si sólo nos interesa hacer comparaciones entre sexos <em>según</em> tipo de oferta, al hacer las medias marginales, podemos especificar en vez de <code>c("sexo","tipo_oferta")</code>, especificar sólo <code>"sexo"</code>, y agregar <code>"by=tipo_oferta"</code> como otro argumento a <code>emmeans</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>enojo.lm1.emm.sexo.tipoOferta_2 <span class="ot">=</span> <span class="fu">emmeans</span>(enojo.lm1.rg,<span class="st">"sexo"</span>,<span class="at">by=</span><span class="st">"tipo_oferta"</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">contrast</span>(enojo.lm1.emm.sexo.tipoOferta_2  ,<span class="st">"pairwise"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>enojo.lm1.emm.sexo.tipoOferta_2 <span class="ot">=</span> <span class="fu">emmeans</span>(enojo.lm1.rg,<span class="st">"sexo"</span>,<span class="at">by=</span><span class="st">"tipo_oferta"</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">contrast</span>(enojo.lm1.emm.sexo.tipoOferta_2  ,<span class="st">"pairwise"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>tipo_oferta = justas:
  contrast estimate    SE  df t.ratio p.value
@@ -656,8 +659,8 @@ tipo_oferta = medias:
 <p>No?</p>
 <p>Digamos que quiero el contraste inverso, dentro de cada sexo, comparar niveles de enojo entre las ofertas. Fácil, sólo hay que invertir los argumentos del <code>emmeans</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>enojo.lm1.emm.sexo.tipoOferta_2 <span class="ot">=</span> <span class="fu">emmeans</span>(enojo.lm1.rg,<span class="at">by=</span><span class="st">"sexo"</span>,<span class="st">"tipo_oferta"</span>)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">contrast</span>(enojo.lm1.emm.sexo.tipoOferta_2  ,<span class="st">"pairwise"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>enojo.lm1.emm.sexo.tipoOferta_2 <span class="ot">=</span> <span class="fu">emmeans</span>(enojo.lm1.rg,<span class="at">by=</span><span class="st">"sexo"</span>,<span class="st">"tipo_oferta"</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">contrast</span>(enojo.lm1.emm.sexo.tipoOferta_2  ,<span class="st">"pairwise"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>sexo = H:
  contrast          estimate    SE  df t.ratio p.value
@@ -693,7 +696,7 @@ P value adjustment: tukey method for comparing a family of 3 estimates </code></
 <h3 class="anchored" data-anchor-id="comparaciones-múltiples">Comparaciones múltiples</h3>
 <p>Bueno, digamos que tenemos una chorrera de contrastes, como los de hace un momento (nota: se ha corregido lo que andaba mal hasta hace un momento, y los contrastes ahora son diferentes…. claro que no se los muestro aquí :P):</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">contrast</span>(enojo.lm1.emm.sexo.tipoOferta,<span class="st">"pairwise"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">contrast</span>(enojo.lm1.emm.sexo.tipoOferta,<span class="st">"pairwise"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> contrast                estimate    SE  df t.ratio p.value
  H justas - M justas       0.4305 0.361 327   1.193  0.8400
@@ -717,7 +720,7 @@ P value adjustment: tukey method for comparing a family of 6 estimates </code></
 </div>
 <p>Y bueno, esto es una chorrera de p-valores… Una cosa frecuente en esta situación, es hacer correcciones por comparaciones múltiples. Estas correcciones pueden ir desde atacar los p-valores con un martillo (Bonferroni), es decir, multiplicar los p-valores por el número de comparaciones realizadas, a estrategias un tanto menos violentas. Hay muchísimas formas de introducir esta corrección, aquí les dejo la forma en que yo suelo hacerlas.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pairs</span>(enojo.lm1.emm.sexo.tipoOferta,<span class="at">adjust=</span><span class="st">"bonferroni"</span>)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pairs</span>(enojo.lm1.emm.sexo.tipoOferta,<span class="at">adjust=</span><span class="st">"bonferroni"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> contrast                estimate    SE  df t.ratio p.value
  H justas - M justas       0.4305 0.361 327   1.193  1.0000
@@ -747,8 +750,8 @@ P value adjustment: bonferroni method for 15 tests </code></pre>
 <p>Hay veces, que más que explorar las diferencias, queremos caracterizarlas, queremos poder saber si dos diferencias, son estadísticamente significativas.</p>
 <p>Por ejemplo, la diferencia entre el enojo antes ofertas justas e injustas, es en los hombres de 3.3, y en las mujeres de 3.71. ¿Es esta diferencia significativa?</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>a<span class="ot">=</span><span class="fu">contrast</span>(enojo.lm1.emm.sexo.tipoOferta,<span class="st">"pairwise"</span>)</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>a[<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">7</span>),]</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>a<span class="ot">=</span><span class="fu">contrast</span>(enojo.lm1.emm.sexo.tipoOferta,<span class="st">"pairwise"</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>a[<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">7</span>),]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> contrast              estimate    SE  df t.ratio p.value
  H justas - H injustas    -3.30 0.408 327  -8.097  &lt;.0001
@@ -758,7 +761,7 @@ P value adjustment: sidak method for 2 tests </code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>a[<span class="fu">c</span>(<span class="dv">11</span>,<span class="dv">14</span>),]</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>a[<span class="fu">c</span>(<span class="dv">11</span>,<span class="dv">14</span>),]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> contrast              estimate    SE  df t.ratio p.value
  H injustas - H medias     1.75 0.408 327   4.288  &lt;.0001
@@ -770,7 +773,7 @@ P value adjustment: sidak method for 2 tests </code></pre>
 <p>Y la diferencia entre el enojo antes ofertas medias e injustas, es en los hombres de 1.75, y en las mujeres de 2.21. Pero, ¿es esta diferencia significativa?</p>
 <p>Para responder a esta pregunta, utilizaremos la función <code>contrast</code>, pero con un nuevo argumento. Y para esto, tendremos que volver un minuto al listado de medias marginales (sí, acá ya están corregidos :P).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(enojo.lm1.emm.sexo.tipoOferta)</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(enojo.lm1.emm.sexo.tipoOferta)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> sexo tipo_oferta emmean    SE  df lower.CL upper.CL
  H    justas       0.733 0.289 327    0.166    1.301
@@ -791,8 +794,8 @@ Confidence level used: 0.95 </code></pre>
 <p>fila3 - fila5 - fila4 + fila6</p>
 <p>Podemos ahora pasar como parámetro a la función <code>contrast</code>, los coeficientes de esta suma y resta (-1 y 1) para cada una de las filas de la tabla anterior. En nuestro caso, el coeficiente para la filas 1 y 2 es 0, y luego son 1, -1 -1 y 1 para las filas 3, 4, 5 y 6. Así queda entonces:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">contrast</span>(enojo.lm1.emm.sexo.tipoOferta,</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>         <span class="fu">list</span>(<span class="at">hombresVsMujeresEnInjustasMenosMedias=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>)))</span></code><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">contrast</span>(enojo.lm1.emm.sexo.tipoOferta,</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>         <span class="fu">list</span>(<span class="at">hombresVsMujeresEnInjustasMenosMedias=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>)))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> contrast                              estimate   SE  df t.ratio p.value
  hombresVsMujeresEnInjustasMenosMedias   -0.459 0.51 327  -0.899  0.3691</code></pre>
@@ -856,13 +859,14 @@ Confidence level used: 0.95 </code></pre>
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
@@ -1209,5 +1213,5 @@ Confidence level used: 0.95 </code></pre>
 
 
 
-<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/almadana/cursoR/edit/main/lecciones/09-sesion-medias-marginales.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li><li><a href="https://github.com/almadana/cursoR/issues/new" class="toc-action"><i class="bi empty"></i>Informar de un problema</a></li></ul></div></div></div></footer><script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/almadana/cursoR/edit/main/lecciones/09-sesion-medias-marginales.qmd" class="toc-action"><i class="bi bi-github"></i>Editar esta página</a></li><li><a href="https://github.com/almadana/cursoR/issues/new" class="toc-action"><i class="bi empty"></i>Informar sobre problema</a></li></ul></div></div></div></footer><script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

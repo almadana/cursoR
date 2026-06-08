@@ -10,3 +10,5 @@
 
 # entregas de alumnos (no publicar en el sitio)
 entregas/
+
+**/*.quarto_ipynb
