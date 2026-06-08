@@ -351,8 +351,8 @@
     "objectID": "lecciones/01-sesion-variables-indexacion.html#intro",
     "href": "lecciones/01-sesion-variables-indexacion.html#intro",
     "title": "Sesión 1: variables e indexación",
-    "section": "",
-    "text": "Esta es una mini guía de introducción de los conceptos y funciones más útiles para empezar a manejar el entorno de R con fines de procesamiento de datos de estudios experimentales. Se acompaña de un ejercicio (ejercicio 1) que utiliza los conceptos y funciones presentados aquí.",
+    "section": "Intro",
+    "text": "Intro\nEsta es una mini guía de introducción de los conceptos y funciones más útiles para empezar a manejar el entorno de R con fines de procesamiento de datos de estudios experimentales. Se acompaña de un ejercicio (ejercicio 1) que utiliza los conceptos y funciones presentados aquí.",
     "crumbs": [
       "Inicio",
       "Sesiones",

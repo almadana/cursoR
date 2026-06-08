@@ -24,7 +24,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```
 
-{{< https://youtu.be/s3BCkgiNgBk?si=zVTHKVHFiTdEMbu4 >}}
+{{< video https://youtu.be/s3BCkgiNgBk?si=zVTHKVHFiTdEMbu4 >}}
 
 
 ## Intro
