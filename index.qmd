@@ -1,5 +1,5 @@
 ---
-title: "Curso de programación y estadística en R"
+title: "Curso: Introducción al análisis de datos  en la plataforma R"
 subtitle: "Facultad de Psicología — Universidad de la República"
 author:
   - Camila Zugarramurdi

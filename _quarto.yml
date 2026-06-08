@@ -14,8 +14,8 @@ project:
     - .nojekyll
 
 website:
-  title: "Curso de R"
-  description: "Programación y estadística en R — Facultad de Psicología"
+  title: "Introducción al análisis de datos en la plataforma R"
+  description: "Facultad de Psicología - Universidad de la República"
   site-url: https://almadana.github.io/cursoR/  # ajustar al repo de GitHub Pages
   repo-url: https://github.com/almadana/cursoR
   repo-actions: [edit, issue]
