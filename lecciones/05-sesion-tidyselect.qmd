@@ -24,6 +24,12 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 options(tibble.print_max = 10)
 
 ```
+{{< video https://youtu.be/ksvR9hNqMtw?si=gHaQJtgQCkm0V3ga >}}
+
+{{< video https://youtu.be/YwLz3eqDeJs?si=XrIQPkS7C14NapRd >}}
+
+
+
 # Elige tu(s) columna(s)
 
 En la sesión pasada vimos cómo usar `filter` para elegir o filtrar filas. Ahora veremos cómo usar `select` para elegir columnas. Si bien ya sabemos cómo elegir columnas (de un dataframe, con el símbolo de `$`, o con el uso del paréntesis recto: `miDataFrame[filas,columnas]`), `select` nos hace la sintaxis más fácil y más legible, pero además nos permite combinarla con otras funciones que veremos más adelante, lo que nos da mucha más potencia.

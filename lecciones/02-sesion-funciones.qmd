@@ -22,6 +22,8 @@ if (!file.exists("input") && file.exists("../input")) {
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+{{<video https://youtu.be/s3BCkgiNgBk?si=NM-OUnO-Tk4lY9aj>}}
+
 ## Funciones 
 Una función es un conjunto de instrucciones o comandos que toma uno o más **argumentos de entrada**, y devuelve uno o más **argumentos de salida**.
 En la [sesión 1](https://eva-cursos.psico.edu.uy/mod/resource/view.php?id=31046) se utilizaron y definieron varias funciones: *combine (c)*, *data.frame*, *levels*,*colnames*, y toda la lista del inciso 0.5. Todas estas tenían un solo argumento de entrada, típicamente un vector o data.frame. 

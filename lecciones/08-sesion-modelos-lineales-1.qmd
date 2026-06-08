@@ -25,6 +25,10 @@ knitr::opts_chunk$set(echo = FALSE,
                       message = F)
 ```
 
+{{< video https://youtu.be/UvEZvm0wLkc?si=3XVEMA1mkwjCJzxO >}}
+
+
+
 ## Todos son modelos lineales
 
 

@@ -25,6 +25,14 @@ library(foreign)
 library(tidyverse)
 
 ```
+{{< video https://youtu.be/9wSvfYAE6L4?si=1SpIqtJPNuldsMXQ >}}
+
+{{< video https://youtu.be/J1n8BvZl8sw?si=zwjXvkRWkBjGJbDV >}}
+
+{{< video https://youtu.be/e1gNoLp4UJE?si=T5dHVuR4W8Bvq1nz >}}
+
+{{< video https://youtu.be/Ac1EHpf48VM?si=zchFqEfpWfTWjPUF >}}
+
 
 # Datos a lo largo y a lo ancho
 

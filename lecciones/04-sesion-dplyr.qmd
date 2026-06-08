@@ -22,6 +22,15 @@ if (!file.exists("input") && file.exists("../input")) {
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+{{< video https://youtu.be/W9gBr_83I6o?si=mtkJABevCmGYBkE- >}}
+
+{{< video https://youtu.be/OhnZzbl-Y4g?si=jNB5vlTdcdAmJGes >}}
+
+{{< video https://youtu.be/PpMY2Kz-ThY?si=EeTDvurfAtoizdDW >}}
+
+{{< video https://youtu.be/mIQu9cB9xcY?si=Eodxs8RKI42VD398 >}}
+
+
 # Intro: factores
 
 Hasta ahora hemos trabajado con diferentes tipos de variable: numéricas,lógicas, caracteres o "strings", y diferentes clases de vectores, elementos numéricos y factores. Los **factores** son una forma "avanzada" para representar variables categóricas, donde cada categoría (o nivel) puede ser representado por un string. La utilidad de que exista un tipo especial de variable para representar a los factores *no puede exagerarse*. Los factores son extramadamente útiles para:

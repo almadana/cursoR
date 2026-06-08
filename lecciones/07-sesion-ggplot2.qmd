@@ -22,6 +22,17 @@ if (!file.exists("input") && file.exists("../input")) {
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+{{< video https://youtu.be/DhoZWoKej8M?si=5uA1PPZxakpAdzbR >}}
+
+
+{{< video https://youtu.be/Hspch_XpKxA?si=REnFhG5yW5aawOtL >}}
+
+
+{{< video https://youtu.be/zlmbulnA1Zc?si=pj9DjCHFYAX6wOQI >}}
+
+
+
+
 # Intro: Grammar of graphics plot (`ggplot2`)
 
 `ggplot2` es un paquete para realizar gráficos. Es una gramática con su propia sintaxis basada en:

@@ -23,6 +23,16 @@ if (!file.exists("input") && file.exists("../input")) {
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+{{< video https://youtu.be/xvTIwt3Z9xY?si=wYHI0fs3f2nuneQc >}}
+
+{{< video https://youtu.be/X_AdonO7Su0?si=8Hr4rZw4h4F0Ixr4 >}}
+
+{{< video https://youtu.be/1AbgVFH0TKA?si=eJHpG6DNCImwgc0t >}}
+
+
+
+
+
 # Intro: Pipeline
 
 Llamamos **pipeline** (tubería) al flujo de procesamiento desde la lectura o importación de los datos crudos provenientes del experimento, pasando por el preprocesamiento y limpieza, y el análisis estadístico y visualización. Para completar este proceso hay 3 tipos de archivos fundamentales:
